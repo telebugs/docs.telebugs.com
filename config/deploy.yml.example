@@ -1,0 +1,19 @@
+service: docs
+image: docs
+
+servers:
+  - docs.example.com
+
+proxy:
+  ssl: true
+  host: docs.example.com
+
+env:
+  secret:
+    - GIT_URL
+
+registry:
+  server: localhost:5555
+
+builder:
+  arch: amd64
