@@ -6,3 +6,6 @@ description = "A guide to setting up and using Telebugs, a self-hosted Sentry al
 
 [build]
 build-dir = "public"
+
+[output.html]
+git-repository-url = "https://github.com/telebugs/docs.telebugs.com"
