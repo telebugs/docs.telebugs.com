@@ -100,6 +100,84 @@ Example payload:
 }
 ```
 
+## Microsoft Teams Setup
+
+Microsoft Teams supports rich notifications via **Incoming Webhooks** using
+Adaptive Cards.
+
+### Create Webhook in Teams
+
+1. In Microsoft Teams, go to the channel where you want notifications.
+2. Click **More options** (•••) next to the channel name.
+3. Select **Manage channel** > **Edit**.
+4. Search for **Incoming Webhook** and select **Add** (or **Configure** if already added).
+5. Enter a name (e.g., "Telebugs") and optionally upload an image.
+6. Click **Create**.
+7. Copy the generated webhook URL and click **Done**.
+
+In Telebugs: Use **Teams** template, paste URL.
+
+Example payload:
+
+```json
+{
+  "type": "message",
+  "attachments": [
+    {
+      "contentType": "application/vnd.microsoft.card.adaptive",
+      "content": {
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "type": "AdaptiveCard",
+        "version": "1.4",
+        "body": [
+          {
+            "type": "TextBlock",
+            "text": "**{{trigger}}** from [{{project_name}}]({{project_url}})",
+            "wrap": true,
+            "size": "Medium",
+            "weight": "Bolder"
+          },
+          {
+            "type": "TextBlock",
+            "text": "**{{error_type}}{{culprit}}**",
+            "wrap": true,
+            "spacing": "Small"
+          },
+          {
+            "type": "TextBlock",
+            "text": "{{error_message}}",
+            "wrap": true,
+            "spacing": "None"
+          },
+          {
+            "type": "TextBlock",
+            "text": "**Location**",
+            "wrap": true,
+            "spacing": "Medium"
+          },
+          {
+            "type": "TextBlock",
+            "text": "{{location}}",
+            "wrap": true,
+            "spacing": "None"
+          }
+        ],
+        "actions": [
+          {
+            "type": "Action.OpenUrl",
+            "title": "View Error",
+            "url": "{{view_url}}"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+This payload creates a formatted card with bold trigger/project, error details,
+location, and a **View Error** button.
+
 ## Custom Webhooks
 
 Use Custom template. Build your JSON with placeholders.
