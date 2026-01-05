@@ -48,23 +48,21 @@ Example payload:
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "*{{trigger}}* from <{{project_url}}|{{project_name}}>"
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "View"
-        },
-        "url": "{{view_url}}"
+        "text": "*{{trigger}}* from <{{project_url}}|{{project_name}}>\n\n*{{error_type}}{{culprit}}*\n{{error_message}}\n\n*Location*\n{{location}}"
       }
     },
     {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "*{{error_type}}{{culprit}}*\n{{error_message}}\n\n*Location*\n{{location}}"
-      }
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "View"
+          },
+          "url": "{{view_url}}"
+        }
+      ]
     }
   ]
 }

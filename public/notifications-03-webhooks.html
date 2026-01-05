@@ -45,7 +45,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e6f08393.js";
+            window.path_to_searchindex_js = "searchindex-21d2cb34.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5f7dfe06.js"></script>
@@ -235,23 +235,21 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "*{{trigger}}* from &lt;{{project_url}}|{{project_name}}&gt;"
-      },
-      "accessory": {
-        "type": "button",
-        "text": {
-          "type": "plain_text",
-          "text": "View"
-        },
-        "url": "{{view_url}}"
+        "text": "*{{trigger}}* from &lt;{{project_url}}|{{project_name}}&gt;\n\n*{{error_type}}{{culprit}}*\n{{error_message}}\n\n*Location*\n{{location}}"
       }
     },
     {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "*{{error_type}}{{culprit}}*\n{{error_message}}\n\n*Location*\n{{location}}"
-      }
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "View"
+          },
+          "url": "{{view_url}}"
+        }
+      ]
     }
   ]
 }
