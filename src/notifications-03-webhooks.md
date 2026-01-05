@@ -42,30 +42,29 @@ Example payload:
 ```json
 {
   "username": "Telebugs",
-  "attachments": [
+  "text": "{{project_name}}: {{trigger}} - {{error_type}}: {{error_message}}",
+  "blocks": [
     {
-      "fallback": "{{project_name}}: {{trigger}} - {{error_type}}: {{error_message}}",
-      "pretext": "*{{trigger}}* from <{{project_url}}|{{project_name}}>",
-      "color": "#D00000",
-      "fields": [
-        {
-          "title": "{{error_type}}{{culprit}}",
-          "value": "{{error_message}}",
-          "short": false
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*{{trigger}}* from <{{project_url}}|{{project_name}}>"
+      },
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "text": "View"
         },
-        {
-          "title": "Location",
-          "value": "{{location}}",
-          "short": false
-        }
-      ],
-      "actions": [
-        {
-          "type": "button",
-          "text": "View",
-          "url": "{{view_url}}"
-        }
-      ]
+        "url": "{{view_url}}"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*{{error_type}}{{culprit}}*\n{{error_message}}\n\n*Location*\n{{location}}"
+      }
     }
   ]
 }
