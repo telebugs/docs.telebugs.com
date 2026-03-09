@@ -1,6 +1,6 @@
 # Installing on Hetzner
 
-Hosting Writebook on [Hetzner](https://www.hetzner.com/) is a smart pick. It’s
+Hosting Telebugs on [Hetzner](https://www.hetzner.com/) is a smart pick. It’s
 budget-friendly and simple to set up if you’re comfortable with some basic tech
 steps.
 
