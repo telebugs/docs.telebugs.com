@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-09400abc.js";
+            window.path_to_searchindex_js = "searchindex-5da22d7a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-5f7dfe06.js"></script>
+        <script src="toc-37d3ee51.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -748,11 +748,7 @@ the text field.
 <p>If you are not a member of any projects yet, a message “You are not a member of
 any projects yet.” will be shown instead of the form.</p>
 <h2 id="security-settings"><a class="header" href="#security-settings">Security Settings</a></h2>
-<p>Go to the <strong>Security</strong> tab for API keys, email, and password.</p>
-<h3 id="regenerate-api-key"><a class="header" href="#regenerate-api-key">Regenerate API Key</a></h3>
-<p>Your API key lets you interact with Telebugs programmatically.</p>
-<p>In <strong>Security</strong>, click <strong>Regenerate</strong> to get a new one.</p>
-<p>Copy the new key and update your integrations immediately.</p>
+<p>Go to the <strong>Security</strong> tab for email and password.</p>
 <h3 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h3>
 <p>Enter your new email and current password, then click <strong>Change email</strong>.</p>
 <p>Verify the new email via the confirmation link sent to it.</p>
@@ -768,6 +764,23 @@ device</strong>.</p>
 <p>Control which projects send you email notifications.</p>
 <p>Go to the <strong>Notifications</strong> tab, then toggle checkboxes for each project.</p>
 <p>Changes save automatically.</p>
+<h1 id="api"><a class="header" href="#api">API</a></h1>
+<p>The <strong>API</strong> section in Account Settings contains your personal API key.</p>
+<h2 id="your-api-key"><a class="header" href="#your-api-key">Your API Key</a></h2>
+<p>Your API key is used to authenticate requests to the Telebugs REST API.</p>
+<p>You can find your current API key on this page. Use this key when making
+authenticated requests to the API.</p>
+<h2 id="regenerating-your-api-key"><a class="header" href="#regenerating-your-api-key">Regenerating Your API Key</a></h2>
+<p>If your API key is compromised or you need to rotate it, click <strong>Regenerate</strong>.</p>
+<p>After regenerating:</p>
+<ul>
+<li>Copy the new key immediately.</li>
+<li>Update any integrations or scripts that use the old key.</li>
+<li>The previous key will stop working.</li>
+</ul>
+<h2 id="using-the-api"><a class="header" href="#using-the-api">Using the API</a></h2>
+<p>For documentation on available endpoints and how to use the API, see the <a href="/rest-api-00-getting-started.html">REST
+API</a> section.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="appearance"><a class="header" href="#appearance">Appearance</a></h1>
 <p>The <strong>Appearance</strong> settings allow you to customize the look and feel of the
@@ -1191,6 +1204,38 @@ Search/select, <strong>Change timezone</strong>. Use UTC for global teams.</li>
 </ul>
 <p>Use for cleanup, but export data if needed for audits (see <a href="/data-retention-00.html">Data Retention</a>).</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="api-webhooks"><a class="header" href="#api-webhooks">API Webhooks</a></h1>
+<p>API Webhooks allow you to receive structured HTTP callbacks when events happen
+in a project, such as when a group is resolved or muted.</p>
+<p>This is separate from the notification webhooks used for Slack, Discord, and Teams.</p>
+<h2 id="managing-api-webhooks"><a class="header" href="#managing-api-webhooks">Managing API Webhooks</a></h2>
+<p>API Webhooks are configured per project.</p>
+<p>To manage them:</p>
+<ol>
+<li>Go to the project.</li>
+<li>Open <strong>Project Settings</strong>.</li>
+<li>Go to the <strong>API Webhooks</strong> section.</li>
+</ol>
+<p>From here you can create, edit, enable, disable, and delete webhooks. You can
+also send test events and view delivery history.</p>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<p>You can subscribe to events such as:</p>
+<ul>
+<li><code>group.created</code></li>
+<li><code>group.resolved</code></li>
+<li><code>group.unresolved</code></li>
+<li><code>group.muted</code></li>
+<li><code>group.unmuted</code></li>
+</ul>
+<h2 id="delivery-history"><a class="header" href="#delivery-history">Delivery History</a></h2>
+<p>Each webhook shows its recent deliveries, including success status, HTTP
+response codes, and error messages. This helps with debugging integrations.</p>
+<h2 id="managing-via-the-rest-api"><a class="header" href="#managing-via-the-rest-api">Managing via the REST API</a></h2>
+<p>API Webhooks can also be managed programmatically. See the
+<a href="/rest-api-08-webhooks.html">Webhooks</a> and <a href="/rest-api-09-webhook-deliveries.html">Webhook
+Deliveries</a> sections in the REST API
+documentation.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="apps"><a class="header" href="#apps">Apps</a></h1>
 <p>Apps group related projects together in the dashboard. This keeps things
 organized and makes navigation faster.</p>
@@ -1341,6 +1386,409 @@ report detail.</li>
 <p>This dashboard complements the <strong>All Errors</strong> view by letting you drill into the
 raw stream of incoming reports, making it ideal for monitoring live traffic or
 troubleshooting issues that may not yet be grouped effectively.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="getting-started-with-the-rest-api"><a class="header" href="#getting-started-with-the-rest-api">Getting Started with the REST API</a></h1>
+<p>Telebugs exposes a REST API that lets you manage projects, groups, reports,
+apps, and webhooks programmatically.</p>
+<p>The API is designed to be simple, pragmatic, and easy to use from scripts,
+internal tools, or other services.</p>
+<h2 id="getting-your-api-key"><a class="header" href="#getting-your-api-key">Getting Your API Key</a></h2>
+<ol>
+<li>Go to <strong>Account Settings</strong>.</li>
+<li>Open the <strong>API</strong> section.</li>
+<li>Copy your API key.</li>
+</ol>
+<p>You’ll need this key to authenticate all requests.</p>
+<h2 id="base-url"><a class="header" href="#base-url">Base URL</a></h2>
+<p>All API requests are made to:</p>
+<pre><code class="language-sh">https://your-telebugs-instance.com/api/telebugs/v1
+</code></pre>
+<h2 id="content-type"><a class="header" href="#content-type">Content Type</a></h2>
+<p>The API accepts and returns JSON:</p>
+<pre><code class="language-sh">Content-Type: application/json
+Accept: application/json
+</code></pre>
+<h2 id="your-first-request"><a class="header" href="#your-first-request">Your First Request</a></h2>
+<p>Here’s a simple example that lists your projects:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="authentication"><a class="header" href="#authentication">Authentication</a></h1>
+<p>All requests to the Telebugs REST API must be authenticated using an API key.</p>
+<h2 id="getting-your-api-key-1"><a class="header" href="#getting-your-api-key-1">Getting Your API Key</a></h2>
+<ol>
+<li>Go to <strong>Account Settings</strong> in Telebugs.</li>
+<li>Find the <strong>API</strong> section.</li>
+<li>Copy your personal API key.</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> Your API key gives full access to everything you have access to. Keep it secure.</p>
+</blockquote>
+<h2 id="authenticating-requests"><a class="header" href="#authenticating-requests">Authenticating Requests</a></h2>
+<p>Include your API key in the <code>Authorization</code> header using the <code>Bearer</code> scheme:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/groups \
+  -H "Authorization: Bearer tlbgs_xxxxxxxxxxxxxxxx" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="notes"><a class="header" href="#notes">Notes</a></h2>
+<ul>
+<li>API keys are tied to your user account.</li>
+<li>There is currently no support for project-scoped or read-only tokens.</li>
+<li>Treat your API key like a password.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="pagination"><a class="header" href="#pagination">Pagination</a></h1>
+<p>Most list endpoints in the Telebugs API use <strong>cursor-based pagination</strong>.</p>
+<p>This approach is efficient and works well even with large datasets.</p>
+<h2 id="how-pagination-works"><a class="header" href="#how-pagination-works">How Pagination Works</a></h2>
+<p>List endpoints return two important fields:</p>
+<ul>
+<li><code>next_cursor</code> — The ID you should use to fetch the next page</li>
+<li><code>has_more</code> — A boolean indicating whether more results are available</li>
+</ul>
+<h3 id="example-response"><a class="header" href="#example-response">Example Response</a></h3>
+<pre><code class="language-json">{
+  "projects": [...],
+  "next_cursor": 12345,
+  "has_more": true
+}
+
+## Fetching the Next Page
+
+To get the next page, pass the `next_cursor` value as the `cursor` parameter:
+
+```sh
+curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="controlling-page-size"><a class="header" href="#controlling-page-size">Controlling Page Size</a></h2>
+<p>You can control how many items are returned using the <code>limit</code> parameter:</p>
+<pre><code>curl "https://your-telebugs-instance.com/api/telebugs/v1/groups?limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="limits"><a class="header" href="#limits">Limits</a></h2>
+<ul>
+<li>Default limit: <code>25</code></li>
+<li>Maximum limit: <code>100</code></li>
+</ul>
+<p>If you request a higher value, it will be capped at <code>100</code>.</p>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ul>
+<li>Always check <code>has_more</code> before making another request.</li>
+<li>Use <code>next_cursor</code> exactly as returned — do not modify it.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="errors"><a class="header" href="#errors">Errors</a></h1>
+<p>The Telebugs API uses conventional HTTP status codes to indicate success or
+failure.</p>
+<h2 id="error-response-format"><a class="header" href="#error-response-format">Error Response Format</a></h2>
+<p>Errors are always returned under the <code>errors</code> key as an array (for simple
+errors) or an object (for validation errors).</p>
+<h3 id="simple-errors"><a class="header" href="#simple-errors">Simple Errors</a></h3>
+<pre><code class="language-json">{
+  "errors": ["Resource not found"]
+}
+</code></pre>
+<h3 id="validation-errors"><a class="header" href="#validation-errors">Validation Errors</a></h3>
+<pre><code class="language-json">{
+  "errors": {
+    "name": ["can't be blank"],
+    "url": ["is invalid"]
+  }
+}
+</code></pre>
+<h3 id="common-status-codes"><a class="header" href="#common-status-codes">Common Status Codes</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Status</th><th>Meaning</th><th>Typical <code>errors</code> message</th></tr>
+</thead>
+<tbody>
+<tr><td>401</td><td>Unauthorized</td><td><code>Missing API key</code>, <code>Invalid API key</code></td></tr>
+<tr><td>404</td><td>Not Found</td><td><code>Resource not found</code></td></tr>
+<tr><td>422</td><td>Unprocessable Entity</td><td>Validation errors object</td></tr>
+</tbody>
+</table>
+</div>
+<h1 id="example-unauthorized"><a class="header" href="#example-unauthorized">Example: Unauthorized</a></h1>
+<pre><code class="language-json">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
+  -H "Accept: application/json"
+
+# Response (401)
+{
+  "errors": ["Missing API key"]
+}
+</code></pre>
+<h2 id="best-practice"><a class="header" href="#best-practice">Best Practice</a></h2>
+<p>Always check the HTTP status code. A non-2xx response means the request failed. The <code>errors</code> field will contain more details.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="projects-1"><a class="header" href="#projects-1">Projects</a></h1>
+<p>You can manage projects through the API.</p>
+<h2 id="list-projects"><a class="header" href="#list-projects">List Projects</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>Response includes <code>next_cursor</code> and <code>has_more</code> for pagination.</p>
+<h2 id="create-a-project"><a class="header" href="#create-a-project">Create a Project</a></h2>
+<p>When you create a project, the response includes the <code>token</code> so you can start sending errors immediately.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "project": {
+      "name": "Production",
+      "platform": "Ruby",
+      "timezone": "UTC"
+    }
+  }'
+</code></pre>
+<h2 id="get-a-single-project"><a class="header" href="#get-a-single-project">Get a Single Project</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-a-project"><a class="header" href="#update-a-project">Update a Project</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "project": {
+      "name": "Production v2",
+      "timezone": "Europe/Berlin"
+    }
+  }'
+</code></pre>
+<h2 id="delete-a-project"><a class="header" href="#delete-a-project">Delete a Project</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="groups"><a class="header" href="#groups">Groups</a></h1>
+<p>Groups represent aggregated errors. You can list, filter, resolve, and mute them
+via the API.</p>
+<h2 id="list-groups-for-a-project"><a class="header" href="#list-groups-for-a-project">List Groups for a Project</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="filtering-2"><a class="header" href="#filtering-2">Filtering</a></h2>
+<p>You can filter groups using the following parameters:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Description</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td><code>status</code></td><td><code>unresolved</code>, <code>resolved</code>, <code>muted</code></td><td><code>?status=unresolved</code></td></tr>
+<tr><td><code>search</code></td><td>Search in error type/message</td><td><code>?search=Payment</code></td></tr>
+<tr><td><code>since</code></td><td>Groups that occurred after date</td><td><code>?since=2026-05-01</code></td></tr>
+<tr><td><code>until</code></td><td>Groups that occurred before date</td><td><code>?until=2026-05-20</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Example with filters:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?status=unresolved&amp;search=TypeError" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="unresolve-a-group"><a class="header" href="#unresolve-a-group">Unresolve a Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="mute-a-group"><a class="header" href="#mute-a-group">Mute a Group</a></h2>
+<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="unmute-a-group"><a class="header" href="#unmute-a-group">Unmute a Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="bulk-resolve"><a class="header" href="#bulk-resolve">Bulk Resolve</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_resolve \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+</code></pre>
+<h2 id="bulk-mute"><a class="header" href="#bulk-mute">Bulk Mute</a></h2>
+<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="reports"><a class="header" href="#reports">Reports</a></h1>
+<p>Reports are individual error occurrences. You can list and retrieve reports
+under a specific group.</p>
+<h2 id="list-reports-under-a-group"><a class="header" href="#list-reports-under-a-group">List Reports under a Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="filtering-3"><a class="header" href="#filtering-3">Filtering</a></h2>
+<p>You can filter reports using these parameters:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Description</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td><code>since</code></td><td>Reports that occurred after</td><td><code>?since=2026-05-01</code></td></tr>
+<tr><td><code>until</code></td><td>Reports that occurred before</td><td><code>?until=2026-05-20</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Example:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports?since=2026-05-01&amp;limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<p>Reports support cursor-based pagination using <code>cursor</code> and return <code>next_cursor</code> + <code>has_more</code>.</p>
+<h2 id="get-a-single-report"><a class="header" href="#get-a-single-report">Get a Single Report</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports/REPORT_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="apps-1"><a class="header" href="#apps-1">Apps</a></h1>
+<p>Apps are used to organize multiple projects (for example, a frontend and a
+backend app).</p>
+<blockquote>
+<p><strong>Note:</strong> Most App operations require admin access.</p>
+</blockquote>
+<h2 id="list-apps"><a class="header" href="#list-apps">List Apps</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="create-an-app"><a class="header" href="#create-an-app">Create an App</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "app": {
+      "name": "Web Platform",
+      "project_ids": [123, 456]
+    }
+  }'
+</code></pre>
+<h2 id="update-an-app"><a class="header" href="#update-an-app">Update an App</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps/APP_ID \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "app": {
+      "name": "Web Platform v2"
+    }
+  }'
+</code></pre>
+<h2 id="delete-an-app"><a class="header" href="#delete-an-app">Delete an App</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps/APP_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Deleting an app will ungroup its projects but will not delete the projects themselves.</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="webhooks-1"><a class="header" href="#webhooks-1">Webhooks</a></h1>
+<p>You can manage webhooks programmatically through the API.</p>
+<h2 id="list-webhooks-for-a-project"><a class="header" href="#list-webhooks-for-a-project">List Webhooks for a Project</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="create-a-webhook"><a class="header" href="#create-a-webhook">Create a Webhook</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "webhook": {
+      "url": "https://example.com/webhook",
+      "events": ["group.resolved", "group.muted"],
+      "enabled": true
+    }
+  }'
+</code></pre>
+<h2 id="update-a-webhook"><a class="header" href="#update-a-webhook">Update a Webhook</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "webhook": {
+      "enabled": false
+    }
+  }'
+</code></pre>
+<h2 id="delete-a-webhook"><a class="header" href="#delete-a-webhook">Delete a Webhook</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<h2 id="send-a-test-webhook"><a class="header" href="#send-a-test-webhook">Send a Test Webhook</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID/test \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="webhook-deliveries"><a class="header" href="#webhook-deliveries">Webhook Deliveries</a></h1>
+<p>You can inspect webhook delivery attempts through the API.</p>
+<h2 id="list-deliveries-for-a-webhook"><a class="header" href="#list-deliveries-for-a-webhook">List Deliveries for a Webhook</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID/deliveries \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="filtering-4"><a class="header" href="#filtering-4">Filtering</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Description</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td><code>event</code></td><td>Filter by event type</td><td><code>?event=group.resolved</code></td></tr>
+<tr><td><code>success</code></td><td>Filter by success status</td><td><code>?success=true</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Example:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID/deliveries?event=group.resolved&amp;success=false" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
+<p>Deliveries support cursor-based pagination.</p>
+<h2 id="get-a-single-delivery"><a class="header" href="#get-a-single-delivery">Get a Single Delivery</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID/deliveries/DELIVERY_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="releases"><a class="header" href="#releases">Releases</a></h1>
 <p>Releases in Telebugs let you tag versions of your app, primarily to attach
@@ -1713,7 +2161,7 @@ screenshots, log files, or “fixed in deploy X” updates.</p>
 <p>Clicking <strong>Own it</strong> immediately claims the error for you.
 Clicking <strong>Unclaim</strong> immediately releases ownership.</p>
 <p>No confirmation dialog is required — the action is fast and reversible.</p>
-<h3 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h3>
+<h3 id="best-practices-1"><a class="header" href="#best-practices-1">Best Practices</a></h3>
 <ul>
 <li>Claim an error when you start actively working on it.</li>
 <li>Unclaim it if you hand it off to someone else or stop working on it.</li>

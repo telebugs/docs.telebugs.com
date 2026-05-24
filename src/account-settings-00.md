@@ -75,15 +75,7 @@ any projects yet." will be shown instead of the form.
 
 ## Security Settings
 
-Go to the **Security** tab for API keys, email, and password.
-
-### Regenerate API Key
-
-Your API key lets you interact with Telebugs programmatically.
-
-In **Security**, click **Regenerate** to get a new one.
-
-Copy the new key and update your integrations immediately.
+Go to the **Security** tab for email and password.
 
 ### Change Email Address
 
@@ -113,3 +105,29 @@ Control which projects send you email notifications.
 Go to the **Notifications** tab, then toggle checkboxes for each project.
 
 Changes save automatically.
+
+# API
+
+The **API** section in Account Settings contains your personal API key.
+
+## Your API Key
+
+Your API key is used to authenticate requests to the Telebugs REST API.
+
+You can find your current API key on this page. Use this key when making
+authenticated requests to the API.
+
+## Regenerating Your API Key
+
+If your API key is compromised or you need to rotate it, click **Regenerate**.
+
+After regenerating:
+
+- Copy the new key immediately.
+- Update any integrations or scripts that use the old key.
+- The previous key will stop working.
+
+## Using the API
+
+For documentation on available endpoints and how to use the API, see the [REST
+API](/rest-api-00-getting-started.md) section.
