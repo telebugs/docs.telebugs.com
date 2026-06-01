@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5da22d7a.js";
+            window.path_to_searchindex_js = "searchindex-4a9d719b.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-37d3ee51.js"></script>
+        <script src="toc-01038a05.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -193,48 +193,55 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="errors"><a class="header" href="#errors">Errors</a></h1>
-<p>The Telebugs API uses conventional HTTP status codes to indicate success or
-failure.</p>
-<h2 id="error-response-format"><a class="header" href="#error-response-format">Error Response Format</a></h2>
-<p>Errors are always returned under the <code>errors</code> key as an array (for simple
-errors) or an object (for validation errors).</p>
-<h3 id="simple-errors"><a class="header" href="#simple-errors">Simple Errors</a></h3>
-<pre><code class="language-json">{
-  "errors": ["Resource not found"]
+<p>The Telebugs REST API conveys error information using <a href="https://www.rfc-editor.org/rfc/rfc9457.html">Problem Details for HTTP APIs (RFC 9457)</a>.</p>
+<p>All error responses are served with the <code>application/problem+json</code> content type and follow a consistent, machine-readable structure.</p>
+<h2 id="problem-details-structure"><a class="header" href="#problem-details-structure">Problem Details Structure</a></h2>
+<p>A problem details response always contains:</p>
+<ul>
+<li><code>type</code> — A URI that identifies the specific problem type. These URIs are stable and can be used by clients for programmatic handling or to retrieve documentation.</li>
+<li><code>title</code> — A short, human-readable summary of the problem type. This value is consistent across occurrences of the same problem type.</li>
+<li><code>status</code> — The HTTP status code for this occurrence of the problem.</li>
+</ul>
+<p>Optional members include:</p>
+<ul>
+<li><code>detail</code> — A human-readable explanation specific to this particular occurrence of the problem.</li>
+<li>Additional extension members defined by the problem type (for example, <code>errors</code> for validation failures).</li>
+</ul>
+<p>Example response:</p>
+<pre><code class="language-http">HTTP/1.1 401 Unauthorized
+Content-Type: application/problem+json
+
+{
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Invalid API key"
 }
 </code></pre>
-<h3 id="validation-errors"><a class="header" href="#validation-errors">Validation Errors</a></h3>
-<pre><code class="language-json">{
-  "errors": {
-    "name": ["can't be blank"],
-    "url": ["is invalid"]
-  }
-}
-</code></pre>
-<h3 id="common-status-codes"><a class="header" href="#common-status-codes">Common Status Codes</a></h3>
+<h2 id="using-problem-types"><a class="header" href="#using-problem-types">Using Problem Types</a></h2>
+<p>Instead of parsing free-form error messages, clients should inspect the <code>type</code> member to determine the nature of the error. See the <a href="rest-api/problems/index.html">full catalog of problem types</a> for the currently defined types and their semantics.</p>
+<p>When the <code>type</code> is <code>about:blank</code> (the default when no specific type is indicated), the problem has no additional semantics beyond the HTTP status code itself.</p>
+<h2 id="common-http-status-codes"><a class="header" href="#common-http-status-codes">Common HTTP Status Codes</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Status</th><th>Meaning</th><th>Typical <code>errors</code> message</th></tr>
+<tr><th>Status</th><th>Meaning</th><th>Typical Problem Type</th></tr>
 </thead>
 <tbody>
-<tr><td>401</td><td>Unauthorized</td><td><code>Missing API key</code>, <code>Invalid API key</code></td></tr>
-<tr><td>404</td><td>Not Found</td><td><code>Resource not found</code></td></tr>
-<tr><td>422</td><td>Unprocessable Entity</td><td>Validation errors object</td></tr>
+<tr><td>401</td><td>Unauthorized</td><td><a href="rest-api/problems/unauthorized.html">unauthorized</a></td></tr>
+<tr><td>404</td><td>Not Found</td><td><code>about:blank</code> (generic)</td></tr>
+<tr><td>422</td><td>Unprocessable Content</td><td><a href="rest-api/problems/validation-error.html">validation-error</a></td></tr>
 </tbody>
 </table>
 </div>
-<h1 id="example-unauthorized"><a class="header" href="#example-unauthorized">Example: Unauthorized</a></h1>
-<pre><code class="language-json">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
-  -H "Accept: application/json"
-
-# Response (401)
-{
-  "errors": ["Missing API key"]
-}
-</code></pre>
 <h2 id="best-practice"><a class="header" href="#best-practice">Best Practice</a></h2>
-<p>Always check the HTTP status code. A non-2xx response means the request failed. The <code>errors</code> field will contain more details.</p>
+<ul>
+<li>Always inspect the HTTP status code first.</li>
+<li>For machine clients, key off the <code>type</code> URI rather than string matching on <code>title</code> or <code>detail</code>.</li>
+<li>For validation errors, examine the <code>errors</code> extension for field-specific messages.</li>
+<li>Include <code>Accept: application/problem+json</code> (or <code>Accept: application/json, application/problem+json</code>) to signal preference for this format.</li>
+</ul>
+<p>This structure makes error handling robust and allows the API to evolve by adding new problem types without breaking existing clients.</p>
 
                     </main>
 
@@ -244,7 +251,7 @@ errors) or an object (for validation errors).</p>
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="rest-api-04-projects.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="rest-api/problems/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -258,7 +265,7 @@ errors) or an object (for validation errors).</p>
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="rest-api-04-projects.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="rest-api/problems/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

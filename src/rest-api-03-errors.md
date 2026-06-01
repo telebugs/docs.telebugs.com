@@ -1,52 +1,55 @@
 # Errors
 
-The Telebugs API uses conventional HTTP status codes to indicate success or
-failure.
+The Telebugs REST API conveys error information using [Problem Details for HTTP APIs (RFC 9457)](https://www.rfc-editor.org/rfc/rfc9457.html).
 
-## Error Response Format
+All error responses are served with the `application/problem+json` content type and follow a consistent, machine-readable structure.
 
-Errors are always returned under the `errors` key as an array (for simple
-errors) or an object (for validation errors).
+## Problem Details Structure
 
-### Simple Errors
+A problem details response always contains:
 
-```json
+- `type` — A URI that identifies the specific problem type. These URIs are stable and can be used by clients for programmatic handling or to retrieve documentation.
+- `title` — A short, human-readable summary of the problem type. This value is consistent across occurrences of the same problem type.
+- `status` — The HTTP status code for this occurrence of the problem.
+
+Optional members include:
+
+- `detail` — A human-readable explanation specific to this particular occurrence of the problem.
+- Additional extension members defined by the problem type (for example, `errors` for validation failures).
+
+Example response:
+
+```http
+HTTP/1.1 401 Unauthorized
+Content-Type: application/problem+json
+
 {
-  "errors": ["Resource not found"]
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Invalid API key"
 }
 ```
 
-### Validation Errors
+## Using Problem Types
 
-```json
-{
-  "errors": {
-    "name": ["can't be blank"],
-    "url": ["is invalid"]
-  }
-}
-```
+Instead of parsing free-form error messages, clients should inspect the `type` member to determine the nature of the error. See the [full catalog of problem types](rest-api/problems/index.md) for the currently defined types and their semantics.
 
-### Common Status Codes
+When the `type` is `about:blank` (the default when no specific type is indicated), the problem has no additional semantics beyond the HTTP status code itself.
 
-| Status | Meaning              | Typical `errors` message             |
-| ------ | -------------------- | ------------------------------------ |
-| 401    | Unauthorized         | `Missing API key`, `Invalid API key` |
-| 404    | Not Found            | `Resource not found`                 |
-| 422    | Unprocessable Entity | Validation errors object             |
+## Common HTTP Status Codes
 
-# Example: Unauthorized
-
-```json
-curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
-  -H "Accept: application/json"
-
-# Response (401)
-{
-  "errors": ["Missing API key"]
-}
-```
+| Status | Meaning               | Typical Problem Type                                                      |
+| ------ | --------------------- | ------------------------------------------------------------------------- |
+| 401    | Unauthorized          | [unauthorized](rest-api/problems/unauthorized.md)                         |
+| 404    | Not Found             | `about:blank` (generic)                                                   |
+| 422    | Unprocessable Content | [validation-error](rest-api/problems/validation-error.md)                 |
 
 ## Best Practice
 
-Always check the HTTP status code. A non-2xx response means the request failed. The `errors` field will contain more details.
+- Always inspect the HTTP status code first.
+- For machine clients, key off the `type` URI rather than string matching on `title` or `detail`.
+- For validation errors, examine the `errors` extension for field-specific messages.
+- Include `Accept: application/problem+json` (or `Accept: application/json, application/problem+json`) to signal preference for this format.
+
+This structure makes error handling robust and allows the API to evolve by adding new problem types without breaking existing clients.

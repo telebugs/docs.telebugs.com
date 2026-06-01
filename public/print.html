@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5da22d7a.js";
+            window.path_to_searchindex_js = "searchindex-4a9d719b.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-37d3ee51.js"></script>
+        <script src="toc-01038a05.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1487,48 +1487,150 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" 
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="errors"><a class="header" href="#errors">Errors</a></h1>
-<p>The Telebugs API uses conventional HTTP status codes to indicate success or
-failure.</p>
-<h2 id="error-response-format"><a class="header" href="#error-response-format">Error Response Format</a></h2>
-<p>Errors are always returned under the <code>errors</code> key as an array (for simple
-errors) or an object (for validation errors).</p>
-<h3 id="simple-errors"><a class="header" href="#simple-errors">Simple Errors</a></h3>
-<pre><code class="language-json">{
-  "errors": ["Resource not found"]
+<p>The Telebugs REST API conveys error information using <a href="https://www.rfc-editor.org/rfc/rfc9457.html">Problem Details for HTTP APIs (RFC 9457)</a>.</p>
+<p>All error responses are served with the <code>application/problem+json</code> content type and follow a consistent, machine-readable structure.</p>
+<h2 id="problem-details-structure"><a class="header" href="#problem-details-structure">Problem Details Structure</a></h2>
+<p>A problem details response always contains:</p>
+<ul>
+<li><code>type</code> — A URI that identifies the specific problem type. These URIs are stable and can be used by clients for programmatic handling or to retrieve documentation.</li>
+<li><code>title</code> — A short, human-readable summary of the problem type. This value is consistent across occurrences of the same problem type.</li>
+<li><code>status</code> — The HTTP status code for this occurrence of the problem.</li>
+</ul>
+<p>Optional members include:</p>
+<ul>
+<li><code>detail</code> — A human-readable explanation specific to this particular occurrence of the problem.</li>
+<li>Additional extension members defined by the problem type (for example, <code>errors</code> for validation failures).</li>
+</ul>
+<p>Example response:</p>
+<pre><code class="language-http">HTTP/1.1 401 Unauthorized
+Content-Type: application/problem+json
+
+{
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Invalid API key"
 }
 </code></pre>
-<h3 id="validation-errors"><a class="header" href="#validation-errors">Validation Errors</a></h3>
-<pre><code class="language-json">{
-  "errors": {
-    "name": ["can't be blank"],
-    "url": ["is invalid"]
-  }
-}
-</code></pre>
-<h3 id="common-status-codes"><a class="header" href="#common-status-codes">Common Status Codes</a></h3>
+<h2 id="using-problem-types"><a class="header" href="#using-problem-types">Using Problem Types</a></h2>
+<p>Instead of parsing free-form error messages, clients should inspect the <code>type</code> member to determine the nature of the error. See the <a href="#problems">full catalog of problem types</a> for the currently defined types and their semantics.</p>
+<p>When the <code>type</code> is <code>about:blank</code> (the default when no specific type is indicated), the problem has no additional semantics beyond the HTTP status code itself.</p>
+<h2 id="common-http-status-codes"><a class="header" href="#common-http-status-codes">Common HTTP Status Codes</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Status</th><th>Meaning</th><th>Typical <code>errors</code> message</th></tr>
+<tr><th>Status</th><th>Meaning</th><th>Typical Problem Type</th></tr>
 </thead>
 <tbody>
-<tr><td>401</td><td>Unauthorized</td><td><code>Missing API key</code>, <code>Invalid API key</code></td></tr>
-<tr><td>404</td><td>Not Found</td><td><code>Resource not found</code></td></tr>
-<tr><td>422</td><td>Unprocessable Entity</td><td>Validation errors object</td></tr>
+<tr><td>401</td><td>Unauthorized</td><td><a href="#unauthorized">unauthorized</a></td></tr>
+<tr><td>404</td><td>Not Found</td><td><code>about:blank</code> (generic)</td></tr>
+<tr><td>422</td><td>Unprocessable Content</td><td><a href="#validation-error">validation-error</a></td></tr>
 </tbody>
 </table>
 </div>
-<h1 id="example-unauthorized"><a class="header" href="#example-unauthorized">Example: Unauthorized</a></h1>
-<pre><code class="language-json">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
-  -H "Accept: application/json"
+<h2 id="best-practice"><a class="header" href="#best-practice">Best Practice</a></h2>
+<ul>
+<li>Always inspect the HTTP status code first.</li>
+<li>For machine clients, key off the <code>type</code> URI rather than string matching on <code>title</code> or <code>detail</code>.</li>
+<li>For validation errors, examine the <code>errors</code> extension for field-specific messages.</li>
+<li>Include <code>Accept: application/problem+json</code> (or <code>Accept: application/json, application/problem+json</code>) to signal preference for this format.</li>
+</ul>
+<p>This structure makes error handling robust and allows the API to evolve by adding new problem types without breaking existing clients.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="problems"><a class="header" href="#problems">Problems</a></h1>
+<p>The Telebugs REST API uses <a href="https://www.rfc-editor.org/rfc/rfc9457.html">RFC 9457 Problem Details</a> for all error responses.</p>
+<p>Each problem is identified by a <code>type</code> URI. These URIs are dereferenceable and point directly to the human-readable documentation for that problem type (the pages in this section).</p>
+<h2 id="defined-problem-types"><a class="header" href="#defined-problem-types">Defined Problem Types</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Type URI (used in responses)</th><th>Title</th><th>Status Code</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/unauthorized</code></td><td>Unauthorized</td><td>401 Unauthorized</td><td>The request did not include valid authentication credentials.</td></tr>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/validation-error</code></td><td>Validation Failed</td><td>422 Unprocessable Content</td><td>The submitted data failed validation.</td></tr>
+</tbody>
+</table>
+</div>
+<p>When no more specific problem type applies, the API uses <code>about:blank</code> as the type (per RFC 9457 §4.2.1). In this case the <code>title</code> will be the standard HTTP status phrase.</p>
+<h2 id="client-guidance"><a class="header" href="#client-guidance">Client Guidance</a></h2>
+<ul>
+<li>Always examine the <code>type</code> field first for robust, forward-compatible error handling.</li>
+<li>The <code>detail</code> field and any extension members (such as <code>errors</code>) contain occurrence-specific information.</li>
+<li>All problem responses use <code>Content-Type: application/problem+json</code>.</li>
+</ul>
+<p>Browse the individual problem pages below for causes, remedies, and full example responses.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="unauthorized"><a class="header" href="#unauthorized">Unauthorized</a></h1>
+<h2 id="unauthorized-1"><a class="header" href="#unauthorized-1">Unauthorized</a></h2>
+<p><strong>Problem type</strong></p>
+<p><code>unauthorized</code></p>
+<p><strong>Type URI</strong></p>
+<p><code>https://docs.telebugs.com/rest-api/problems/unauthorized</code></p>
+<p><strong>Status code</strong></p>
+<p><code>401 Unauthorized</code></p>
+<h2 id="reasons"><a class="header" href="#reasons">Reasons</a></h2>
+<p>The server rejected the request because it could not authenticate the caller.</p>
+<p>This problem occurs when:</p>
+<ol>
+<li>The <code>Authorization</code> header is completely missing.</li>
+<li>The header does not use the <code>Bearer</code> authentication scheme.</li>
+<li>The provided API key is invalid, revoked, or malformed.</li>
+</ol>
+<h2 id="remedy"><a class="header" href="#remedy">Remedy</a></h2>
+<p>Supply a valid API key using the Bearer scheme:</p>
+<pre><code>Authorization: Bearer tlbgs_xxxxxxxxxxxxxxxxxxxxxxxx
+</code></pre>
+<p>Obtain or regenerate the key from <strong>Account Settings → API</strong> in the Telebugs interface.</p>
+<h2 id="example-problem-document"><a class="header" href="#example-problem-document">Example Problem Document</a></h2>
+<pre><code class="language-http">HTTP/1.1 401 Unauthorized
+Content-Type: application/problem+json
 
-# Response (401)
 {
-  "errors": ["Missing API key"]
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Invalid API key"
 }
 </code></pre>
-<h2 id="best-practice"><a class="header" href="#best-practice">Best Practice</a></h2>
-<p>Always check the HTTP status code. A non-2xx response means the request failed. The <code>errors</code> field will contain more details.</p>
+<p>The <code>detail</code> value may vary (<code>"Missing API key"</code>, <code>"Invalid API key"</code>, etc.) while the <code>type</code> remains stable.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="validation-error"><a class="header" href="#validation-error">Validation Error</a></h1>
+<h2 id="validation-failed"><a class="header" href="#validation-failed">Validation Failed</a></h2>
+<p><strong>Problem type</strong></p>
+<p><code>validation-error</code></p>
+<p><strong>Type URI</strong></p>
+<p><code>https://docs.telebugs.com/rest-api/problems/validation-error</code></p>
+<p><strong>Status code</strong></p>
+<p><code>422 Unprocessable Content</code></p>
+<h2 id="reasons-1"><a class="header" href="#reasons-1">Reasons</a></h2>
+<p>The server understood the request but could not process it because the payload failed validation.</p>
+<p>This typically happens on <code>POST</code>, <code>PATCH</code>, or other mutating requests when one or more fields are:</p>
+<ul>
+<li>Missing or empty when required</li>
+<li>Of the wrong type or format</li>
+<li>Violating uniqueness or other domain constraints</li>
+</ul>
+<h2 id="remedy-1"><a class="header" href="#remedy-1">Remedy</a></h2>
+<p>Read the <code>errors</code> extension in the response. It is a map of attribute names to arrays of validation messages.</p>
+<p>Fix the invalid fields and resubmit the request.</p>
+<h2 id="example-problem-document-1"><a class="header" href="#example-problem-document-1">Example Problem Document</a></h2>
+<pre><code class="language-http">HTTP/1.1 422 Unprocessable Content
+Content-Type: application/problem+json
+
+{
+  "type": "https://docs.telebugs.com/rest-api/problems/validation-error",
+  "title": "Validation Failed",
+  "status": 422,
+  "detail": "The request could not be processed due to validation errors.",
+  "errors": {
+    "name": ["can't be blank"],
+    "url": ["is invalid"],
+    "platform": ["is not included in the list"]
+  }
+}
+</code></pre>
+<p>The <code>errors</code> object mirrors the structure returned by Active Model / Rails validations.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="projects-1"><a class="header" href="#projects-1">Projects</a></h1>
 <p>You can manage projects through the API.</p>
