@@ -45,6 +45,7 @@
   - [Apps](rest-api-07-apps.md)
   - [Webhooks](rest-api-08-webhooks.md)
   - [Webhook Deliveries](rest-api-09-webhook-deliveries.md)
+  - [Users](rest-api-10-users.md)
 
 - [Releases](releases-00.md)
   - [Source Maps](release-01-source-maps.md)

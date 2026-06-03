@@ -1,7 +1,7 @@
 # Getting Started with the REST API
 
 Telebugs exposes a REST API that lets you manage projects, groups, reports,
-apps, and webhooks programmatically.
+apps, webhooks, and users programmatically.
 
 The API is designed to be simple, pragmatic, and easy to use from scripts,
 internal tools, or other services.
