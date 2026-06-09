@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-535b263c.js";
+            window.path_to_searchindex_js = "searchindex-456ca6fa.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -219,7 +219,7 @@ under a specific group. Reports expose per-occurrence details such as
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports?since=2026-05-01&amp;limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
-<p>Reports support cursor-based pagination using <code>cursor</code> and return <code>next_cursor</code> + <code>has_more</code>. See the <a href="rest-api-02-pagination.html">Pagination</a> guide.</p>
+<p>Reports support cursor-based pagination using <code>cursor</code> and <code>limit</code> (for size) and return <code>next_cursor</code> + <code>has_more</code>. See the <a href="rest-api-02-pagination.html">Pagination</a> guide.</p>
 <h3 id="response-format-list"><a class="header" href="#response-format-list">Response Format (List)</a></h3>
 <p>Each item in the list includes core fields plus occurrence-specific data:</p>
 <pre><code class="language-json">{

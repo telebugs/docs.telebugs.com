@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-535b263c.js";
+            window.path_to_searchindex_js = "searchindex-456ca6fa.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -1737,6 +1737,7 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 </thead>
 <tbody>
 <tr><td><code>status</code></td><td>Filter by status. When using <code>query</code>, prefer <code>is:unresolved</code> etc. inside it.</td><td><code>?status=unresolved</code></td></tr>
+<tr><td><code>resolved</code></td><td>Simple status filter (true/false, resolved/unresolved, 1/0).</td><td><code>?resolved=false</code></td></tr>
 <tr><td><code>since</code></td><td>Groups with <code>last_occurred_at</code> on or after this date</td><td><code>?since=2026-05-01</code></td></tr>
 <tr><td><code>until</code></td><td>Groups with <code>last_occurred_at</code> on or before this date</td><td><code>?until=2026-05-20</code></td></tr>
 <tr><td><code>limit</code></td><td>Number of groups to return (default 25, max 100)</td><td><code>?limit=50</code></td></tr>
@@ -1744,6 +1745,11 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 </tbody>
 </table>
 </div>
+<p>Example for unresolved groups (using the simple <code>?resolved=</code> filter):</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?resolved=false&amp;limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
 <p>Example combining modern query syntax with time range and pagination:</p>
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=is:unresolved+server_name:%22eagle-618d24%22&amp;since=2026-05-01&amp;limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -1843,7 +1849,7 @@ under a specific group. Reports expose per-occurrence details such as
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports?since=2026-05-01&amp;limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
-<p>Reports support cursor-based pagination using <code>cursor</code> and return <code>next_cursor</code> + <code>has_more</code>. See the <a href="#pagination">Pagination</a> guide.</p>
+<p>Reports support cursor-based pagination using <code>cursor</code> and <code>limit</code> (for size) and return <code>next_cursor</code> + <code>has_more</code>. See the <a href="#pagination">Pagination</a> guide.</p>
 <h3 id="response-format-list"><a class="header" href="#response-format-list">Response Format (List)</a></h3>
 <p>Each item in the list includes core fields plus occurrence-specific data:</p>
 <pre><code class="language-json">{
