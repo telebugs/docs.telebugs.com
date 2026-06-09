@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-029cf3ca.js";
+            window.path_to_searchindex_js = "searchindex-8b3d3af2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -200,25 +200,99 @@ via the API.</p>
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
-<h2 id="filtering"><a class="header" href="#filtering">Filtering</a></h2>
-<p>You can filter groups using the following parameters:</p>
+<p>This endpoint is commonly used to build internal dashboards or scripts that need
+to count or iterate over issues per device, environment, or other tags.</p>
+<h2 id="filtering-and-search"><a class="header" href="#filtering-and-search">Filtering and Search</a></h2>
+<p>The recommended way to filter and search groups is with the <code>query</code> parameter.
+It supports a rich search syntax that lets you combine status, server/device
+names, arbitrary tags, environments, and free-text search in a single parameter.</p>
+<p><strong>Common use case</strong> — reading issues for a specific device/server:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=server_name:%22eagle-618d24%22" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>You can also combine it with status:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=is:unresolved+server_name:eagle-618d24" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h3 id="query-syntax"><a class="header" href="#query-syntax">Query Syntax</a></h3>
+<p>The <code>query</code> value can contain any combination of the following:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Syntax</th><th>Meaning</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td><code>is:unresolved</code></td><td>Only unresolved groups</td><td><code>is:unresolved</code></td></tr>
+<tr><td><code>is:resolved</code></td><td>Only resolved groups</td><td><code>is:resolved</code></td></tr>
+<tr><td><code>is:muted</code></td><td>Only muted groups</td><td><code>is:muted</code></td></tr>
+<tr><td><code>server_name:VALUE</code></td><td>Groups that have reports from this server/device</td><td><code>server_name:"eagle-618d24"</code></td></tr>
+<tr><td><code>tags.server_name:VALUE</code></td><td>Same as above (tag form)</td><td><code>tags.server_name:prod-box-7</code></td></tr>
+<tr><td><code>environment:VALUE</code></td><td>Filter by environment</td><td><code>environment:production</code></td></tr>
+<tr><td><code>tags.KEY:VALUE</code></td><td>Filter by any tag</td><td><code>tags.component:worker</code></td></tr>
+<tr><td>Free text</td><td>Matches error type, message or culprit (FTS)</td><td><code>TypeError</code> or <code>"payment failed"</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>You can mix filters and free text:</p>
+<ul>
+<li>Unresolved errors from a specific device containing “timeout”:
+<code>?query=is:unresolved server_name:eagle-618d24 timeout</code></li>
+<li>Production errors with a particular tag:
+<code>?query=environment:production tags.region:eu-west PaymentError</code></li>
+</ul>
+<h3 id="other-list-parameters"><a class="header" href="#other-list-parameters">Other List Parameters</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr><th>Parameter</th><th>Description</th><th>Example</th></tr>
 </thead>
 <tbody>
-<tr><td><code>status</code></td><td><code>unresolved</code>, <code>resolved</code>, <code>muted</code></td><td><code>?status=unresolved</code></td></tr>
-<tr><td><code>search</code></td><td>Search in error type/message</td><td><code>?search=Payment</code></td></tr>
-<tr><td><code>since</code></td><td>Groups that occurred after date</td><td><code>?since=2026-05-01</code></td></tr>
-<tr><td><code>until</code></td><td>Groups that occurred before date</td><td><code>?until=2026-05-20</code></td></tr>
+<tr><td><code>status</code></td><td>Filter by status. When using <code>query</code>, prefer <code>is:unresolved</code> etc. inside it.</td><td><code>?status=unresolved</code></td></tr>
+<tr><td><code>since</code></td><td>Groups with <code>last_occurred_at</code> on or after this date</td><td><code>?since=2026-05-01</code></td></tr>
+<tr><td><code>until</code></td><td>Groups with <code>last_occurred_at</code> on or before this date</td><td><code>?until=2026-05-20</code></td></tr>
+<tr><td><code>limit</code></td><td>Number of groups to return (default 25, max 100)</td><td><code>?limit=50</code></td></tr>
+<tr><td><code>cursor</code></td><td>Pagination cursor (use <code>next_cursor</code> from previous response)</td><td><code>?cursor=12345</code></td></tr>
 </tbody>
 </table>
 </div>
-<p>Example with filters:</p>
-<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?status=unresolved&amp;search=TypeError" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+<p>Example combining modern query syntax with time range and pagination:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=is:unresolved+server_name:%22eagle-618d24%22&amp;since=2026-05-01&amp;limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
 </code></pre>
+<h2 id="response-format"><a class="header" href="#response-format">Response Format</a></h2>
+<pre><code class="language-json">{
+  "groups": [
+    {
+      "id": 42,
+      "project_id": 1,
+      "error_type": "NoMethodError",
+      "error_message": "undefined method `foo' for nil:NilClass",
+      "culprit": "OrdersController#create",
+      "fingerprint": "...",
+      "occurred_at": "2026-05-20T10:12:34Z",
+      "first_occurred_at": "2026-05-20T10:12:34Z",
+      "last_occurred_at": "2026-05-20T14:55:01Z",
+      "reports_count": 17,
+      "notes_count": 2,
+      "resolved_at": null,
+      "resolver_id": null,
+      "muted_at": null,
+      "muter_id": null,
+      "muted_until": null,
+      "resolved": false,
+      "muted": false,
+      "created_at": "2026-05-20T10:12:34Z",
+      "updated_at": "2026-05-20T14:55:01Z"
+    }
+  ],
+  "next_cursor": 41,
+  "has_more": true
+}
+</code></pre>
+<p>See <a href="rest-api-02-pagination.html">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
   -X POST \

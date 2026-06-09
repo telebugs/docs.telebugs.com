@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-029cf3ca.js";
+            window.path_to_searchindex_js = "searchindex-8b3d3af2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -211,6 +211,16 @@ provider’s web-based terminal.</p>
 <h2 id="manage-application-data"><a class="header" href="#manage-application-data">Manage application data</a></h2>
 <ul>
 <li><code>data</code> — Manage application data.</li>
+</ul>
+<h2 id="manage-versions-previews-pins-and-rollbacks"><a class="header" href="#manage-versions-previews-pins-and-rollbacks">Manage versions (previews, pins, and rollbacks)</a></h2>
+<ul>
+<li><code>update</code> — Update Telebugs to the latest version (or a specific tag with <code>--tag</code> / <code>-t</code>).
+<ul>
+<li>Use <code>telebugs update --tag rest-api-preview-20250610-abc1234</code> to try a private preview build on your instance.</li>
+<li>The previous running image is tagged locally as <code>:previous</code> for safety.</li>
+</ul>
+</li>
+<li><code>rollback</code> — Roll back to the image that was running before the last update (uses the local <code>:previous</code> tag).</li>
 </ul>
 <h2 id="additional-commands"><a class="header" href="#additional-commands">Additional commands</a></h2>
 <ul>
