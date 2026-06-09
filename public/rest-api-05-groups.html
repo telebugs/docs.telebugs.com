@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8b3d3af2.js";
+            window.path_to_searchindex_js = "searchindex-535b263c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -293,6 +293,7 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 }
 </code></pre>
 <p>See <a href="rest-api-02-pagination.html">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
+<p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="rest-api-06-reports.html">Reports</a> endpoints under the group.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
   -X POST \

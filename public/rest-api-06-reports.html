@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8b3d3af2.js";
+            window.path_to_searchindex_js = "searchindex-535b263c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -194,13 +194,15 @@
                     <main>
                         <h1 id="reports"><a class="header" href="#reports">Reports</a></h1>
 <p>Reports are individual error occurrences. You can list and retrieve reports
-under a specific group.</p>
+under a specific group. Reports expose per-occurrence details such as
+<code>server_name</code> (useful when combined with group filtering by <code>server_name</code>),
+<code>environment</code>, <code>tags</code>, <code>contexts</code>, user info, request data, and more.</p>
 <h2 id="list-reports-under-a-group"><a class="header" href="#list-reports-under-a-group">List Reports under a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
-<h2 id="filtering"><a class="header" href="#filtering">Filtering</a></h2>
+<h3 id="filtering"><a class="header" href="#filtering">Filtering</a></h3>
 <p>You can filter reports using these parameters:</p>
 <div class="table-wrapper">
 <table>
@@ -217,12 +219,103 @@ under a specific group.</p>
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports?since=2026-05-01&amp;limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
-<p>Reports support cursor-based pagination using <code>cursor</code> and return <code>next_cursor</code> + <code>has_more</code>.</p>
+<p>Reports support cursor-based pagination using <code>cursor</code> and return <code>next_cursor</code> + <code>has_more</code>. See the <a href="rest-api-02-pagination.html">Pagination</a> guide.</p>
+<h3 id="response-format-list"><a class="header" href="#response-format-list">Response Format (List)</a></h3>
+<p>Each item in the list includes core fields plus occurrence-specific data:</p>
+<pre><code class="language-json">{
+  "reports": [
+    {
+      "id": 123,
+      "group_id": 42,
+      "project_id": 1,
+      "error_type": "NoMethodError",
+      "error_message": "undefined method `foo' for nil:NilClass",
+      "culprit": "OrdersController#create",
+      "occurred_at": "2026-05-20T14:55:01Z",
+      "platform": "ruby",
+      "severity": "error",
+      "handled": true,
+      "server_name": "eagle-618d24",
+      "environment": "production",
+      "release_version": "1.2.3",
+      "created_at": "2026-05-20T14:55:01Z",
+      "tags": [
+        { "key": "component", "value": "api" },
+        { "key": "host", "value": "eagle-618d24" }
+      ]
+    }
+  ],
+  "next_cursor": 122,
+  "has_more": true
+}
+</code></pre>
 <h2 id="get-a-single-report"><a class="header" href="#get-a-single-report">Get a Single Report</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports/REPORT_ID \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
+<h3 id="response-format-single-report"><a class="header" href="#response-format-single-report">Response Format (Single Report)</a></h3>
+<p>The single report response includes all list fields plus additional context:</p>
+<pre><code class="language-json">{
+  "id": 123,
+  "group_id": 42,
+  "project_id": 1,
+  "error_type": "NoMethodError",
+  "error_message": "undefined method `foo' for nil:NilClass",
+  "culprit": "OrdersController#create",
+  "occurred_at": "2026-05-20T14:55:01Z",
+  "platform": "ruby",
+  "severity": "error",
+  "handled": true,
+  "server_name": "eagle-618d24",
+  "environment": "production",
+  "release_version": "1.2.3",
+  "custom_fingerprint": null,
+  "transaction_source": null,
+  "created_at": "2026-05-20T14:55:01Z",
+  "updated_at": "2026-05-20T14:55:01Z",
+  "tags": [
+    { "key": "component", "value": "api" }
+  ],
+  "contexts": [
+    { "name": "runtime", "data": { "version": "3.2" } }
+  ],
+  "user": {
+    "user_id": "u123",
+    "username": "alice",
+    "email": "alice@example.com",
+    "ip_address": "203.0.113.42",
+    "geo_city": "Berlin",
+    "geo_region": "BE",
+    "geo_country_code": "DE",
+    "data": {}
+  },
+  "request": {
+    "url": "https://example.com/orders",
+    "method": "POST",
+    "query_string": "",
+    "data": { "foo": "bar" },
+    "cookies": {},
+    "headers": { "User-Agent": "..." },
+    "env": {}
+  },
+  "sdk": {
+    "name": "rails",
+    "version": "7.1"
+  },
+  "extras": [
+    { "key": "custom", "value": "data" }
+  ],
+  "dependencies": [
+    { "name": "rails", "version": "7.1" }
+  ],
+  "release": {
+    "id": 7,
+    "version": "1.2.3"
+  }
+}
+</code></pre>
+<p>This makes per-report data such as <code>server_name</code> (and the tags used for group-level filtering) directly reachable via the API.</p>
 
                     </main>
 
