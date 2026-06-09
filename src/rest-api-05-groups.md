@@ -63,10 +63,19 @@ You can mix filters and free text:
 | Parameter | Description                                                                  | Example              |
 | --------- | ---------------------------------------------------------------------------- | -------------------- |
 | `status`  | Filter by status. When using `query`, prefer `is:unresolved` etc. inside it. | `?status=unresolved` |
+| `resolved`| Simple status filter (true/false, resolved/unresolved, 1/0).                 | `?resolved=false`    |
 | `since`   | Groups with `last_occurred_at` on or after this date                         | `?since=2026-05-01`  |
 | `until`   | Groups with `last_occurred_at` on or before this date                        | `?until=2026-05-20`  |
 | `limit`   | Number of groups to return (default 25, max 100)                             | `?limit=50`          |
 | `cursor`  | Pagination cursor (use `next_cursor` from previous response)                 | `?cursor=12345`      |
+
+Example for unresolved groups (using the simple `?resolved=` filter):
+
+```sh
+curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?resolved=false&limit=50" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
 
 Example combining modern query syntax with time range and pagination:
 

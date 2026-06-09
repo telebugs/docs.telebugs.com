@@ -29,7 +29,7 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
-Reports support cursor-based pagination using `cursor` and return `next_cursor` + `has_more`. See the [Pagination](rest-api-02-pagination.md) guide.
+Reports support cursor-based pagination using `cursor` and `limit` (for size) and return `next_cursor` + `has_more`. See the [Pagination](rest-api-02-pagination.md) guide.
 
 ### Response Format (List)
 
