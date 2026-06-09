@@ -111,6 +111,8 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
 
 See [Pagination](rest-api-02-pagination.md) for how to use `next_cursor` and `limit`.
 
+To see per-occurrence details for a group (including `server_name`, `tags`, `environment`, user info, request context, etc.), use the [Reports](rest-api-06-reports.md) endpoints under the group.
+
 ## Resolve a Group
 
 ```sh
