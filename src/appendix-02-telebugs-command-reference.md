@@ -21,6 +21,13 @@ provider’s web-based terminal.
 
 - `data` — Manage application data.
 
+## Manage versions (previews, pins, and rollbacks)
+
+- `update` — Update Telebugs to the latest version (or a specific tag with `--tag` / `-t`).
+  - Use `telebugs update --tag rest-api-preview-20250610-abc1234` to try a private preview build on your instance.
+  - The previous running image is tagged locally as `:previous` for safety.
+- `rollback` — Roll back to the image that was running before the last update (uses the local `:previous` tag).
+
 ## Additional commands
 
 - `help` — Displays help information for the `telebugs` command.
