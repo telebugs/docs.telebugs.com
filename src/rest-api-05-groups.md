@@ -17,8 +17,9 @@ to count or iterate over issues per device, environment, or other tags.
 ## Filtering and Search
 
 The recommended way to filter and search groups is with the `query` parameter.
-It supports a rich search syntax that lets you combine status, server/device
-names, arbitrary tags, environments, and free-text search in a single parameter.
+It supports a rich search syntax that lets you combine status, severity, server/device
+names, arbitrary tags, environments, and free-text search (including negation and OR)
+in a single parameter.
 
 **Common use case** — reading issues for a specific device/server:
 
@@ -40,16 +41,25 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
 
 The `query` value can contain any combination of the following:
 
-| Syntax                   | Meaning                                          | Example                           |
-| ------------------------ | ------------------------------------------------ | --------------------------------- |
-| `is:unresolved`          | Only unresolved groups                           | `is:unresolved`                   |
-| `is:resolved`            | Only resolved groups                             | `is:resolved`                     |
-| `is:muted`               | Only muted groups                                | `is:muted`                        |
-| `server_name:VALUE`      | Groups that have reports from this server/device | `server_name:"eagle-618d24"`      |
-| `tags.server_name:VALUE` | Same as above (tag form)                         | `tags.server_name:prod-box-7`     |
-| `environment:VALUE`      | Filter by environment                            | `environment:production`          |
-| `tags.KEY:VALUE`         | Filter by any tag                                | `tags.component:worker`           |
-| Free text                | Matches error type, message or culprit (FTS)     | `TypeError` or `"payment failed"` |
+| Syntax                      | Meaning                                                       | Example                              |
+| --------------------------- | ------------------------------------------------------------- | ------------------------------------ |
+| `is:unresolved`             | Only unresolved groups                                        | `is:unresolved`                      |
+| `is:resolved`               | Only resolved groups                                          | `is:resolved`                        |
+| `is:muted`                  | Only muted groups                                             | `is:muted`                           |
+| `is:unmuted`                | Only unmuted groups                                           | `is:unmuted`                         |
+| `!is:resolved`              | Negated status (equivalent to `is:unresolved`)                | `!is:resolved`                       |
+| `!is:unresolved`            | Negated status (equivalent to `is:resolved`)                  | `!is:unresolved`                     |
+| `is:error`                  | Groups whose (max) severity is `error`                        | `is:error`                           |
+| `is:warning`                | Groups whose (max) severity is `warning`                      | `is:warning`                         |
+| `is:info` / `is:debug` / `is:fatal` | Other severity levels                                  | `is:info`                            |
+| `!is:error`                 | Groups whose severity is *not* `error`                        | `!is:error`                          |
+| `is:error,warning`          | Severity OR (comma-separated)                                 | `is:error,warning` or `is:error, warning` |
+| `!is:error,warning`         | Negated severity OR                                           | `!is:error,warning`                  |
+| `server_name:VALUE`         | Groups that have reports from this server/device              | `server_name:"eagle-618d24"`         |
+| `tags.server_name:VALUE`    | Same as above (tag form)                                      | `tags.server_name:prod-box-7`        |
+| `environment:VALUE`         | Filter by environment                                         | `environment:production`             |
+| `tags.KEY:VALUE`            | Filter by any tag                                             | `tags.component:worker`              |
+| Free text                   | Matches error type, message or culprit (FTS)                  | `TypeError` or `"payment failed"`    |
 
 You can mix filters and free text:
 
@@ -57,6 +67,12 @@ You can mix filters and free text:
   `?query=is:unresolved server_name:eagle-618d24 timeout`
 - Production errors with a particular tag:
   `?query=environment:production tags.region:eu-west PaymentError`
+- All non-error, non-warning groups from a server:
+  `?query=!is:error,warning server_name:foo`
+- Negated status + free text:
+  `?query=!is:resolved "payment failed"`
+
+Negation (`!is:...`) is supported for both status and severity filters. Comma syntax provides OR semantics within a single `is:` or `!is:` clause (most useful for severities). Status negation is automatically inverted (e.g. `!is:resolved` behaves like `is:unresolved`). Last filter of a given type wins if duplicated.
 
 ### Other List Parameters
 
@@ -77,10 +93,10 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
   -H "Accept: application/json"
 ```
 
-Example combining modern query syntax with time range and pagination:
+Example combining modern query syntax (with negation and severity OR) with time range and pagination:
 
 ```sh
-curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=is:unresolved+server_name:%22eagle-618d24%22&since=2026-05-01&limit=50" \
+curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=!is:resolved+is:error,warning+server_name:%22eagle-618d24%22&since=2026-05-01&limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 ```
@@ -97,6 +113,7 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
       "fingerprint": "...",
+      "severity": "error",
       "occurred_at": "2026-05-20T10:12:34Z",
       "first_occurred_at": "2026-05-20T10:12:34Z",
       "last_occurred_at": "2026-05-20T14:55:01Z",
@@ -119,6 +136,8 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
 ```
 
 See [Pagination](rest-api-02-pagination.md) for how to use `next_cursor` and `limit`.
+
+The `severity` field on each group is the highest severity ever observed for reports in that group (`fatal`, `error`, `warning`, `info`, or `debug`).
 
 To see per-occurrence details for a group (including `server_name`, `tags`, `environment`, user info, request context, etc.), use the [Reports](rest-api-06-reports.md) endpoints under the group.
 

@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-456ca6fa.js";
+            window.path_to_searchindex_js = "searchindex-4fb84c8d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-c5d70509.js"></script>
@@ -1691,8 +1691,9 @@ via the API.</p>
 to count or iterate over issues per device, environment, or other tags.</p>
 <h2 id="filtering-and-search"><a class="header" href="#filtering-and-search">Filtering and Search</a></h2>
 <p>The recommended way to filter and search groups is with the <code>query</code> parameter.
-It supports a rich search syntax that lets you combine status, server/device
-names, arbitrary tags, environments, and free-text search in a single parameter.</p>
+It supports a rich search syntax that lets you combine status, severity, server/device
+names, arbitrary tags, environments, and free-text search (including negation and OR)
+in a single parameter.</p>
 <p><strong>Common use case</strong> — reading issues for a specific device/server:</p>
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=server_name:%22eagle-618d24%22" \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -1714,6 +1715,15 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 <tr><td><code>is:unresolved</code></td><td>Only unresolved groups</td><td><code>is:unresolved</code></td></tr>
 <tr><td><code>is:resolved</code></td><td>Only resolved groups</td><td><code>is:resolved</code></td></tr>
 <tr><td><code>is:muted</code></td><td>Only muted groups</td><td><code>is:muted</code></td></tr>
+<tr><td><code>is:unmuted</code></td><td>Only unmuted groups</td><td><code>is:unmuted</code></td></tr>
+<tr><td><code>!is:resolved</code></td><td>Negated status (equivalent to <code>is:unresolved</code>)</td><td><code>!is:resolved</code></td></tr>
+<tr><td><code>!is:unresolved</code></td><td>Negated status (equivalent to <code>is:resolved</code>)</td><td><code>!is:unresolved</code></td></tr>
+<tr><td><code>is:error</code></td><td>Groups whose (max) severity is <code>error</code></td><td><code>is:error</code></td></tr>
+<tr><td><code>is:warning</code></td><td>Groups whose (max) severity is <code>warning</code></td><td><code>is:warning</code></td></tr>
+<tr><td><code>is:info</code> / <code>is:debug</code> / <code>is:fatal</code></td><td>Other severity levels</td><td><code>is:info</code></td></tr>
+<tr><td><code>!is:error</code></td><td>Groups whose severity is <em>not</em> <code>error</code></td><td><code>!is:error</code></td></tr>
+<tr><td><code>is:error,warning</code></td><td>Severity OR (comma-separated)</td><td><code>is:error,warning</code> or <code>is:error, warning</code></td></tr>
+<tr><td><code>!is:error,warning</code></td><td>Negated severity OR</td><td><code>!is:error,warning</code></td></tr>
 <tr><td><code>server_name:VALUE</code></td><td>Groups that have reports from this server/device</td><td><code>server_name:"eagle-618d24"</code></td></tr>
 <tr><td><code>tags.server_name:VALUE</code></td><td>Same as above (tag form)</td><td><code>tags.server_name:prod-box-7</code></td></tr>
 <tr><td><code>environment:VALUE</code></td><td>Filter by environment</td><td><code>environment:production</code></td></tr>
@@ -1728,7 +1738,12 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 <code>?query=is:unresolved server_name:eagle-618d24 timeout</code></li>
 <li>Production errors with a particular tag:
 <code>?query=environment:production tags.region:eu-west PaymentError</code></li>
+<li>All non-error, non-warning groups from a server:
+<code>?query=!is:error,warning server_name:foo</code></li>
+<li>Negated status + free text:
+<code>?query=!is:resolved "payment failed"</code></li>
 </ul>
+<p>Negation (<code>!is:...</code>) is supported for both status and severity filters. Comma syntax provides OR semantics within a single <code>is:</code> or <code>!is:</code> clause (most useful for severities). Status negation is automatically inverted (e.g. <code>!is:resolved</code> behaves like <code>is:unresolved</code>). Last filter of a given type wins if duplicated.</p>
 <h3 id="other-list-parameters"><a class="header" href="#other-list-parameters">Other List Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -1750,8 +1765,8 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
-<p>Example combining modern query syntax with time range and pagination:</p>
-<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=is:unresolved+server_name:%22eagle-618d24%22&amp;since=2026-05-01&amp;limit=50" \
+<p>Example combining modern query syntax (with negation and severity OR) with time range and pagination:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=!is:resolved+is:error,warning+server_name:%22eagle-618d24%22&amp;since=2026-05-01&amp;limit=50" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
@@ -1765,6 +1780,7 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
       "fingerprint": "...",
+      "severity": "error",
       "occurred_at": "2026-05-20T10:12:34Z",
       "first_occurred_at": "2026-05-20T10:12:34Z",
       "last_occurred_at": "2026-05-20T14:55:01Z",
@@ -1786,6 +1802,7 @@ names, arbitrary tags, environments, and free-text search in a single parameter.
 }
 </code></pre>
 <p>See <a href="#pagination">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
+<p>The <code>severity</code> field on each group is the highest severity ever observed for reports in that group (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, or <code>debug</code>).</p>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="#reports">Reports</a> endpoints under the group.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
