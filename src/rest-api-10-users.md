@@ -5,7 +5,7 @@ control which users have access to which projects.
 
 > **Note:** Listing users, updating roles, deactivating users, and managing
 > project memberships all require admin access. Non-admin requests receive
-> `403 Forbidden`.
+> a `403 Forbidden` problem document (see [Problems - Forbidden](rest-api/problems/forbidden.md)).
 
 ## The User Object
 

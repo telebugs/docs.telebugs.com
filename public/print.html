@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4fb84c8d.js";
+            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c5d70509.js"></script>
+        <script src="toc-b94722a3.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1548,6 +1548,7 @@ Content-Type: application/problem+json
 </thead>
 <tbody>
 <tr><td><code>https://docs.telebugs.com/rest-api/problems/unauthorized</code></td><td>Unauthorized</td><td>401 Unauthorized</td><td>The request did not include valid authentication credentials.</td></tr>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/forbidden</code></td><td>Forbidden</td><td>403 Forbidden</td><td>The authenticated caller lacks permission for the requested action.</td></tr>
 <tr><td><code>https://docs.telebugs.com/rest-api/problems/validation-error</code></td><td>Validation Failed</td><td>422 Unprocessable Content</td><td>The submitted data failed validation.</td></tr>
 </tbody>
 </table>
@@ -2089,7 +2090,7 @@ control which users have access to which projects.</p>
 <blockquote>
 <p><strong>Note:</strong> Listing users, updating roles, deactivating users, and managing
 project memberships all require admin access. Non-admin requests receive
-<code>403 Forbidden</code>.</p>
+a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/forbidden.html">Problems - Forbidden</a>).</p>
 </blockquote>
 <h2 id="the-user-object"><a class="header" href="#the-user-object">The User Object</a></h2>
 <pre><code class="language-json">{
@@ -2217,6 +2218,76 @@ project memberships all require admin access. Non-admin requests receive
 </code></pre>
 <p>Removes the membership (if it exists). Idempotent. Returns <code>204 No Content</code>.</p>
 <p>Removing a user from a project does not deactivate the user account.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="data-retention"><a class="header" href="#data-retention">Data Retention</a></h1>
+<p>Data retention policies let you control how long error reports and release artifacts (such as debug symbols and minidumps) are kept. This is primarily for compliance and data minimization requirements.</p>
+<p>The policies are global to the instance (not per-project).</p>
+<p>All endpoints require an admin user’s API key.</p>
+<h2 id="get-error-retention-policy"><a class="header" href="#get-error-retention-policy">Get Error Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/errors \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-error-retention-policy"><a class="header" href="#update-error-retention-policy">Update Error Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/errors \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "time_based_enabled": true,
+    "retention_period_days": 30,
+    "time_purge_type": "partial",
+    "disk_based_enabled": false
+  }'
+</code></pre>
+<h2 id="get-artifact-retention-policy"><a class="header" href="#get-artifact-retention-policy">Get Artifact Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-artifact-retention-policy"><a class="header" href="#update-artifact-retention-policy">Update Artifact Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "time_based_enabled": true,
+    "retention_period_days": 90,
+    "disk_based_enabled": true,
+    "disk_limit_type": "percentage",
+    "disk_limit_value": 20,
+    "purge_on_new_release": true,
+    "max_releases_kept": 10
+  }'
+</code></pre>
+<h2 id="response-format-error-retention"><a class="header" href="#response-format-error-retention">Response Format (Error Retention)</a></h2>
+<pre><code class="language-json">{
+  "enabled": true,
+  "time_based_enabled": true,
+  "retention_period_days": 30,
+  "time_purge_type": "partial",
+  "disk_based_enabled": false,
+  "disk_limit_type": "absolute",
+  "disk_limit_value": 35
+}
+</code></pre>
+<h2 id="response-format-artifact-retention"><a class="header" href="#response-format-artifact-retention">Response Format (Artifact Retention)</a></h2>
+<pre><code class="language-json">{
+  "enabled": true,
+  "time_based_enabled": true,
+  "retention_period_days": 90,
+  "disk_based_enabled": true,
+  "disk_limit_type": "percentage",
+  "disk_limit_value": 20,
+  "purge_on_new_release": true,
+  "max_releases_kept": 10
+}
+</code></pre>
+<p>See the <a href="#data-retention-1">Data Retention</a> chapter for details on the meaning of each setting (time-based vs disk-based, full vs partial purge, etc.).</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="releases"><a class="header" href="#releases">Releases</a></h1>
 <p>Releases in Telebugs let you tag versions of your app, primarily to attach
@@ -2675,13 +2746,15 @@ remain suppressed until unmuted.</li>
 <p>Use muting responsibly to reduce noise while keeping full visibility into your
 error stream.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="data-retention"><a class="header" href="#data-retention">Data Retention</a></h1>
+<h1 id="data-retention-1"><a class="header" href="#data-retention-1">Data Retention</a></h1>
 <p>Data retention in Telebugs helps you control how long <a href="/error-reports-00.html">error reports</a> and
 artifacts (like <a href="/source-maps-00.html">source maps</a>) are kept. Automatic policies clean up old data
 based on time or disk usage, keeping storage manageable and supporting
 compliance needs.</p>
 <p>Cleanup jobs run nightly at 2 AM server time. You can also trigger manual purges
 immediately.</p>
+<p>Data retention policies can also be managed programmatically via the
+<a href="#data-retention">REST API</a>.</p>
 <p>This chapter covers error and artifact retention policies, purge types, and
 monitoring disk usage.</p>
 <h2 id="error-retention-policy"><a class="header" href="#error-retention-policy">Error Retention Policy</a></h2>

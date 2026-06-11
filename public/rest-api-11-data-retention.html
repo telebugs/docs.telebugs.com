@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Appendix - The Telebugs Manual</title>
+        <title>Data Retention - The Telebugs Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -192,19 +192,85 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="appendix"><a class="header" href="#appendix">Appendix</a></h1>
-<p>The following sections contain reference material you may find useful in your
-Telebugs journey.</p>
+                        <h1 id="data-retention"><a class="header" href="#data-retention">Data Retention</a></h1>
+<p>Data retention policies let you control how long error reports and release artifacts (such as debug symbols and minidumps) are kept. This is primarily for compliance and data minimization requirements.</p>
+<p>The policies are global to the instance (not per-project).</p>
+<p>All endpoints require an admin user’s API key.</p>
+<h2 id="get-error-retention-policy"><a class="header" href="#get-error-retention-policy">Get Error Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/errors \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-error-retention-policy"><a class="header" href="#update-error-retention-policy">Update Error Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/errors \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "time_based_enabled": true,
+    "retention_period_days": 30,
+    "time_purge_type": "partial",
+    "disk_based_enabled": false
+  }'
+</code></pre>
+<h2 id="get-artifact-retention-policy"><a class="header" href="#get-artifact-retention-policy">Get Artifact Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-artifact-retention-policy"><a class="header" href="#update-artifact-retention-policy">Update Artifact Retention Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "time_based_enabled": true,
+    "retention_period_days": 90,
+    "disk_based_enabled": true,
+    "disk_limit_type": "percentage",
+    "disk_limit_value": 20,
+    "purge_on_new_release": true,
+    "max_releases_kept": 10
+  }'
+</code></pre>
+<h2 id="response-format-error-retention"><a class="header" href="#response-format-error-retention">Response Format (Error Retention)</a></h2>
+<pre><code class="language-json">{
+  "enabled": true,
+  "time_based_enabled": true,
+  "retention_period_days": 30,
+  "time_purge_type": "partial",
+  "disk_based_enabled": false,
+  "disk_limit_type": "absolute",
+  "disk_limit_value": 35
+}
+</code></pre>
+<h2 id="response-format-artifact-retention"><a class="header" href="#response-format-artifact-retention">Response Format (Artifact Retention)</a></h2>
+<pre><code class="language-json">{
+  "enabled": true,
+  "time_based_enabled": true,
+  "retention_period_days": 90,
+  "disk_based_enabled": true,
+  "disk_limit_type": "percentage",
+  "disk_limit_value": 20,
+  "purge_on_new_release": true,
+  "max_releases_kept": 10
+}
+</code></pre>
+<p>See the <a href="data-retention-00.html">Data Retention</a> chapter for details on the meaning of each setting (time-based vs disk-based, full vs partial purge, etc.).</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="service-messages-00.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="rest-api-10-users.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="appendix-01-software-license-agreement.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="releases-00.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -214,11 +280,11 @@ Telebugs journey.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="service-messages-00.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="rest-api-10-users.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="appendix-01-software-license-agreement.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="releases-00.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

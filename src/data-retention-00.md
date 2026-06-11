@@ -8,6 +8,9 @@ compliance needs.
 Cleanup jobs run nightly at 2 AM server time. You can also trigger manual purges
 immediately.
 
+Data retention policies can also be managed programmatically via the
+[REST API](rest-api-11-data-retention.md).
+
 This chapter covers error and artifact retention policies, purge types, and
 monitoring disk usage.
 
