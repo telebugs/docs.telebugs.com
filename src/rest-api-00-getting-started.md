@@ -9,7 +9,7 @@ internal tools, or other services.
 ## Getting Your API Key
 
 1. Go to **Account Settings**.
-2. Open the **API** section.
+2. Open the **API access** section.
 3. Copy your API key.
 
 You'll need this key to authenticate all requests.

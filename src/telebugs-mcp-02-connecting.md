@@ -99,7 +99,7 @@ and custom schemes (`cursor://`, `windsurf://`, `vscode://`).
 If your client supports Bearer token authentication but not OAuth, use your REST
 API key:
 
-1. Copy your API key from **Account Settings → API**.
+1. Copy your API key from **Account Settings → API access**.
 2. Configure the client to send `Authorization: Bearer tlbgs_...` on MCP
    requests.
 

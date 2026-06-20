@@ -41,7 +41,7 @@ You can upload source maps manually in the UI or automatically with the Sentry C
 
 ### Automated Upload (Recommended)
 
-1. Get your personal API key from **Account Settings**. It starts with `tlbgs_`.
+1. Get your personal API key from **Account Settings → API access**. It starts with `tlbgs_`.
 2. Set these environment variables:
 
    ```bash
