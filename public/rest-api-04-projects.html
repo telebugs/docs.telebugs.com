@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
+            window.path_to_searchindex_js = "searchindex-5794f10d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b94722a3.js"></script>
+        <script src="toc-9255bd16.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -208,18 +208,30 @@
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "project": {
-      "name": "Production",
-      "platform": "Ruby",
-      "timezone": "UTC"
-    }
+    "name": "Production",
+    "platform": "Ruby",
+    "timezone": "UTC"
   }'
+</code></pre>
+<p>Response (<code>201 Created</code>) — fields at the top level, including the project <code>token</code>:</p>
+<pre><code class="language-json">{
+  "id": 1,
+  "name": "Production",
+  "platform": "Ruby",
+  "timezone": "UTC",
+  "token": "tlbgs_...",
+  "groups_count": 0,
+  "reports_count": 0,
+  "created_at": "2026-05-20T10:00:00Z",
+  "updated_at": "2026-05-20T10:00:00Z"
+}
 </code></pre>
 <h2 id="get-a-single-project"><a class="header" href="#get-a-single-project">Get a Single Project</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
+<p>Returns the project object with fields at the top level (same shape as create).</p>
 <h2 id="update-a-project"><a class="header" href="#update-a-project">Update a Project</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -X PATCH \
@@ -227,12 +239,11 @@
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "project": {
-      "name": "Production v2",
-      "timezone": "Europe/Berlin"
-    }
+    "name": "Production v2",
+    "timezone": "Europe/Berlin"
   }'
 </code></pre>
+<p>Returns the updated project object with fields at the top level.</p>
 <h2 id="delete-a-project"><a class="header" href="#delete-a-project">Delete a Project</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -X DELETE \

@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
+            window.path_to_searchindex_js = "searchindex-5794f10d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b94722a3.js"></script>
+        <script src="toc-9255bd16.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -210,12 +210,11 @@ backend app).</p>
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "app": {
-      "name": "Web Platform",
-      "project_ids": [123, 456]
-    }
+    "name": "Web Platform",
+    "project_ids": [123, 456]
   }'
 </code></pre>
+<p>Returns the created app with fields at the top level (<code>id</code>, <code>name</code>, <code>project_ids</code>, etc.).</p>
 <h2 id="update-an-app"><a class="header" href="#update-an-app">Update an App</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps/APP_ID \
   -X PATCH \
@@ -223,11 +222,10 @@ backend app).</p>
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "app": {
-      "name": "Web Platform v2"
-    }
+    "name": "Web Platform v2"
   }'
 </code></pre>
+<p>Returns the updated app with fields at the top level.</p>
 <h2 id="delete-an-app"><a class="header" href="#delete-an-app">Delete an App</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/apps/APP_ID \
   -X DELETE \

@@ -131,3 +131,10 @@ After regenerating:
 
 For documentation on available endpoints and how to use the API, see the [REST
 API](/rest-api-00-getting-started.md) section.
+
+## Connected MCP Apps
+
+AI coding tools can connect to Telebugs via the
+[Model Context Protocol (MCP)](/telebugs-mcp-00-getting-started.md). After
+authorizing a tool, you can review and revoke its access from **Account
+Settings → Connected MCP apps**.

@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
+            window.path_to_searchindex_js = "searchindex-5794f10d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b94722a3.js"></script>
+        <script src="toc-9255bd16.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -263,9 +263,16 @@ a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/fo
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
-<p>Response:</p>
+<p>Response — the user object with fields at the top level:</p>
 <pre><code class="language-json">{
-  "user": { /* User object */ }
+  "id": 42,
+  "name": "Kyrylo",
+  "email_address": "kyrylo@telebugs.com",
+  "role": "admin",
+  "active": true,
+  "project_ids": [1, 2, 3],
+  "created_at": "2025-02-07T12:00:00.000Z",
+  "updated_at": "2025-02-07T12:00:00.000Z"
 }
 </code></pre>
 <h2 id="update-a-user"><a class="header" href="#update-a-user">Update a User</a></h2>
@@ -281,7 +288,7 @@ a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/fo
 <li>Setting <code>role</code> to <code>admin</code> automatically grants the user access to every project (with notifications enabled).</li>
 <li>Invalid roles return a validation error (422).</li>
 </ul>
-<p>Response on success: the updated user object (wrapped in <code>user</code>).</p>
+<p>Response on success: the updated user object with fields at the top level.</p>
 <h2 id="deactivate-a-user"><a class="header" href="#deactivate-a-user">Deactivate a User</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/users/USER_ID \
   -X DELETE \

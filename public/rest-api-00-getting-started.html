@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
+            window.path_to_searchindex_js = "searchindex-5794f10d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b94722a3.js"></script>
+        <script src="toc-9255bd16.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -213,6 +213,41 @@ internal tools, or other services.</p>
 <pre><code class="language-sh">Content-Type: application/json
 Accept: application/json
 </code></pre>
+<h2 id="request-and-response-conventions"><a class="header" href="#request-and-response-conventions">Request and Response Conventions</a></h2>
+<p>Telebugs uses flat JSON — no nested resource wrappers like <code>{ "project": { ... } }</code>.</p>
+<h3 id="request-bodies"><a class="header" href="#request-bodies">Request bodies</a></h3>
+<p>Pass attributes at the top level of the JSON body:</p>
+<pre><code class="language-json">{
+  "name": "Production",
+  "platform": "Ruby",
+  "timezone": "UTC"
+}
+</code></pre>
+<p>Unrecognized keys (including legacy wrapper keys such as <code>project</code>) are ignored.</p>
+<h3 id="list-responses"><a class="header" href="#list-responses">List responses</a></h3>
+<p>Collections use a plural key plus pagination metadata:</p>
+<pre><code class="language-json">{
+  "projects": [ { "id": 1, "name": "Production", ... } ],
+  "next_cursor": 42,
+  "has_more": true
+}
+</code></pre>
+<h3 id="single-resource-responses"><a class="header" href="#single-resource-responses">Single-resource responses</a></h3>
+<p><code>GET</code>, <code>POST</code>, and <code>PATCH</code> on a single resource return its fields at the top level —
+not wrapped under a singular key:</p>
+<pre><code class="language-json">{
+  "id": 1,
+  "name": "Production",
+  "platform": "Ruby",
+  "timezone": "UTC"
+}
+</code></pre>
+<p>Nested objects inside a resource (for example <code>user</code> or <code>request</code> on a report) are
+part of the resource shape, not a wrapper around it.</p>
+<h3 id="write-responses"><a class="header" href="#write-responses">Write responses</a></h3>
+<p>Actions that only change state (resolve, mute, delete, etc.) return <code>204 No Content</code>
+with an empty body. Validation and authorization failures return
+<a href="rest-api-03-errors.html">RFC 9457 problem details</a>.</p>
 <h2 id="your-first-request"><a class="header" href="#your-first-request">Your First Request</a></h2>
 <p>Here’s a simple example that lists your projects:</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \

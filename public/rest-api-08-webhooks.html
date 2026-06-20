@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8e0b61c.js";
+            window.path_to_searchindex_js = "searchindex-5794f10d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b94722a3.js"></script>
+        <script src="toc-9255bd16.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -206,13 +206,12 @@
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "webhook": {
-      "url": "https://example.com/webhook",
-      "events": ["group.resolved", "group.muted"],
-      "enabled": true
-    }
+    "url": "https://example.com/webhook",
+    "events": ["group.resolved", "group.muted"],
+    "enabled": true
   }'
 </code></pre>
+<p>Returns the created webhook with fields at the top level (<code>id</code>, <code>url</code>, <code>events</code>, <code>enabled</code>, <code>secret</code>).</p>
 <h2 id="update-a-webhook"><a class="header" href="#update-a-webhook">Update a Webhook</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID \
   -X PATCH \
@@ -220,11 +219,10 @@
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "webhook": {
-      "enabled": false
-    }
+    "enabled": false
   }'
 </code></pre>
+<p>Returns the updated webhook with fields at the top level.</p>
 <h2 id="delete-a-webhook"><a class="header" href="#delete-a-webhook">Delete a Webhook</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webhooks/WEBHOOK_ID \
   -X DELETE \

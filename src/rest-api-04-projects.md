@@ -23,12 +23,26 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "project": {
-      "name": "Production",
-      "platform": "Ruby",
-      "timezone": "UTC"
-    }
+    "name": "Production",
+    "platform": "Ruby",
+    "timezone": "UTC"
   }'
+```
+
+Response (`201 Created`) — fields at the top level, including the project `token`:
+
+```json
+{
+  "id": 1,
+  "name": "Production",
+  "platform": "Ruby",
+  "timezone": "UTC",
+  "token": "tlbgs_...",
+  "groups_count": 0,
+  "reports_count": 0,
+  "created_at": "2026-05-20T10:00:00Z",
+  "updated_at": "2026-05-20T10:00:00Z"
+}
 ```
 
 ## Get a Single Project
@@ -39,6 +53,8 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -H "Accept: application/json"
 ```
 
+Returns the project object with fields at the top level (same shape as create).
+
 ## Update a Project
 
 ```sh
@@ -48,12 +64,12 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "project": {
-      "name": "Production v2",
-      "timezone": "Europe/Berlin"
-    }
+    "name": "Production v2",
+    "timezone": "Europe/Berlin"
   }'
 ```
+
+Returns the updated project object with fields at the top level.
 
 ## Delete a Project
 

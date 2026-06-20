@@ -75,11 +75,18 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/users/USER_ID \
   -H "Accept: application/json"
 ```
 
-Response:
+Response — the user object with fields at the top level:
 
 ```json
 {
-  "user": { /* User object */ }
+  "id": 42,
+  "name": "Kyrylo",
+  "email_address": "kyrylo@telebugs.com",
+  "role": "admin",
+  "active": true,
+  "project_ids": [1, 2, 3],
+  "created_at": "2025-02-07T12:00:00.000Z",
+  "updated_at": "2025-02-07T12:00:00.000Z"
 }
 ```
 
@@ -99,7 +106,7 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/users/USER_ID \
 - Setting `role` to `admin` automatically grants the user access to every project (with notifications enabled).
 - Invalid roles return a validation error (422).
 
-Response on success: the updated user object (wrapped in `user`).
+Response on success: the updated user object with fields at the top level.
 
 ## Deactivate a User
 

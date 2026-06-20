@@ -19,13 +19,13 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webh
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "webhook": {
-      "url": "https://example.com/webhook",
-      "events": ["group.resolved", "group.muted"],
-      "enabled": true
-    }
+    "url": "https://example.com/webhook",
+    "events": ["group.resolved", "group.muted"],
+    "enabled": true
   }'
 ```
+
+Returns the created webhook with fields at the top level (`id`, `url`, `events`, `enabled`, `secret`).
 
 ## Update a Webhook
 
@@ -36,11 +36,11 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webh
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "webhook": {
-      "enabled": false
-    }
+    "enabled": false
   }'
 ```
+
+Returns the updated webhook with fields at the top level.
 
 ## Delete a Webhook
 

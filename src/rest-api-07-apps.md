@@ -22,12 +22,12 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/apps \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "app": {
-      "name": "Web Platform",
-      "project_ids": [123, 456]
-    }
+    "name": "Web Platform",
+    "project_ids": [123, 456]
   }'
 ```
+
+Returns the created app with fields at the top level (`id`, `name`, `project_ids`, etc.).
 
 ## Update an App
 
@@ -38,11 +38,11 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/apps/APP_ID \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "app": {
-      "name": "Web Platform v2"
-    }
+    "name": "Web Platform v2"
   }'
 ```
+
+Returns the updated app with fields at the top level.
 
 ## Delete an App
 

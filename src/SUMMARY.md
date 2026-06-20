@@ -48,6 +48,16 @@
   - [Users](rest-api-10-users.md)
   - [Data Retention](rest-api-11-data-retention.md)
 
+- [Telebugs MCP](telebugs-mcp-00-getting-started.md)
+  - [Authentication](telebugs-mcp-01-authentication.md)
+  - [Connecting AI Tools](telebugs-mcp-02-connecting.md)
+  - [Pagination](telebugs-mcp-03-pagination.md)
+  - [Projects](telebugs-mcp-04-projects.md)
+  - [Error Groups](telebugs-mcp-05-error-groups.md)
+  - [Reports](telebugs-mcp-06-reports.md)
+  - [Notes](telebugs-mcp-07-notes.md)
+  - [Errors](telebugs-mcp-08-errors.md)
+
 - [Releases](releases-00.md)
   - [Source Maps](release-01-source-maps.md)
 
