@@ -12,6 +12,20 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects \
 
 Response includes `next_cursor` and `has_more` for pagination.
 
+### Filtering Projects
+
+Use `name` to check for an exact project name. This is the recommended way to
+test whether a project already exists before creating it.
+
+```sh
+curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?name=Production" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+The filter only returns projects your API key can access and can be combined
+with `limit` and `cursor`.
+
 ## Create a Project
 
 When you create a project, the response includes the `token` so you can start sending errors immediately.

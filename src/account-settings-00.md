@@ -108,7 +108,7 @@ Changes save automatically.
 
 # API
 
-The **API** section in Account Settings contains your personal API key.
+The **API access** section in Account Settings contains your personal API key.
 
 ## Your API Key
 
