@@ -175,20 +175,100 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/grou
 
 ## Bulk Resolve
 
+Resolve multiple groups in the same project. Groups that are already resolved are
+skipped; the response reports how many groups were changed.
+
+For bulk resolve, unresolve, mute, and unmute, the groups changed are the
+`group_ids` in the request body.
+
 ```sh
-curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_resolve \
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_resolve \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"group_ids": [123, 456, 789]}'
+```
+
+```json
+{
+  "processed": 3
+}
+```
+
+## Bulk Unresolve
+
+Re-open multiple resolved groups. Groups that are already unresolved are skipped.
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_resolve \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+```
+
+```json
+{
+  "processed": 3
+}
 ```
 
 ## Bulk Mute
 
-```
-curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_mute \
+Mute multiple groups in the same project. Groups that are already muted are
+skipped.
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"group_ids": [123, 456, 789]}'
 ```
+
+```json
+{
+  "processed": 3
+}
+```
+
+## Bulk Unmute
+
+Unmute multiple groups. Groups that are already unmuted are skipped.
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+```
+
+```json
+{
+  "processed": 3
+}
+```
+
+## Bulk Merge
+
+Merge multiple source groups into a target group. The target group is identified
+by `GROUP_ID` in the URL; the request body lists the groups to merge into it.
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_merge \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [456, 789]}'
+```
+
+```json
+{
+  "processed": 2,
+  "merged_into_id": 123
+}
+```
+
+The API rejects attempts to merge a group into itself or to merge groups that
+have already been merged.

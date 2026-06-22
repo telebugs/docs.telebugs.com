@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-825e4716.js";
+            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -208,6 +208,9 @@
 <tr><td><code>unresolve_error_group_tool</code></td><td><code>write</code></td><td>Re-open a resolved group</td></tr>
 <tr><td><code>mute_error_group_tool</code></td><td><code>write</code></td><td>Mute (optionally snooze) a group</td></tr>
 <tr><td><code>unmute_error_group_tool</code></td><td><code>write</code></td><td>Unmute a group</td></tr>
+<tr><td><code>bulk_resolve_error_groups_tool</code></td><td><code>write</code></td><td>Resolve multiple groups</td></tr>
+<tr><td><code>bulk_mute_error_groups_tool</code></td><td><code>write</code></td><td>Mute multiple groups</td></tr>
+<tr><td><code>bulk_merge_error_groups_tool</code></td><td><code>write</code></td><td>Merge multiple groups</td></tr>
 <tr><td><code>assign_error_group_tool</code></td><td><code>write</code></td><td>Assign a group to a team member</td></tr>
 <tr><td><code>unassign_error_group_tool</code></td><td><code>write</code></td><td>Remove the current assignee</td></tr>
 </tbody>
@@ -380,6 +383,98 @@ assignee:me
 </tbody>
 </table>
 </div>
+<h2 id="bulk-resolve-error-groups"><a class="header" href="#bulk-resolve-error-groups">Bulk Resolve Error Groups</a></h2>
+<p><strong>Tool:</strong> <code>bulk_resolve_error_groups_tool</code>
+<strong>Scope required:</strong> <code>telebugs.write</code></p>
+<p>Resolve multiple error groups at once. A note is required and is added to each
+processed group. Groups that are already resolved are skipped.</p>
+<h3 id="parameters-6"><a class="header" href="#parameters-6">Parameters</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>group_ids</code></td><td>array of integer</td><td>Yes</td><td>Error groups to resolve</td></tr>
+<tr><td><code>note</code></td><td>string</td><td>Yes</td><td>Context added to each resolved group</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<pre><code class="language-json">{
+  "group_ids": [42, 43, 44],
+  "note": "Fixed by deploy 2026.06.22"
+}
+</code></pre>
+<h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
+<pre><code class="language-json">{
+  "success": true,
+  "processed": 3
+}
+</code></pre>
+<h2 id="bulk-mute-error-groups"><a class="header" href="#bulk-mute-error-groups">Bulk Mute Error Groups</a></h2>
+<p><strong>Tool:</strong> <code>bulk_mute_error_groups_tool</code>
+<strong>Scope required:</strong> <code>telebugs.write</code></p>
+<p>Mute multiple error groups at once. Groups that are already muted are skipped.
+Optionally provide <code>snooze_until</code> to automatically unmute them later.</p>
+<h3 id="parameters-7"><a class="header" href="#parameters-7">Parameters</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>group_ids</code></td><td>array of integer</td><td>Yes</td><td>Error groups to mute</td></tr>
+<tr><td><code>note</code></td><td>string</td><td>No</td><td>Reason for muting</td></tr>
+<tr><td><code>snooze_until</code></td><td>string</td><td>No</td><td>ISO8601 datetime to automatically unmute</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<pre><code class="language-json">{
+  "group_ids": [42, 43, 44],
+  "note": "Known noisy downstream timeout",
+  "snooze_until": "2026-06-23T09:00:00Z"
+}
+</code></pre>
+<h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
+<pre><code class="language-json">{
+  "success": true,
+  "processed": 3
+}
+</code></pre>
+<h2 id="bulk-merge-error-groups"><a class="header" href="#bulk-merge-error-groups">Bulk Merge Error Groups</a></h2>
+<p><strong>Tool:</strong> <code>bulk_merge_error_groups_tool</code>
+<strong>Scope required:</strong> <code>telebugs.write</code></p>
+<p>Merge multiple source groups into one target group. Use this when several groups
+represent the same underlying error and should share one history going forward.</p>
+<h3 id="parameters-8"><a class="header" href="#parameters-8">Parameters</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>target_group_id</code></td><td>integer</td><td>Yes</td><td>Group that receives merged groups</td></tr>
+<tr><td><code>group_ids</code></td><td>array of integer</td><td>Yes</td><td>Source groups to merge</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<pre><code class="language-json">{
+  "target_group_id": 42,
+  "group_ids": [43, 44]
+}
+</code></pre>
+<h3 id="example-response-4"><a class="header" href="#example-response-4">Example Response</a></h3>
+<pre><code class="language-json">{
+  "success": true,
+  "processed": 2,
+  "merged_into_id": 42
+}
+</code></pre>
+<p>The tool rejects attempts to merge the target group into itself or to merge
+groups that have already been merged.</p>
 <h2 id="assign-error-group"><a class="header" href="#assign-error-group">Assign Error Group</a></h2>
 <p><strong>Tool:</strong> <code>assign_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
@@ -387,7 +482,7 @@ assignee:me
 <blockquote>
 <p><strong>Important:</strong> The assignee must be a member of the group’s project. Use <a href="telebugs-mcp-04-projects.html"><code>list_project_users_tool</code></a> first to discover valid <code>user_id</code> values.</p>
 </blockquote>
-<h3 id="parameters-6"><a class="header" href="#parameters-6">Parameters</a></h3>
+<h3 id="parameters-9"><a class="header" href="#parameters-9">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -404,7 +499,7 @@ assignee:me
 <p><strong>Tool:</strong> <code>unassign_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
 <p>Remove the current assignee from a group.</p>
-<h3 id="parameters-7"><a class="header" href="#parameters-7">Parameters</a></h3>
+<h3 id="parameters-10"><a class="header" href="#parameters-10">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -435,12 +530,20 @@ assignee:me
 <p><strong>Resolve with context</strong></p>
 <ul>
 <li><code>resolve_error_group_tool</code> with a clear <code>note</code> explaining the fix</li>
+<li><code>bulk_resolve_error_groups_tool</code> when the same fix closed several groups</li>
 </ul>
 </li>
 <li>
 <p><strong>Temporarily silence noise</strong></p>
 <ul>
 <li><code>mute_error_group_tool</code> with <code>snooze_until</code></li>
+<li><code>bulk_mute_error_groups_tool</code> when several groups share the same noisy cause</li>
+</ul>
+</li>
+<li>
+<p><strong>Merge duplicate groups</strong></p>
+<ul>
+<li><code>bulk_merge_error_groups_tool</code> with a target group and duplicate group IDs</li>
 </ul>
 </li>
 </ol>
@@ -457,6 +560,9 @@ assignee:me
 <tr><td><code>User not found</code></td><td>Invalid <code>user_id</code> for assignment</td></tr>
 <tr><td><code>User is not a member of this project</code></td><td>Assignee lacks membership in the group’s project</td></tr>
 <tr><td><code>A note is required when resolving a group</code></td><td><code>note</code> parameter missing on resolve</td></tr>
+<tr><td><code>A note is required when resolving groups</code></td><td><code>note</code> parameter missing on bulk resolve</td></tr>
+<tr><td><code>Cannot merge an error into itself.</code></td><td><code>target_group_id</code> included in <code>group_ids</code></td></tr>
+<tr><td><code>Cannot merge already merged errors.</code></td><td>A source group has already been merged</td></tr>
 <tr><td><code>Insufficient scope. Required: telebugs.write</code></td><td>OAuth token lacks <code>write</code> scope</td></tr>
 </tbody>
 </table>

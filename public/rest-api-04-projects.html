@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-825e4716.js";
+            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -200,6 +200,15 @@
   -H "Accept: application/json"
 </code></pre>
 <p>Response includes <code>next_cursor</code> and <code>has_more</code> for pagination.</p>
+<h3 id="filtering-projects"><a class="header" href="#filtering-projects">Filtering Projects</a></h3>
+<p>Use <code>name</code> to check for an exact project name. This is the recommended way to
+test whether a project already exists before creating it.</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?name=Production" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>The filter only returns projects your API key can access and can be combined
+with <code>limit</code> and <code>cursor</code>.</p>
 <h2 id="create-a-project"><a class="header" href="#create-a-project">Create a Project</a></h2>
 <p>When you create a project, the response includes the <code>token</code> so you can start sending errors immediately.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects \

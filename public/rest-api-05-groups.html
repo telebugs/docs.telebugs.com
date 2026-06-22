@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-825e4716.js";
+            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -338,19 +338,73 @@ in a single parameter.</p>
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
 <h2 id="bulk-resolve"><a class="header" href="#bulk-resolve">Bulk Resolve</a></h2>
-<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_resolve \
+<p>Resolve multiple groups in the same project. Groups that are already resolved are
+skipped; the response reports how many groups were changed.</p>
+<p>For bulk resolve, unresolve, mute, and unmute, the groups changed are the
+<code>group_ids</code> in the request body.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_resolve \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"group_ids": [123, 456, 789]}'
+</code></pre>
+<pre><code class="language-json">{
+  "processed": 3
+}
+</code></pre>
+<h2 id="bulk-unresolve"><a class="header" href="#bulk-unresolve">Bulk Unresolve</a></h2>
+<p>Re-open multiple resolved groups. Groups that are already unresolved are skipped.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_resolve \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+</code></pre>
+<pre><code class="language-json">{
+  "processed": 3
+}
 </code></pre>
 <h2 id="bulk-mute"><a class="header" href="#bulk-mute">Bulk Mute</a></h2>
-<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/bulk_mute \
+<p>Mute multiple groups in the same project. Groups that are already muted are
+skipped.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"group_ids": [123, 456, 789]}'
 </code></pre>
+<pre><code class="language-json">{
+  "processed": 3
+}
+</code></pre>
+<h2 id="bulk-unmute"><a class="header" href="#bulk-unmute">Bulk Unmute</a></h2>
+<p>Unmute multiple groups. Groups that are already unmuted are skipped.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [123, 456, 789]}'
+</code></pre>
+<pre><code class="language-json">{
+  "processed": 3
+}
+</code></pre>
+<h2 id="bulk-merge"><a class="header" href="#bulk-merge">Bulk Merge</a></h2>
+<p>Merge multiple source groups into a target group. The target group is identified
+by <code>GROUP_ID</code> in the URL; the request body lists the groups to merge into it.</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_merge \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"group_ids": [456, 789]}'
+</code></pre>
+<pre><code class="language-json">{
+  "processed": 2,
+  "merged_into_id": 123
+}
+</code></pre>
+<p>The API rejects attempts to merge a group into itself or to merge groups that
+have already been merged.</p>
 
                     </main>
 

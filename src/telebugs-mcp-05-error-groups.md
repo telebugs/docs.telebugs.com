@@ -14,6 +14,9 @@ MCP gives AI tools powerful capabilities to list, inspect, filter, and manage er
 | `unresolve_error_group_tool` | `write` | Re-open a resolved group         |
 | `mute_error_group_tool`      | `write` | Mute (optionally snooze) a group |
 | `unmute_error_group_tool`    | `write` | Unmute a group                   |
+| `bulk_resolve_error_groups_tool` | `write` | Resolve multiple groups      |
+| `bulk_mute_error_groups_tool`    | `write` | Mute multiple groups         |
+| `bulk_merge_error_groups_tool`   | `write` | Merge multiple groups        |
 | `assign_error_group_tool`    | `write` | Assign a group to a team member  |
 | `unassign_error_group_tool`  | `write` | Remove the current assignee      |
 
@@ -187,6 +190,111 @@ Remove a mute from a group.
 | `group_id` | integer | Yes      |
 | `note`     | string  | No       |
 
+## Bulk Resolve Error Groups
+
+**Tool:** `bulk_resolve_error_groups_tool`
+**Scope required:** `telebugs.write`
+
+Resolve multiple error groups at once. A note is required and is added to each
+processed group. Groups that are already resolved are skipped.
+
+### Parameters
+
+| Parameter   | Type             | Required | Description                    |
+| ----------- | ---------------- | -------- | ------------------------------ |
+| `group_ids` | array of integer | Yes      | Error groups to resolve        |
+| `note`      | string           | Yes      | Context added to each resolved group |
+
+### Example
+
+```json
+{
+  "group_ids": [42, 43, 44],
+  "note": "Fixed by deploy 2026.06.22"
+}
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "processed": 3
+}
+```
+
+## Bulk Mute Error Groups
+
+**Tool:** `bulk_mute_error_groups_tool`
+**Scope required:** `telebugs.write`
+
+Mute multiple error groups at once. Groups that are already muted are skipped.
+Optionally provide `snooze_until` to automatically unmute them later.
+
+### Parameters
+
+| Parameter      | Type             | Required | Description                              |
+| -------------- | ---------------- | -------- | ---------------------------------------- |
+| `group_ids`    | array of integer | Yes      | Error groups to mute                     |
+| `note`         | string           | No       | Reason for muting                        |
+| `snooze_until` | string           | No       | ISO8601 datetime to automatically unmute |
+
+### Example
+
+```json
+{
+  "group_ids": [42, 43, 44],
+  "note": "Known noisy downstream timeout",
+  "snooze_until": "2026-06-23T09:00:00Z"
+}
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "processed": 3
+}
+```
+
+## Bulk Merge Error Groups
+
+**Tool:** `bulk_merge_error_groups_tool`
+**Scope required:** `telebugs.write`
+
+Merge multiple source groups into one target group. Use this when several groups
+represent the same underlying error and should share one history going forward.
+
+### Parameters
+
+| Parameter         | Type             | Required | Description                       |
+| ----------------- | ---------------- | -------- | --------------------------------- |
+| `target_group_id` | integer          | Yes      | Group that receives merged groups |
+| `group_ids`       | array of integer | Yes      | Source groups to merge            |
+
+### Example
+
+```json
+{
+  "target_group_id": 42,
+  "group_ids": [43, 44]
+}
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "processed": 2,
+  "merged_into_id": 42
+}
+```
+
+The tool rejects attempts to merge the target group into itself or to merge
+groups that have already been merged.
+
 ## Assign Error Group
 
 **Tool:** `assign_error_group_tool`
@@ -230,9 +338,14 @@ Here are typical patterns AI tools follow:
 
 3. **Resolve with context**
    - `resolve_error_group_tool` with a clear `note` explaining the fix
+   - `bulk_resolve_error_groups_tool` when the same fix closed several groups
 
 4. **Temporarily silence noise**
    - `mute_error_group_tool` with `snooze_until`
+   - `bulk_mute_error_groups_tool` when several groups share the same noisy cause
+
+5. **Merge duplicate groups**
+   - `bulk_merge_error_groups_tool` with a target group and duplicate group IDs
 
 ## Error Responses
 
@@ -246,4 +359,7 @@ Common errors specific to error groups:
 | `User not found`                               | Invalid `user_id` for assignment                 |
 | `User is not a member of this project`         | Assignee lacks membership in the group’s project |
 | `A note is required when resolving a group`    | `note` parameter missing on resolve              |
+| `A note is required when resolving groups`     | `note` parameter missing on bulk resolve         |
+| `Cannot merge an error into itself.`           | `target_group_id` included in `group_ids`        |
+| `Cannot merge already merged errors.`          | A source group has already been merged           |
 | `Insufficient scope. Required: telebugs.write` | OAuth token lacks `write` scope                  |
