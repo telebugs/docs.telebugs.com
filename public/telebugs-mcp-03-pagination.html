@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
+            window.path_to_searchindex_js = "searchindex-e0f17833.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -193,37 +193,29 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="mcp-pagination"><a class="header" href="#mcp-pagination">MCP Pagination</a></h1>
-<p>Several list tools in Telebugs MCP use <strong>cursor-based pagination</strong>:</p>
+<p>Several list tools in Telebugs MCP use cursor-based pagination:</p>
 <ul>
 <li><code>list_error_groups_tool</code></li>
+<li><code>list_reports_tool</code></li>
 <li><code>list_project_users_tool</code></li>
-<li><code>list_notes_tool</code></li>
 </ul>
-<p>This approach is efficient for large result sets and avoids the problems of offset-based pagination (skipped or duplicate results when data changes between pages).</p>
+<p>This approach is efficient for large result sets and avoids the problems of offset-based pagination, such as skipped or duplicate results when data changes between pages.</p>
 <h2 id="how-it-works"><a class="header" href="#how-it-works">How It Works</a></h2>
-<p>When a list tool has more results available, the response includes a <code>next_cursor</code> value inside <code>_meta</code>:</p>
+<p>Paginated Telebugs tools include pagination fields in the response:</p>
 <pre><code class="language-json">{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "[{...}, {...}, {...}]"
-      }
-    ],
-    "_meta": {
-      "next_cursor": 8472
-    }
-  }
+  "groups": [
+    { "id": 42, "error_type": "NoMethodError" }
+  ],
+  "next_cursor": 8472,
+  "has_more": true
 }
 </code></pre>
-<p>To fetch the next page, pass the <code>cursor</code> value back to the <strong>same tool</strong>:</p>
+<p>To fetch the next page, pass the <code>next_cursor</code> value back to the same tool as <code>cursor</code>:</p>
 <pre><code class="language-json">{
   "cursor": 8472
 }
 </code></pre>
-<p>When no <code>next_cursor</code> is present in <code>_meta</code>, you have reached the end of the results.</p>
+<p>Use <code>has_more</code> as the reliable signal. When <code>has_more</code> is <code>false</code>, you have reached the end of the results and <code>next_cursor</code> is <code>null</code>.</p>
 <h2 id="page-size"><a class="header" href="#page-size">Page Size</a></h2>
 <p>Control how many results are returned per request using the <code>limit</code> parameter.</p>
 <div class="table-wrapper">
@@ -232,15 +224,15 @@
 <tr><th>Tool</th><th>Default</th><th>Maximum</th><th>Recommended for most cases</th></tr>
 </thead>
 <tbody>
-<tr><td><code>list_error_groups_tool</code></td><td>25</td><td>100</td><td>25–50</td></tr>
-<tr><td><code>list_notes_tool</code></td><td>50</td><td>100</td><td>50</td></tr>
+<tr><td><code>list_error_groups_tool</code></td><td>25</td><td>100</td><td>25-50</td></tr>
+<tr><td><code>list_reports_tool</code></td><td>25</td><td>100</td><td>25-50</td></tr>
 <tr><td><code>list_project_users_tool</code></td><td>25</td><td>100</td><td>25</td></tr>
 </tbody>
 </table>
 </div>
 <p>Values above the maximum are automatically capped.</p>
 <h2 id="example-paginating-error-groups"><a class="header" href="#example-paginating-error-groups">Example: Paginating Error Groups</a></h2>
-<p>Here’s a typical pagination flow:</p>
+<p>Here is a typical pagination flow:</p>
 <p><strong>First request</strong> (no cursor):</p>
 <pre><code class="language-json">{
   "project_id": 1,
@@ -250,15 +242,11 @@
 </code></pre>
 <p><strong>First response</strong> (has more results):</p>
 <pre><code class="language-json">{
-  "_meta": {
-    "next_cursor": 3921
-  },
-  "content": [
-    {
-      "type": "text",
-      "text": "[{group1}, {group2}, ..., {group25}]"
-    }
-  ]
+  "groups": [
+    { "id": 42, "error_type": "NoMethodError" }
+  ],
+  "next_cursor": 3921,
+  "has_more": true
 }
 </code></pre>
 <p><strong>Second request</strong> (pass the cursor):</p>
@@ -271,25 +259,24 @@
 </code></pre>
 <p><strong>Second response</strong> (no more results):</p>
 <pre><code class="language-json">{
-  "content": [
-    {
-      "type": "text",
-      "text": "[{group26}, {group27}]"
-    }
-  ]
+  "groups": [
+    { "id": 41, "error_type": "ArgumentError" }
+  ],
+  "next_cursor": null,
+  "has_more": false
 }
 </code></pre>
-<p>No <code>next_cursor</code> means you’re done.</p>
+<p><code>has_more: false</code> means you are done, even if the returned page happens to contain exactly <code>limit</code> items.</p>
 <h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
 <ul>
-<li><strong>Use the cursor exactly as returned</strong> — Do not modify or guess cursor values.</li>
-<li><strong>Stop when <code>next_cursor</code> is missing</strong> — This is the only reliable way to know you’ve reached the end.</li>
-<li><strong>Filter first, then paginate</strong> — Use <code>query</code>, <code>status</code>, <code>since</code>, or <code>project_id</code> to reduce the total number of results before paging.</li>
-<li><strong>Don’t over-fetch</strong> — For AI tools, it’s usually better to fetch smaller pages (25–50) and let the model decide if it needs more data.</li>
-<li><strong>Combine with filters aggressively</strong> — For example, use <code>since</code> + <code>status:unresolved</code> to avoid paging through years of historical data.</li>
+<li><strong>Use the cursor exactly as returned</strong> - Do not modify or guess cursor values.</li>
+<li><strong>Stop when <code>has_more</code> is <code>false</code></strong> - This is the reliable way to know you have reached the end.</li>
+<li><strong>Filter first, then paginate</strong> - Use <code>query</code>, <code>status</code>, <code>severity</code>, <code>since</code>, or <code>project_id</code> to reduce the total number of results before paging.</li>
+<li><strong>Do not infer availability from page size</strong> - A full page can still be the last page.</li>
+<li><strong>Do not over-fetch</strong> - For AI tools, it is usually better to fetch smaller pages (25-50) and let the model decide if it needs more data.</li>
 </ul>
 <blockquote>
-<p><strong>Tip:</strong> If you’re building prompts for AI tools, encourage them to use filters (<code>query</code>, <code>status</code>, <code>since</code>) before falling back to pagination. This leads to faster, more relevant results.</p>
+<p><strong>Tip:</strong> If you are building prompts for AI tools, encourage them to use filters before falling back to pagination. This leads to faster, more relevant results.</p>
 </blockquote>
 
                     </main>

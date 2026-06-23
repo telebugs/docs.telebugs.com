@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
+            window.path_to_searchindex_js = "searchindex-e0f17833.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -193,11 +193,12 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="notes"><a class="header" href="#notes">Notes</a></h1>
-<p>Notes let you and your team add context to error groups. They are useful for tracking investigation status, recording decisions, and maintaining team knowledge about specific issues.</p>
+<p>Notes let you and your team add context to error groups. They are useful for tracking investigation status, recording decisions, and leaving a trail for teammates.</p>
 <p>MCP supports listing, adding, and deleting notes on error groups.</p>
 <h2 id="list-notes"><a class="header" href="#list-notes">List Notes</a></h2>
-<p><strong>Tool:</strong> <code>list_notes_tool</code></p>
-<p>Retrieve notes attached to a specific error group.</p>
+<p><strong>Tool:</strong> <code>list_notes_tool</code>
+<strong>Scope required:</strong> <code>telebugs.read</code></p>
+<p>Retrieve notes attached to a specific error group, newest first.</p>
 <h3 id="parameters"><a class="header" href="#parameters">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -205,32 +206,34 @@
 <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Default</th></tr>
 </thead>
 <tbody>
-<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>—</td></tr>
+<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>-</td></tr>
 <tr><td><code>limit</code></td><td>integer</td><td>No</td><td>50 (max 100)</td></tr>
 </tbody>
 </table>
 </div>
 <h3 id="example-response"><a class="header" href="#example-response">Example Response</a></h3>
-<pre><code class="language-json">[
-  {
-    "id": 7,
-    "content": "Investigating — looks like a race condition in checkout.",
-    "created_at": "2026-05-20T15:30:00Z",
-    "automated": false,
-    "user": {
-      "id": 1,
-      "name": "Kyrylo",
-      "email_address": "kyrylo@example.com"
+<pre><code class="language-json">{
+  "notes": [
+    {
+      "id": 7,
+      "content": "Investigating - looks like a race condition in checkout.",
+      "created_at": "2026-05-20T15:30:00Z",
+      "automated": false,
+      "user": {
+        "id": 1,
+        "name": "Kyrylo",
+        "email_address": "kyrylo@example.com"
+      }
+    },
+    {
+      "id": 12,
+      "content": "Auto-resolved: No reports in the last 30 days.",
+      "created_at": "2026-06-10T08:15:00Z",
+      "automated": true,
+      "user": null
     }
-  },
-  {
-    "id": 12,
-    "content": "Auto-resolved: No reports in the last 30 days.",
-    "created_at": "2026-06-10T08:15:00Z",
-    "automated": true,
-    "user": null
-  }
-]
+  ]
+}
 </code></pre>
 <p>Notes created by users have <code>automated: false</code> and include user information. System-generated notes have <code>automated: true</code>.</p>
 <h2 id="add-note"><a class="header" href="#add-note">Add Note</a></h2>
@@ -251,13 +254,14 @@
 </div>
 <h3 id="example-response-1"><a class="header" href="#example-response-1">Example Response</a></h3>
 <pre><code class="language-json">{
-  "id": 8
+  "note_id": 8,
+  "group_id": 42
 }
 </code></pre>
 <h2 id="delete-note"><a class="header" href="#delete-note">Delete Note</a></h2>
 <p><strong>Tool:</strong> <code>delete_note_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Remove a note from an error group.</p>
+<p>Remove a note you can access.</p>
 <h3 id="parameters-2"><a class="header" href="#parameters-2">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -269,13 +273,18 @@
 </tbody>
 </table>
 </div>
-<p>Returns an empty response on success.</p>
+<h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
+<pre><code class="language-json">{
+  "deleted": true,
+  "note_id": 8
+}
+</code></pre>
 <h2 id="common-use-cases"><a class="header" href="#common-use-cases">Common Use Cases</a></h2>
 <ul>
-<li>Record investigation progress (“Investigating — suspected memory leak”)</li>
+<li>Record investigation progress (“Investigating suspected memory leak”)</li>
 <li>Document root cause and fix (“Fixed by PR #847 in v1.4.2”)</li>
 <li>Add context for teammates (“This only happens on weekends”)</li>
-<li>Let AI tools leave notes when they take automated actions</li>
+<li>Let AI tools leave notes when they take action on an error group</li>
 </ul>
 <h2 id="error-responses"><a class="header" href="#error-responses">Error Responses</a></h2>
 <p>See <a href="telebugs-mcp-08-errors.html">Errors</a> for general handling.</p>
@@ -288,7 +297,8 @@
 <tbody>
 <tr><td><code>Group not found or access denied</code></td><td>Invalid <code>group_id</code> or insufficient permissions</td></tr>
 <tr><td><code>Note cannot be blank</code></td><td>Empty <code>note</code> content provided</td></tr>
-<tr><td><code>Note not found</code></td><td>Invalid <code>note_id</code> on delete</td></tr>
+<tr><td><code>Note not found or access denied</code></td><td>Invalid <code>note_id</code> or insufficient permissions</td></tr>
+<tr><td><code>Insufficient scope. Required: telebugs.write</code></td><td>OAuth token lacks <code>write</code> scope</td></tr>
 </tbody>
 </table>
 </div>

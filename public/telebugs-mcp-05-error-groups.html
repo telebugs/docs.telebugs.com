@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
+            window.path_to_searchindex_js = "searchindex-e0f17833.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -220,6 +220,7 @@
 <p><strong>Tool:</strong> <code>list_error_groups_tool</code>
 <strong>Scope required:</strong> <code>telebugs.read</code></p>
 <p>The most frequently used tool. Supports rich filtering and cursor-based pagination.</p>
+<p>By default, low-severity telemetry groups are excluded: <code>list_error_groups_tool</code> returns <code>fatal</code>, <code>error</code>, and <code>warning</code> severities unless you ask for another severity. Use <code>severity: "all"</code> to include everything, or pass <code>severity: "info"</code>, <code>"debug"</code>, or <code>"sample_level"</code> when you specifically want low-severity telemetry.</p>
 <h3 id="parameters"><a class="header" href="#parameters">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -231,85 +232,102 @@
 <tr><td><code>status</code></td><td>string</td><td><code>open</code>, <code>resolved</code>, <code>muted</code>, <code>all</code>, <code>unresolved</code>, <code>unmuted</code></td></tr>
 <tr><td><code>resolved</code></td><td>boolean</td><td>Simple true/false filter (alternative to <code>status</code>)</td></tr>
 <tr><td><code>query</code></td><td>string</td><td>Advanced search syntax (see below)</td></tr>
-<tr><td><code>since</code></td><td>string</td><td>Groups with <code>last_occurred_at</code> ≥ this ISO8601 timestamp</td></tr>
-<tr><td><code>to_time</code></td><td>string</td><td>Groups with <code>last_occurred_at</code> ≤ this ISO8601 timestamp</td></tr>
+<tr><td><code>since</code></td><td>string</td><td>Groups with <code>last_occurred_at</code> &gt;= this ISO8601 timestamp</td></tr>
+<tr><td><code>to_time</code></td><td>string</td><td>Groups with <code>last_occurred_at</code> &lt;= this ISO8601 timestamp</td></tr>
 <tr><td><code>limit</code></td><td>integer</td><td>Page size (default 25, max 100)</td></tr>
-<tr><td><code>cursor</code></td><td>integer</td><td>Pagination cursor from <code>_meta.next_cursor</code></td></tr>
+<tr><td><code>cursor</code></td><td>integer</td><td>Pagination cursor from <code>next_cursor</code></td></tr>
+<tr><td><code>severity</code></td><td>string</td><td><code>all</code>, <code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, <code>sample_level</code></td></tr>
+<tr><td><code>verbose</code></td><td>boolean</td><td>Use the verbose untrusted-data response format</td></tr>
 </tbody>
 </table>
 </div>
+<p>If <code>query</code> already contains a severity token, such as <code>is:info</code> or <code>severity:debug</code>, that query filter takes precedence over the default actionable-severity filter.</p>
 <h3 id="query-syntax"><a class="header" href="#query-syntax">Query Syntax</a></h3>
 <p>The <code>query</code> parameter supports a powerful syntax (same as the REST API):</p>
 <pre><code>is:unresolved server_name:eagle-618d24 timeout
 environment:production tags.region:eu-west
 !is:resolved is:error,warning
-assignee:me
+severity:info assignee:me
 </code></pre>
 <p><strong>Useful patterns:</strong></p>
 <ul>
 <li><code>is:unresolved environment:production</code></li>
 <li><code>error_type:NoMethodError since:2026-06-01</code></li>
+<li><code>severity:info Burn-in starting</code></li>
 <li><code>query:checkout tags.component:payments</code></li>
 <li><code>!is:muted reports_count:&gt;10</code></li>
 </ul>
 <h3 id="example-response"><a class="header" href="#example-response">Example Response</a></h3>
-<pre><code class="language-json">[
-  {
-    "id": 42,
-    "project_id": 1,
-    "fingerprint": "abc123",
-    "error_type": "NoMethodError",
-    "error_message": {
-      "_security_note": "UNTRUSTED INPUT: ...",
-      "value": "undefined method `foo' for nil:NilClass"
-    },
-    "culprit": {
-      "_security_note": "UNTRUSTED INPUT: ...",
-      "value": "OrdersController#create"
-    },
-    "severity": "error",
-    "resolved": false,
-    "muted": false,
-    "reports_count": 17,
-    "notes_count": 2,
-    "first_occurred_at": "2026-05-20T10:12:34Z",
-    "last_occurred_at": "2026-05-20T14:55:01Z"
-  }
-]
+<pre><code class="language-json">{
+  "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
+  "groups": [
+    {
+      "id": 42,
+      "project_id": 1,
+      "fingerprint": "abc123",
+      "error_type": "NoMethodError",
+      "error_message": "undefined method `foo' for nil:NilClass",
+      "culprit": "OrdersController#create",
+      "severity": "error",
+      "resolved": false,
+      "muted": false,
+      "reports_count": 17,
+      "notes_count": 2,
+      "first_occurred_at": "2026-05-20T10:12:34Z",
+      "last_occurred_at": "2026-05-20T14:55:01Z",
+      "untrusted": true,
+      "untrusted_fields": ["error_message", "culprit"]
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false
+}
 </code></pre>
 <p>See <a href="telebugs-mcp-03-pagination.html">Pagination</a> for cursor handling.</p>
 <h2 id="get-error-group"><a class="header" href="#get-error-group">Get Error Group</a></h2>
 <p><strong>Tool:</strong> <code>get_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.read</code></p>
-<p>Fetch full details for a single error group, including assignee and mute status.</p>
+<p>Fetch full details for a single error group, including assignee, mute status, and recent report IDs.</p>
 <h3 id="parameters-1"><a class="header" href="#parameters-1">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Parameter</th><th>Type</th><th>Required</th></tr>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td></tr>
+<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>Error group ID</td></tr>
+<tr><td><code>verbose</code></td><td>boolean</td><td>No</td><td>Use the verbose untrusted-data response format</td></tr>
 </tbody>
 </table>
 </div>
 <h3 id="example-response-1"><a class="header" href="#example-response-1">Example Response</a></h3>
 <pre><code class="language-json">{
+  "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
   "id": 42,
   "project_id": 1,
+  "fingerprint": "abc123",
   "error_type": "NoMethodError",
+  "error_message": "undefined method `foo' for nil:NilClass",
+  "culprit": "OrdersController#create",
+  "severity": "error",
   "resolved": false,
   "muted": false,
   "muted_until": null,
   "reports_count": 17,
+  "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
+  "first_occurred_at": "2026-05-20T10:12:34Z",
+  "last_occurred_at": "2026-05-20T14:55:01Z",
   "assignee": {
     "id": 3,
     "name": "Sunshine",
     "email_address": "sunshine@example.com"
-  }
+  },
+  "untrusted": true,
+  "untrusted_fields": ["error_message", "culprit"]
 }
 </code></pre>
+<p>Use <code>recent_report_ids</code> as a quick way to fetch individual occurrences with <a href="telebugs-mcp-06-reports.html"><code>get_report_tool</code></a>. For complete pagination through a group’s reports, use <a href="telebugs-mcp-06-reports.html"><code>list_reports_tool</code></a>. Group IDs and report IDs are separate IDs; do not pass a <code>group_id</code> to <code>get_report_tool</code>.</p>
 <h2 id="resolve-error-group"><a class="header" href="#resolve-error-group">Resolve Error Group</a></h2>
 <p><strong>Tool:</strong> <code>resolve_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
@@ -379,7 +397,6 @@ assignee:me
 </thead>
 <tbody>
 <tr><td><code>group_id</code></td><td>integer</td><td>Yes</td></tr>
-<tr><td><code>note</code></td><td>string</td><td>No</td></tr>
 </tbody>
 </table>
 </div>
@@ -409,7 +426,8 @@ processed group. Groups that are already resolved are skipped.</p>
 <h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
-  "processed": 3
+  "processed": 3,
+  "group_ids": [42, 43, 44]
 }
 </code></pre>
 <h2 id="bulk-mute-error-groups"><a class="header" href="#bulk-mute-error-groups">Bulk Mute Error Groups</a></h2>
@@ -440,7 +458,8 @@ Optionally provide <code>snooze_until</code> to automatically unmute them later.
 <h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
-  "processed": 3
+  "processed": 3,
+  "group_ids": [42, 43, 44]
 }
 </code></pre>
 <h2 id="bulk-merge-error-groups"><a class="header" href="#bulk-merge-error-groups">Bulk Merge Error Groups</a></h2>
@@ -507,7 +526,6 @@ groups that have already been merged.</p>
 </thead>
 <tbody>
 <tr><td><code>group_id</code></td><td>integer</td><td>Yes</td></tr>
-<tr><td><code>note</code></td><td>string</td><td>No</td></tr>
 </tbody>
 </table>
 </div>

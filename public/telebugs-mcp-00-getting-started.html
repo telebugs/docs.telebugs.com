@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
+            window.path_to_searchindex_js = "searchindex-e0f17833.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -273,7 +273,7 @@ You can then say:</p>
 <p>After authorizing an MCP client, you can review and revoke access from
 <strong>Account Settings → Connected MCP apps</strong>.</p>
 <h2 id="available-tools"><a class="header" href="#available-tools">Available Tools</a></h2>
-<p>Telebugs MCP exposes 14 tools grouped by resource:</p>
+<p>Telebugs MCP tools are grouped by resource:</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -282,7 +282,7 @@ You can then say:</p>
 <tbody>
 <tr><td><a href="telebugs-mcp-04-projects.html">Projects</a></td><td>List projects and members</td></tr>
 <tr><td><a href="telebugs-mcp-05-error-groups.html">Error Groups</a></td><td>Search, inspect, resolve, mute, assign, and annotate groups</td></tr>
-<tr><td><a href="telebugs-mcp-06-reports.html">Reports</a></td><td>Fetch full error reports</td></tr>
+<tr><td><a href="telebugs-mcp-06-reports.html">Reports</a></td><td>List group reports and fetch full error reports</td></tr>
 <tr><td><a href="telebugs-mcp-07-notes.html">Notes</a></td><td>List, add, and delete notes</td></tr>
 </tbody>
 </table>
@@ -291,8 +291,8 @@ You can then say:</p>
 <ul>
 <li>Access is limited to projects you belong to.</li>
 <li>OAuth uses <code>telebugs.read</code> and <code>telebugs.write</code> scopes.</li>
-<li>Report data is wrapped with security warnings (<code>_security_note</code>) to help protect
-against prompt injection from untrusted application data. See
+<li>Application-supplied error data is marked as untrusted so AI tools treat it
+as debugging evidence, not instructions. See
 <a href="telebugs-mcp-06-reports.html">Reports</a> for details.</li>
 </ul>
 <h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>

@@ -1,73 +1,80 @@
 # Projects
 
-These tools let you discover the projects you have access to and the users within them.
+Projects are the starting point for most Telebugs MCP workflows. Use them to discover which Telebugs projects your account can access, then pass the project ID to group, report, and user tools.
 
-`list_projects_tool` is often the first tool an AI calls after connecting.
-`list_project_users_tool` is primarily used to find valid `user_id` values when assigning error groups.
+`list_projects_tool` is often the first tool an AI calls after connecting. `list_project_users_tool` is useful when assigning an error group to a teammate.
 
 ## List Projects
 
 **Tool:** `list_projects_tool`
+**Scope required:** `telebugs.read`
 
-Returns all projects you have access to. No parameters are required.
+Returns all active projects you have access to. No parameters are required.
 
 ### Example Response
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Production",
-    "platform": "Ruby",
-    "timezone": "UTC",
-    "groups_count": 42,
-    "reports_count": 1287
-  },
-  {
-    "id": 2,
-    "name": "Staging",
-    "platform": "Ruby",
-    "timezone": "UTC",
-    "groups_count": 17,
-    "reports_count": 312
-  }
-]
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "Production",
+      "platform": "Ruby",
+      "timezone": "UTC",
+      "groups_count": 42,
+      "reports_count": 1287
+    },
+    {
+      "id": 2,
+      "name": "Staging",
+      "platform": "Ruby",
+      "timezone": "UTC",
+      "groups_count": 17,
+      "reports_count": 312
+    }
+  ]
+}
 ```
 
-Use the `id` as `project_id` when calling other tools (e.g. `list_error_groups_tool`, `list_project_users_tool`).
+Use the project `id` as `project_id` when calling tools such as `list_error_groups_tool` or `list_project_users_tool`.
 
 ## List Project Users
 
 **Tool:** `list_project_users_tool`
+**Scope required:** `telebugs.read`
 
-Returns users who have access to a specific project. Use this to discover valid `user_id` values for assigning error groups.
+Returns active users who have access to a specific project. Use this to discover valid `user_id` values before assigning error groups.
 
 ### Parameters
 
 | Parameter    | Type    | Required | Default      |
 | ------------ | ------- | -------- | ------------ |
-| `project_id` | integer | Yes      | —            |
+| `project_id` | integer | Yes      | -            |
 | `limit`      | integer | No       | 25 (max 100) |
-| `cursor`     | integer | No       | —            |
+| `cursor`     | integer | No       | -            |
 
 ### Example Response
 
 ```json
-[
-  {
-    "id": 3,
-    "name": "Sunshine",
-    "email_address": "sunshine@example.com"
-  },
-  {
-    "id": 7,
-    "name": "Kyrylo",
-    "email_address": "kyrylo@example.com"
-  }
-]
+{
+  "users": [
+    {
+      "id": 3,
+      "name": "Sunshine",
+      "email_address": "sunshine@example.com"
+    },
+    {
+      "id": 7,
+      "name": "Kyrylo",
+      "email_address": "kyrylo@example.com"
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false
+}
 ```
 
-If more results are available, `_meta.next_cursor` will be included in the response (see [Pagination](telebugs-mcp-03-pagination.md)).
+If more results are available, `has_more` will be `true` and `next_cursor` will contain the cursor for the next request. See [Pagination](telebugs-mcp-03-pagination.md).
 
 ### Common Use Case
 

@@ -95,21 +95,21 @@ After authorizing an MCP client, you can review and revoke access from
 
 ## Available Tools
 
-Telebugs MCP exposes 14 tools grouped by resource:
+Telebugs MCP tools are grouped by resource:
 
 | Resource                                        | Capabilities                                                |
 | ----------------------------------------------- | ----------------------------------------------------------- |
 | [Projects](telebugs-mcp-04-projects.md)         | List projects and members                                   |
 | [Error Groups](telebugs-mcp-05-error-groups.md) | Search, inspect, resolve, mute, assign, and annotate groups |
-| [Reports](telebugs-mcp-06-reports.md)           | Fetch full error reports                                    |
+| [Reports](telebugs-mcp-06-reports.md)           | List group reports and fetch full error reports             |
 | [Notes](telebugs-mcp-07-notes.md)               | List, add, and delete notes                                 |
 
 ## Security Notes
 
 - Access is limited to projects you belong to.
 - OAuth uses `telebugs.read` and `telebugs.write` scopes.
-- Report data is wrapped with security warnings (`_security_note`) to help protect
-  against prompt injection from untrusted application data. See
+- Application-supplied error data is marked as untrusted so AI tools treat it
+  as debugging evidence, not instructions. See
   [Reports](telebugs-mcp-06-reports.md) for details.
 
 ## Next Steps

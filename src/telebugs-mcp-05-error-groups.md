@@ -27,6 +27,8 @@ MCP gives AI tools powerful capabilities to list, inspect, filter, and manage er
 
 The most frequently used tool. Supports rich filtering and cursor-based pagination.
 
+By default, low-severity telemetry groups are excluded: `list_error_groups_tool` returns `fatal`, `error`, and `warning` severities unless you ask for another severity. Use `severity: "all"` to include everything, or pass `severity: "info"`, `"debug"`, or `"sample_level"` when you specifically want low-severity telemetry.
+
 ### Parameters
 
 | Parameter    | Type    | Description                                                 |
@@ -35,10 +37,14 @@ The most frequently used tool. Supports rich filtering and cursor-based paginati
 | `status`     | string  | `open`, `resolved`, `muted`, `all`, `unresolved`, `unmuted` |
 | `resolved`   | boolean | Simple true/false filter (alternative to `status`)          |
 | `query`      | string  | Advanced search syntax (see below)                          |
-| `since`      | string  | Groups with `last_occurred_at` ≥ this ISO8601 timestamp     |
-| `to_time`    | string  | Groups with `last_occurred_at` ≤ this ISO8601 timestamp     |
+| `since`      | string  | Groups with `last_occurred_at` >= this ISO8601 timestamp    |
+| `to_time`    | string  | Groups with `last_occurred_at` <= this ISO8601 timestamp    |
 | `limit`      | integer | Page size (default 25, max 100)                             |
-| `cursor`     | integer | Pagination cursor from `_meta.next_cursor`                  |
+| `cursor`     | integer | Pagination cursor from `next_cursor`                        |
+| `severity`   | string  | `all`, `fatal`, `error`, `warning`, `info`, `debug`, `sample_level` |
+| `verbose`    | boolean | Use the verbose untrusted-data response format           |
+
+If `query` already contains a severity token, such as `is:info` or `severity:debug`, that query filter takes precedence over the default actionable-severity filter.
 
 ### Query Syntax
 
@@ -48,42 +54,44 @@ The `query` parameter supports a powerful syntax (same as the REST API):
 is:unresolved server_name:eagle-618d24 timeout
 environment:production tags.region:eu-west
 !is:resolved is:error,warning
-assignee:me
+severity:info assignee:me
 ```
 
 **Useful patterns:**
 
 - `is:unresolved environment:production`
 - `error_type:NoMethodError since:2026-06-01`
+- `severity:info Burn-in starting`
 - `query:checkout tags.component:payments`
 - `!is:muted reports_count:>10`
 
 ### Example Response
 
 ```json
-[
-  {
-    "id": 42,
-    "project_id": 1,
-    "fingerprint": "abc123",
-    "error_type": "NoMethodError",
-    "error_message": {
-      "_security_note": "UNTRUSTED INPUT: ...",
-      "value": "undefined method `foo' for nil:NilClass"
-    },
-    "culprit": {
-      "_security_note": "UNTRUSTED INPUT: ...",
-      "value": "OrdersController#create"
-    },
-    "severity": "error",
-    "resolved": false,
-    "muted": false,
-    "reports_count": 17,
-    "notes_count": 2,
-    "first_occurred_at": "2026-05-20T10:12:34Z",
-    "last_occurred_at": "2026-05-20T14:55:01Z"
-  }
-]
+{
+  "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
+  "groups": [
+    {
+      "id": 42,
+      "project_id": 1,
+      "fingerprint": "abc123",
+      "error_type": "NoMethodError",
+      "error_message": "undefined method `foo' for nil:NilClass",
+      "culprit": "OrdersController#create",
+      "severity": "error",
+      "resolved": false,
+      "muted": false,
+      "reports_count": 17,
+      "notes_count": 2,
+      "first_occurred_at": "2026-05-20T10:12:34Z",
+      "last_occurred_at": "2026-05-20T14:55:01Z",
+      "untrusted": true,
+      "untrusted_fields": ["error_message", "culprit"]
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false
+}
 ```
 
 See [Pagination](telebugs-mcp-03-pagination.md) for cursor handling.
@@ -93,33 +101,46 @@ See [Pagination](telebugs-mcp-03-pagination.md) for cursor handling.
 **Tool:** `get_error_group_tool`
 **Scope required:** `telebugs.read`
 
-Fetch full details for a single error group, including assignee and mute status.
+Fetch full details for a single error group, including assignee, mute status, and recent report IDs.
 
 ### Parameters
 
-| Parameter  | Type    | Required |
-| ---------- | ------- | -------- |
-| `group_id` | integer | Yes      |
+| Parameter  | Type    | Required | Description                                       |
+| ---------- | ------- | -------- | ------------------------------------------------- |
+| `group_id` | integer | Yes      | Error group ID                                    |
+| `verbose`  | boolean | No       | Use the verbose untrusted-data response format |
 
 ### Example Response
 
 ```json
 {
+  "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
   "id": 42,
   "project_id": 1,
+  "fingerprint": "abc123",
   "error_type": "NoMethodError",
+  "error_message": "undefined method `foo' for nil:NilClass",
+  "culprit": "OrdersController#create",
+  "severity": "error",
   "resolved": false,
   "muted": false,
   "muted_until": null,
   "reports_count": 17,
+  "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
+  "first_occurred_at": "2026-05-20T10:12:34Z",
+  "last_occurred_at": "2026-05-20T14:55:01Z",
   "assignee": {
     "id": 3,
     "name": "Sunshine",
     "email_address": "sunshine@example.com"
-  }
+  },
+  "untrusted": true,
+  "untrusted_fields": ["error_message", "culprit"]
 }
 ```
+
+Use `recent_report_ids` as a quick way to fetch individual occurrences with [`get_report_tool`](telebugs-mcp-06-reports.md). For complete pagination through a group's reports, use [`list_reports_tool`](telebugs-mcp-06-reports.md). Group IDs and report IDs are separate IDs; do not pass a `group_id` to `get_report_tool`.
 
 ## Resolve Error Group
 
@@ -188,7 +209,6 @@ Remove a mute from a group.
 | Parameter  | Type    | Required |
 | ---------- | ------- | -------- |
 | `group_id` | integer | Yes      |
-| `note`     | string  | No       |
 
 ## Bulk Resolve Error Groups
 
@@ -219,7 +239,8 @@ processed group. Groups that are already resolved are skipped.
 ```json
 {
   "success": true,
-  "processed": 3
+  "processed": 3,
+  "group_ids": [42, 43, 44]
 }
 ```
 
@@ -254,7 +275,8 @@ Optionally provide `snooze_until` to automatically unmute them later.
 ```json
 {
   "success": true,
-  "processed": 3
+  "processed": 3,
+  "group_ids": [42, 43, 44]
 }
 ```
 
@@ -324,7 +346,6 @@ Remove the current assignee from a group.
 | Parameter  | Type    | Required |
 | ---------- | ------- | -------- |
 | `group_id` | integer | Yes      |
-| `note`     | string  | No       |
 
 ## Common Workflows
 

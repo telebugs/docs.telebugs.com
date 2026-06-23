@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e7ef160f.js";
+            window.path_to_searchindex_js = "searchindex-e0f17833.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -193,21 +193,20 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="mcp-errors"><a class="header" href="#mcp-errors">MCP Errors</a></h1>
-<p>MCP uses <a href="https://www.jsonrpc.org/specification">JSON-RPC 2.0</a> for communication. This means error handling works differently from the REST API.</p>
-<p>There are two distinct kinds of errors:</p>
+<p>Most people use Telebugs MCP through an AI client, so they rarely need to handle raw protocol responses. If you are troubleshooting a connection or building a custom client, there are two kinds of errors to know about.</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Type</th><th>When it happens</th><th>How it’s represented</th><th>HTTP status</th></tr>
+<tr><th>Type</th><th>When it happens</th><th>How it appears</th><th>HTTP status</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Transport errors</strong></td><td>Authentication, protocol, or rate limiting issues</td><td>Top-level <code>error</code> object in JSON-RPC response</td><td>Usually <code>4xx</code>/<code>5xx</code></td></tr>
-<tr><td><strong>Tool errors</strong></td><td>Tool execution failed (not found, validation, permissions)</td><td><code>isError: true</code> inside a successful <code>200 OK</code> JSON-RPC response</td><td><code>200 OK</code></td></tr>
+<tr><td><strong>Transport errors</strong></td><td>Authentication, protocol, or rate limiting issues</td><td>Top-level JSON-RPC <code>error</code> object</td><td>Usually <code>4xx</code>/<code>5xx</code></td></tr>
+<tr><td><strong>Tool errors</strong></td><td>Tool execution failed, such as not found or no permission</td><td><code>isError: true</code> inside an otherwise successful MCP response</td><td><code>200 OK</code></td></tr>
 </tbody>
 </table>
 </div>
-<h2 id="transport-errors-json-rpc-level"><a class="header" href="#transport-errors-json-rpc-level">Transport Errors (JSON-RPC level)</a></h2>
-<p>These occur before a tool is even invoked — usually due to authentication or protocol problems.</p>
+<h2 id="transport-errors"><a class="header" href="#transport-errors">Transport Errors</a></h2>
+<p>Transport errors happen before a tool is invoked, usually because authentication failed or the request is not valid MCP.</p>
 <pre><code class="language-json">{
   "jsonrpc": "2.0",
   "error": {
@@ -229,8 +228,8 @@
 </tbody>
 </table>
 </div>
-<h2 id="tool-errors-iserror-true"><a class="header" href="#tool-errors-iserror-true">Tool Errors (<code>isError: true</code>)</a></h2>
-<p>When a tool fails (e.g. invalid ID, insufficient permissions, missing required parameter), the JSON-RPC request itself <strong>succeeds</strong> (HTTP 200), but the result contains <code>isError: true</code>.</p>
+<h2 id="tool-errors"><a class="header" href="#tool-errors">Tool Errors</a></h2>
+<p>Tool errors happen after authentication succeeds. The MCP request itself succeeds, but the tool result is marked with <code>isError: true</code>.</p>
 <pre><code class="language-json">{
   "jsonrpc": "2.0",
   "id": 3,
@@ -245,83 +244,25 @@
   }
 }
 </code></pre>
-<p><strong>Important:</strong> Always check <code>result.isError</code> to detect tool failures. Do <strong>not</strong> look for a <code>success</code> field or rely on HTTP status codes alone.</p>
-<h2 id="how-tool-results-work"><a class="header" href="#how-tool-results-work">How Tool Results Work</a></h2>
-<p>Tool outputs are returned as plain text inside the <code>content</code> array. The structure depends on the operation:</p>
+<p>Always check <code>result.isError</code> before trusting a tool result. Do not rely on HTTP status alone.</p>
+<h2 id="reading-successful-results"><a class="header" href="#reading-successful-results">Reading Successful Results</a></h2>
+<p>The resource pages in this guide show the JSON payloads returned by each tool. Depending on the MCP client, those payloads may be exposed as text, structured data, or both.</p>
+<p>Common patterns:</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Operation</th><th>Shape of <code>content[0].text</code></th></tr>
+<tr><th>Operation</th><th>What to expect</th></tr>
 </thead>
 <tbody>
-<tr><td>List resources</td><td>JSON array of objects</td></tr>
-<tr><td>Get single resource</td><td>JSON object</td></tr>
-<tr><td>Write action (resolve, assign, etc.)</td><td><code>{}</code> (empty object)</td></tr>
-<tr><td>Create note</td><td><code>{ "id": 8 }</code></td></tr>
+<tr><td>List projects</td><td>A <code>projects</code> array</td></tr>
+<tr><td>List error groups</td><td>A <code>groups</code> array plus <code>has_more</code> and <code>next_cursor</code></td></tr>
+<tr><td>List reports</td><td>A <code>reports</code> array plus <code>has_more</code> and <code>next_cursor</code></td></tr>
+<tr><td>Get one group or report</td><td>One JSON object</td></tr>
+<tr><td>Resolve, mute, assign, or add notes</td><td>A small confirmation object or success message</td></tr>
 </tbody>
 </table>
 </div>
-<p>Pagination metadata (<code>next_cursor</code>) is returned in <code>result._meta</code>, <strong>not</strong> inside the text payload.</p>
-<h3 id="examples-of-successful-results"><a class="header" href="#examples-of-successful-results">Examples of Successful Results</a></h3>
-<p><strong>List projects:</strong></p>
-<pre><code class="language-json">{
-  "jsonrpc": "2.0",
-  "id": 3,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "[{\"id\":1,\"name\":\"Production\",\"platform\":\"Ruby\"}]"
-      }
-    ]
-  }
-}
-</code></pre>
-<p><strong>Get a single error group:</strong></p>
-<pre><code class="language-json">{
-  "jsonrpc": "2.0",
-  "id": 3,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "{\"id\":42,\"project_id\":1,\"error_type\":\"NoMethodError\",\"resolved\":false}"
-      }
-    ]
-  }
-}
-</code></pre>
-<p><strong>Paginated list (cursor in <code>_meta</code>):</strong></p>
-<pre><code class="language-json">{
-  "jsonrpc": "2.0",
-  "id": 3,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "[{\"id\":42,\"error_type\":\"NoMethodError\"}]"
-      }
-    ],
-    "_meta": {
-      "next_cursor": 41
-    }
-  }
-}
-</code></pre>
-<p><strong>Write action (e.g. resolve):</strong></p>
-<pre><code class="language-json">{
-  "jsonrpc": "2.0",
-  "id": 3,
-  "result": {
-    "content": [
-      {
-        "type": "text",
-        "text": "{}"
-      }
-    ]
-  }
-}
-</code></pre>
+<p>For paginated tools, use <code>has_more</code> as the stop signal. When <code>has_more</code> is <code>false</code>, <code>next_cursor</code> is <code>null</code>.</p>
 <h2 id="request-parameters"><a class="header" href="#request-parameters">Request Parameters</a></h2>
 <p>Tool arguments are passed as a flat object. For example:</p>
 <pre><code class="language-json">{
@@ -331,12 +272,12 @@
 }
 </code></pre>
 <p>Do not wrap arguments in extra layers.</p>
-<h2 id="best-practices-for-error-handling"><a class="header" href="#best-practices-for-error-handling">Best Practices for Error Handling</a></h2>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
 <ul>
 <li>Check <code>result.isError === true</code> to detect tool failures.</li>
 <li>Read the error message from <code>result.content[0].text</code>.</li>
 <li>For transport errors, inspect the top-level <code>error</code> object.</li>
-<li>When building prompts for AI tools, instruct them to check <code>isError</code> before trusting the result.</li>
+<li>When paginating, stop when <code>has_more</code> is <code>false</code>.</li>
 </ul>
 
                     </main>
