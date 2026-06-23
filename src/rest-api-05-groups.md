@@ -124,6 +124,7 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
       "muted_at": null,
       "muter_id": null,
       "muted_until": null,
+      "muted_until_reports_count": null,
       "resolved": false,
       "muted": false,
       "created_at": "2026-05-20T10:12:34Z",
@@ -138,6 +139,14 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
 See [Pagination](rest-api-02-pagination.md) for how to use `next_cursor` and `limit`.
 
 The `severity` field on each group is the highest severity ever observed for reports in that group (`fatal`, `error`, `warning`, `info`, or `debug`).
+
+The mute fields describe the group's current active mute:
+
+- `muted` is `true` when notifications are currently suppressed.
+- `muted_until` is set for time-based snoozes.
+- `muted_until_reports_count` is set for occurrence-based mutes. It stores the
+  total `reports_count` at which notifications resume, not the additional count
+  originally requested.
 
 To see per-occurrence details for a group (including `server_name`, `tags`, `environment`, user info, request context, etc.), use the [Reports](rest-api-06-reports.md) endpoints under the group.
 
@@ -159,13 +168,32 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/grou
 
 ## Mute a Group
 
-```
+Mute a group forever by omitting a request body:
+
+```sh
 curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
+Mute a group until a number of additional occurrences by passing a positive
+`occurrences` value:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"occurrences": 10}'
+```
+
+If the group currently has `reports_count: 17`, the example above sets
+`muted_until_reports_count` to `27`. Notifications resume when the group reaches
+that total report count. Actions that only change state return `204 No Content`.
+
 ## Unmute a Group
+
+Unmuting clears permanent, time-based, and occurrence-based mute conditions.
 
 ```sh
 curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
@@ -215,8 +243,8 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/grou
 
 ## Bulk Mute
 
-Mute multiple groups in the same project. Groups that are already muted are
-skipped.
+Mute multiple groups in the same project. REST bulk mute creates permanent
+mutes. Groups that are already muted are skipped.
 
 ```sh
 curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
@@ -234,7 +262,8 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/grou
 
 ## Bulk Unmute
 
-Unmute multiple groups. Groups that are already unmuted are skipped.
+Unmute multiple groups. This clears permanent, time-based, and occurrence-based
+mute conditions. Groups that are already unmuted are skipped.
 
 ```sh
 curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \

@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e0f17833.js";
+            window.path_to_searchindex_js = "searchindex-22fe1613.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -304,6 +304,7 @@ in a single parameter.</p>
       "muted_at": null,
       "muter_id": null,
       "muted_until": null,
+      "muted_until_reports_count": null,
       "resolved": false,
       "muted": false,
       "created_at": "2026-05-20T10:12:34Z",
@@ -316,6 +317,14 @@ in a single parameter.</p>
 </code></pre>
 <p>See <a href="rest-api-02-pagination.html">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
 <p>The <code>severity</code> field on each group is the highest severity ever observed for reports in that group (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, or <code>debug</code>).</p>
+<p>The mute fields describe the group’s current active mute:</p>
+<ul>
+<li><code>muted</code> is <code>true</code> when notifications are currently suppressed.</li>
+<li><code>muted_until</code> is set for time-based snoozes.</li>
+<li><code>muted_until_reports_count</code> is set for occurrence-based mutes. It stores the
+total <code>reports_count</code> at which notifications resume, not the additional count
+originally requested.</li>
+</ul>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="rest-api-06-reports.html">Reports</a> endpoints under the group.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
@@ -328,11 +337,24 @@ in a single parameter.</p>
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
 <h2 id="mute-a-group"><a class="header" href="#mute-a-group">Mute a Group</a></h2>
-<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+<p>Mute a group forever by omitting a request body:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
+<p>Mute a group until a number of additional occurrences by passing a positive
+<code>occurrences</code> value:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"occurrences": 10}'
+</code></pre>
+<p>If the group currently has <code>reports_count: 17</code>, the example above sets
+<code>muted_until_reports_count</code> to <code>27</code>. Notifications resume when the group reaches
+that total report count. Actions that only change state return <code>204 No Content</code>.</p>
 <h2 id="unmute-a-group"><a class="header" href="#unmute-a-group">Unmute a Group</a></h2>
+<p>Unmuting clears permanent, time-based, and occurrence-based mute conditions.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X DELETE \
   -H "Authorization: Bearer YOUR_API_KEY"
@@ -365,8 +387,8 @@ skipped; the response reports how many groups were changed.</p>
 }
 </code></pre>
 <h2 id="bulk-mute"><a class="header" href="#bulk-mute">Bulk Mute</a></h2>
-<p>Mute multiple groups in the same project. Groups that are already muted are
-skipped.</p>
+<p>Mute multiple groups in the same project. REST bulk mute creates permanent
+mutes. Groups that are already muted are skipped.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -378,7 +400,8 @@ skipped.</p>
 }
 </code></pre>
 <h2 id="bulk-unmute"><a class="header" href="#bulk-unmute">Bulk Unmute</a></h2>
-<p>Unmute multiple groups. Groups that are already unmuted are skipped.</p>
+<p>Unmute multiple groups. This clears permanent, time-based, and occurrence-based
+mute conditions. Groups that are already unmuted are skipped.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X DELETE \
   -H "Authorization: Bearer YOUR_API_KEY" \

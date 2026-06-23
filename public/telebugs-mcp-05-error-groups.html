@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e0f17833.js";
+            window.path_to_searchindex_js = "searchindex-22fe1613.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -206,7 +206,7 @@
 <tr><td><code>get_error_group_tool</code></td><td><code>read</code></td><td>Fetch details for a single group</td></tr>
 <tr><td><code>resolve_error_group_tool</code></td><td><code>write</code></td><td>Mark a group as resolved</td></tr>
 <tr><td><code>unresolve_error_group_tool</code></td><td><code>write</code></td><td>Re-open a resolved group</td></tr>
-<tr><td><code>mute_error_group_tool</code></td><td><code>write</code></td><td>Mute (optionally snooze) a group</td></tr>
+<tr><td><code>mute_error_group_tool</code></td><td><code>write</code></td><td>Mute a group forever, until a time, or until more occurrences</td></tr>
 <tr><td><code>unmute_error_group_tool</code></td><td><code>write</code></td><td>Unmute a group</td></tr>
 <tr><td><code>bulk_resolve_error_groups_tool</code></td><td><code>write</code></td><td>Resolve multiple groups</td></tr>
 <tr><td><code>bulk_mute_error_groups_tool</code></td><td><code>write</code></td><td>Mute multiple groups</td></tr>
@@ -271,6 +271,8 @@ severity:info assignee:me
       "severity": "error",
       "resolved": false,
       "muted": false,
+      "muted_until": null,
+      "muted_until_reports_count": null,
       "reports_count": 17,
       "notes_count": 2,
       "first_occurred_at": "2026-05-20T10:12:34Z",
@@ -313,6 +315,7 @@ severity:info assignee:me
   "resolved": false,
   "muted": false,
   "muted_until": null,
+  "muted_until_reports_count": null,
   "reports_count": 17,
   "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
@@ -364,7 +367,12 @@ severity:info assignee:me
 <h2 id="mute-error-group"><a class="header" href="#mute-error-group">Mute Error Group</a></h2>
 <p><strong>Tool:</strong> <code>mute_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Mute a group. Optionally auto-unmute at a future time using <code>snooze_until</code>.</p>
+<p>Mute a group forever, until a specific time, or until a number of additional
+occurrences.</p>
+<p>Omit both <code>snooze_until</code> and <code>occurrences</code> to mute forever. Use <code>snooze_until</code>
+for a time-based snooze, or <code>occurrences</code> to resume notifications after the
+next N reports in the group. Pass one condition at a time; if both are supplied,
+Telebugs applies the occurrence-based mute.</p>
 <h3 id="parameters-4"><a class="header" href="#parameters-4">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -372,23 +380,41 @@ severity:info assignee:me
 <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>—</td></tr>
+<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>Error group to mute</td></tr>
 <tr><td><code>note</code></td><td>string</td><td>No</td><td>Reason for muting</td></tr>
 <tr><td><code>snooze_until</code></td><td>string</td><td>No</td><td>ISO8601 datetime to automatically unmute</td></tr>
+<tr><td><code>occurrences</code></td><td>integer</td><td>No</td><td>Additional occurrences before notifications resume</td></tr>
 </tbody>
 </table>
 </div>
 <p><strong>Example:</strong> Mute for 24 hours:</p>
 <pre><code class="language-json">{
   "group_id": 42,
-  "note": "Investigating — suspected race condition",
+  "note": "Investigating - suspected race condition",
   "snooze_until": "2026-06-21T09:00:00Z"
+}
+</code></pre>
+<p><strong>Example:</strong> Mute until 10 more occurrences:</p>
+<pre><code class="language-json">{
+  "group_id": 42,
+  "note": "Noisy upstream timeout",
+  "occurrences": 10
+}
+</code></pre>
+<p>If the group currently has <code>reports_count: 17</code>, the occurrence example above
+sets <code>muted_until_reports_count</code> to <code>27</code>.</p>
+<h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
+<pre><code class="language-json">{
+  "muted": true,
+  "muted_until": null,
+  "muted_until_reports_count": 27
 }
 </code></pre>
 <h2 id="unmute-error-group"><a class="header" href="#unmute-error-group">Unmute Error Group</a></h2>
 <p><strong>Tool:</strong> <code>unmute_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Remove a mute from a group.</p>
+<p>Remove a mute from a group. This clears permanent, time-based, and
+occurrence-based mute conditions.</p>
 <h3 id="parameters-5"><a class="header" href="#parameters-5">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -423,7 +449,7 @@ processed group. Groups that are already resolved are skipped.</p>
   "note": "Fixed by deploy 2026.06.22"
 }
 </code></pre>
-<h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
+<h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 3,
@@ -434,7 +460,9 @@ processed group. Groups that are already resolved are skipped.</p>
 <p><strong>Tool:</strong> <code>bulk_mute_error_groups_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
 <p>Mute multiple error groups at once. Groups that are already muted are skipped.
-Optionally provide <code>snooze_until</code> to automatically unmute them later.</p>
+Optionally provide <code>snooze_until</code> to automatically unmute them later. Bulk MCP
+mute does not support occurrence-based thresholds; use <code>mute_error_group_tool</code>
+for that.</p>
 <h3 id="parameters-7"><a class="header" href="#parameters-7">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -455,7 +483,7 @@ Optionally provide <code>snooze_until</code> to automatically unmute them later.
   "snooze_until": "2026-06-23T09:00:00Z"
 }
 </code></pre>
-<h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
+<h3 id="example-response-4"><a class="header" href="#example-response-4">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 3,
@@ -485,7 +513,7 @@ represent the same underlying error and should share one history going forward.<
   "group_ids": [43, 44]
 }
 </code></pre>
-<h3 id="example-response-4"><a class="header" href="#example-response-4">Example Response</a></h3>
+<h3 id="example-response-5"><a class="header" href="#example-response-5">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 2,
@@ -554,7 +582,8 @@ groups that have already been merged.</p>
 <li>
 <p><strong>Temporarily silence noise</strong></p>
 <ul>
-<li><code>mute_error_group_tool</code> with <code>snooze_until</code></li>
+<li><code>mute_error_group_tool</code> with <code>snooze_until</code> for time-based snoozes</li>
+<li><code>mute_error_group_tool</code> with <code>occurrences</code> to resume after the next N reports</li>
 <li><code>bulk_mute_error_groups_tool</code> when several groups share the same noisy cause</li>
 </ul>
 </li>

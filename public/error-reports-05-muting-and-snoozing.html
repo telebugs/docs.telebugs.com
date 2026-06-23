@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e0f17833.js";
+            window.path_to_searchindex_js = "searchindex-22fe1613.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -193,40 +193,62 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="muting-and-snoozing"><a class="header" href="#muting-and-snoozing">Muting and Snoozing</a></h1>
-<p><strong>Muting</strong> (also called “snoozing” for temporary periods) allows you to silence
-notifications for a specific error group. This is useful when:</p>
+<p><strong>Muting</strong> silences notifications for a specific error group. Temporary
+muting is also called <strong>snoozing</strong>. This is useful when:</p>
 <ul>
 <li>An error is known and low-priority.</li>
 <li>You’re waiting on a third-party fix.</li>
 <li>The error is noisy but not urgent.</li>
+<li>You want notifications to resume only if the error keeps happening.</li>
 </ul>
 <p>When an error group is muted, <strong>no notifications</strong> (email, push, or webhook)
 will be sent for new reports in that group, regardless of your notification
 rules.</p>
 <h3 id="types-of-muting"><a class="header" href="#types-of-muting">Types of Muting</a></h3>
-<p>There are two forms:</p>
+<p>Telebugs supports three mute types:</p>
 <ul>
 <li>
-<p><strong>Temporary Snooze</strong> – Silence notifications for a fixed duration. Available
-durations:</p>
+<p><strong>Time-based snooze</strong> - Silence notifications for a fixed duration. The web
+UI offers these durations:</p>
 <ul>
 <li>1 hour</li>
 <li>4 hours</li>
 <li>8 hours</li>
 <li>1 day</li>
 <li>3 days</li>
-<li>After the time expires, notifications automatically resume.</li>
 </ul>
+<p>After the time expires, notifications automatically resume.</p>
 </li>
 <li>
-<p><strong>Permanent Mute</strong> (“Forever”) – Silence notifications indefinitely until
-manually unmuted.</p>
+<p><strong>Occurrence-based mute</strong> - Silence notifications until the group receives a
+selected number of additional reports. The web UI offers:</p>
+<ul>
+<li>Until it happens again</li>
+<li>10 more occurrences</li>
+<li>100 more occurrences</li>
+<li>1,000 more occurrences</li>
+<li>10,000 more occurrences</li>
+<li>100,000 more occurrences</li>
+</ul>
+<p>Occurrence-based muting counts from the group’s current <code>reports_count</code>. For
+example, if a group currently has 17 reports and you mute it for 10 more
+occurrences, notifications resume when the group reaches 27 reports.</p>
+</li>
+<li>
+<p><strong>Permanent mute</strong> (“Forever”) - Silence notifications indefinitely until the
+group is manually unmuted.</p>
 </li>
 </ul>
 <h3 id="how-muting-works"><a class="header" href="#how-muting-works">How Muting Works</a></h3>
 <ul>
 <li>Muting applies to the <strong>entire error group</strong>.</li>
+<li>Muting only affects <strong>notifications</strong>. New reports are still recorded,
+grouped, and visible in dashboards.</li>
+<li>Muting does not resolve the error. Resolution and muting are separate triage
+states.</li>
 <li>Any team member with access to the project can mute or unmute.</li>
+<li>Choosing a new mute option replaces the previous mute condition for that
+group.</li>
 <li>When an error is muted or unmuted, Telebugs automatically adds a system note:
 <ul>
 <li>“Error muted by [User Name].”</li>
@@ -236,36 +258,61 @@ manually unmuted.</p>
 <li>A badge appears on the error icon in all views (<strong>All Errors</strong>, <strong>All
 Reports</strong>, project dashboards, group detail) showing:
 <ul>
-<li>Bell-snooze icon for temporary snooze</li>
-<li>Bell-slash icon for permanent mute</li>
+<li>Bell-snooze icon for time-based snoozes</li>
+<li>Bell-slash icon for permanent and occurrence-based mutes</li>
 </ul>
 </li>
-<li>Hovering the badge reveals a popover with who muted it and (for snoozes) when
-it will resume.</li>
+<li>Hovering the badge reveals who muted it and when notifications resume:
+<ul>
+<li>Time-based snoozes show the remaining time.</li>
+<li>Occurrence-based mutes show how many more occurrences remain.</li>
+<li>Permanent mutes show that they remain muted until manually unmuted.</li>
 </ul>
+</li>
+</ul>
+<p>When a time-based or occurrence-based mute expires, Telebugs clears the mute and
+notifications resume automatically. For occurrence-based mutes, the report that
+reaches the threshold can trigger notifications.</p>
 <h3 id="how-to-mute-or-unmute-an-error"><a class="header" href="#how-to-mute-or-unmute-an-error">How to Mute or Unmute an Error</a></h3>
 <p>Controls are available on the <strong>individual error group detail page</strong>.</p>
 <h4 id="on-desktop--wider-screens"><a class="header" href="#on-desktop--wider-screens">On desktop / wider screens</a></h4>
 <p>The <strong>Mute…</strong> button appears in the header actions (next to Own it / Resolve).
-Clicking it opens a dropdown with duration options, including <strong>Forever</strong>.</p>
+The menu includes a few common choices from each category, such as <strong>For 1
+hour</strong>, <strong>For 1 day</strong>, <strong>Until it happens again</strong>, <strong>Until 10 more
+occurrences</strong>, and <strong>Forever</strong>.</p>
+<p>Choose <strong>More mute options…</strong> to see the full list of time and occurrence
+options.</p>
 <h4 id="on-mobile--narrow-screens"><a class="header" href="#on-mobile--narrow-screens">On mobile / narrow screens</a></h4>
-<p>A prominent <strong>Mute…</strong> button is shown below the error header.
-Tapping it opens a bottom sheet menu with the same duration options.</p>
+<p>A prominent <strong>Mute…</strong> button is shown below the error header. Tapping it opens
+a bottom sheet menu with the same common choices and <strong>More mute options…</strong>
+for the full list.</p>
 <h4 id="unmuting--unsnoozing"><a class="header" href="#unmuting--unsnoozing">Unmuting / Unsnoozing</a></h4>
 <p>If the error is currently muted:</p>
 <ul>
-<li>The button changes to <strong>Unmute</strong> (permanent mute) or <strong>Unsnooze</strong> (temporary).</li>
+<li>The button changes to <strong>Unmute</strong> for permanent and occurrence-based mutes, or
+<strong>Unsnooze</strong> for time-based snoozes.</li>
 <li>Clicking/tapping it immediately removes the mute and resumes notifications.</li>
+</ul>
+<h3 id="api-and-mcp-support"><a class="header" href="#api-and-mcp-support">API and MCP Support</a></h3>
+<p>Muting is also available through automation interfaces:</p>
+<ul>
+<li>The <a href="/rest-api-05-groups.html">REST API Groups endpoint</a> can mute a single group
+forever or until a number of additional occurrences. REST bulk mute creates
+permanent mutes.</li>
+<li><a href="/telebugs-mcp-05-error-groups.html">Telebugs MCP Error Groups</a> can mute a
+single group forever, until an ISO8601 <code>snooze_until</code> timestamp, or until a
+number of additional <code>occurrences</code>. MCP bulk mute supports permanent and
+time-based snoozes.</li>
 </ul>
 <h3 id="important-notes"><a class="header" href="#important-notes">Important Notes</a></h3>
 <ul>
-<li>Muting only affects <strong>notifications</strong> — new reports are still recorded,
-grouped, and visible in dashboards.</li>
 <li>Resolved errors can still be muted (useful for preventing notifications if
 they regress; see <a href="/error-reports-04-owning-errors.html">Owning Errors</a> for related triage).</li>
 <li>If a muted error receives new reports after being resolved, it will
-automatically become unresolved (as with any error), but notifications will
-remain suppressed until unmuted.</li>
+automatically become unresolved (as with any error), but notifications remain
+suppressed while the mute condition is still active.</li>
+<li>You can find muted and unmuted groups with the <code>is:muted</code> and <code>is:unmuted</code>
+search filters.</li>
 </ul>
 <p>Use muting responsibly to reduce noise while keeping full visibility into your
 error stream.</p>

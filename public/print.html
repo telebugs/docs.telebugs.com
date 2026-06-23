@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e0f17833.js";
+            window.path_to_searchindex_js = "searchindex-22fe1613.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -1852,6 +1852,7 @@ in a single parameter.</p>
       "muted_at": null,
       "muter_id": null,
       "muted_until": null,
+      "muted_until_reports_count": null,
       "resolved": false,
       "muted": false,
       "created_at": "2026-05-20T10:12:34Z",
@@ -1864,6 +1865,14 @@ in a single parameter.</p>
 </code></pre>
 <p>See <a href="#pagination">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
 <p>The <code>severity</code> field on each group is the highest severity ever observed for reports in that group (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, or <code>debug</code>).</p>
+<p>The mute fields describe the group’s current active mute:</p>
+<ul>
+<li><code>muted</code> is <code>true</code> when notifications are currently suppressed.</li>
+<li><code>muted_until</code> is set for time-based snoozes.</li>
+<li><code>muted_until_reports_count</code> is set for occurrence-based mutes. It stores the
+total <code>reports_count</code> at which notifications resume, not the additional count
+originally requested.</li>
+</ul>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="#reports">Reports</a> endpoints under the group.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
@@ -1876,11 +1885,24 @@ in a single parameter.</p>
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
 <h2 id="mute-a-group"><a class="header" href="#mute-a-group">Mute a Group</a></h2>
-<pre><code>curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+<p>Mute a group forever by omitting a request body:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
+<p>Mute a group until a number of additional occurrences by passing a positive
+<code>occurrences</code> value:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"occurrences": 10}'
+</code></pre>
+<p>If the group currently has <code>reports_count: 17</code>, the example above sets
+<code>muted_until_reports_count</code> to <code>27</code>. Notifications resume when the group reaches
+that total report count. Actions that only change state return <code>204 No Content</code>.</p>
 <h2 id="unmute-a-group"><a class="header" href="#unmute-a-group">Unmute a Group</a></h2>
+<p>Unmuting clears permanent, time-based, and occurrence-based mute conditions.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X DELETE \
   -H "Authorization: Bearer YOUR_API_KEY"
@@ -1913,8 +1935,8 @@ skipped; the response reports how many groups were changed.</p>
 }
 </code></pre>
 <h2 id="bulk-mute"><a class="header" href="#bulk-mute">Bulk Mute</a></h2>
-<p>Mute multiple groups in the same project. Groups that are already muted are
-skipped.</p>
+<p>Mute multiple groups in the same project. REST bulk mute creates permanent
+mutes. Groups that are already muted are skipped.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -1926,7 +1948,8 @@ skipped.</p>
 }
 </code></pre>
 <h2 id="bulk-unmute"><a class="header" href="#bulk-unmute">Bulk Unmute</a></h2>
-<p>Unmute multiple groups. Groups that are already unmuted are skipped.</p>
+<p>Unmute multiple groups. This clears permanent, time-based, and occurrence-based
+mute conditions. Groups that are already unmuted are skipped.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/bulk_mute \
   -X DELETE \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -2929,7 +2952,7 @@ errors, it can call <code>list_project_users_tool</code> to discover team member
 <tr><td><code>get_error_group_tool</code></td><td><code>read</code></td><td>Fetch details for a single group</td></tr>
 <tr><td><code>resolve_error_group_tool</code></td><td><code>write</code></td><td>Mark a group as resolved</td></tr>
 <tr><td><code>unresolve_error_group_tool</code></td><td><code>write</code></td><td>Re-open a resolved group</td></tr>
-<tr><td><code>mute_error_group_tool</code></td><td><code>write</code></td><td>Mute (optionally snooze) a group</td></tr>
+<tr><td><code>mute_error_group_tool</code></td><td><code>write</code></td><td>Mute a group forever, until a time, or until more occurrences</td></tr>
 <tr><td><code>unmute_error_group_tool</code></td><td><code>write</code></td><td>Unmute a group</td></tr>
 <tr><td><code>bulk_resolve_error_groups_tool</code></td><td><code>write</code></td><td>Resolve multiple groups</td></tr>
 <tr><td><code>bulk_mute_error_groups_tool</code></td><td><code>write</code></td><td>Mute multiple groups</td></tr>
@@ -2994,6 +3017,8 @@ severity:info assignee:me
       "severity": "error",
       "resolved": false,
       "muted": false,
+      "muted_until": null,
+      "muted_until_reports_count": null,
       "reports_count": 17,
       "notes_count": 2,
       "first_occurred_at": "2026-05-20T10:12:34Z",
@@ -3036,6 +3061,7 @@ severity:info assignee:me
   "resolved": false,
   "muted": false,
   "muted_until": null,
+  "muted_until_reports_count": null,
   "reports_count": 17,
   "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
@@ -3087,7 +3113,12 @@ severity:info assignee:me
 <h2 id="mute-error-group"><a class="header" href="#mute-error-group">Mute Error Group</a></h2>
 <p><strong>Tool:</strong> <code>mute_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Mute a group. Optionally auto-unmute at a future time using <code>snooze_until</code>.</p>
+<p>Mute a group forever, until a specific time, or until a number of additional
+occurrences.</p>
+<p>Omit both <code>snooze_until</code> and <code>occurrences</code> to mute forever. Use <code>snooze_until</code>
+for a time-based snooze, or <code>occurrences</code> to resume notifications after the
+next N reports in the group. Pass one condition at a time; if both are supplied,
+Telebugs applies the occurrence-based mute.</p>
 <h3 id="parameters-4"><a class="header" href="#parameters-4">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -3095,23 +3126,41 @@ severity:info assignee:me
 <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>—</td></tr>
+<tr><td><code>group_id</code></td><td>integer</td><td>Yes</td><td>Error group to mute</td></tr>
 <tr><td><code>note</code></td><td>string</td><td>No</td><td>Reason for muting</td></tr>
 <tr><td><code>snooze_until</code></td><td>string</td><td>No</td><td>ISO8601 datetime to automatically unmute</td></tr>
+<tr><td><code>occurrences</code></td><td>integer</td><td>No</td><td>Additional occurrences before notifications resume</td></tr>
 </tbody>
 </table>
 </div>
 <p><strong>Example:</strong> Mute for 24 hours:</p>
 <pre><code class="language-json">{
   "group_id": 42,
-  "note": "Investigating — suspected race condition",
+  "note": "Investigating - suspected race condition",
   "snooze_until": "2026-06-21T09:00:00Z"
+}
+</code></pre>
+<p><strong>Example:</strong> Mute until 10 more occurrences:</p>
+<pre><code class="language-json">{
+  "group_id": 42,
+  "note": "Noisy upstream timeout",
+  "occurrences": 10
+}
+</code></pre>
+<p>If the group currently has <code>reports_count: 17</code>, the occurrence example above
+sets <code>muted_until_reports_count</code> to <code>27</code>.</p>
+<h3 id="example-response-2-1"><a class="header" href="#example-response-2-1">Example Response</a></h3>
+<pre><code class="language-json">{
+  "muted": true,
+  "muted_until": null,
+  "muted_until_reports_count": 27
 }
 </code></pre>
 <h2 id="unmute-error-group"><a class="header" href="#unmute-error-group">Unmute Error Group</a></h2>
 <p><strong>Tool:</strong> <code>unmute_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Remove a mute from a group.</p>
+<p>Remove a mute from a group. This clears permanent, time-based, and
+occurrence-based mute conditions.</p>
 <h3 id="parameters-5"><a class="header" href="#parameters-5">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -3146,7 +3195,7 @@ processed group. Groups that are already resolved are skipped.</p>
   "note": "Fixed by deploy 2026.06.22"
 }
 </code></pre>
-<h3 id="example-response-2-1"><a class="header" href="#example-response-2-1">Example Response</a></h3>
+<h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 3,
@@ -3157,7 +3206,9 @@ processed group. Groups that are already resolved are skipped.</p>
 <p><strong>Tool:</strong> <code>bulk_mute_error_groups_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
 <p>Mute multiple error groups at once. Groups that are already muted are skipped.
-Optionally provide <code>snooze_until</code> to automatically unmute them later.</p>
+Optionally provide <code>snooze_until</code> to automatically unmute them later. Bulk MCP
+mute does not support occurrence-based thresholds; use <code>mute_error_group_tool</code>
+for that.</p>
 <h3 id="parameters-7"><a class="header" href="#parameters-7">Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -3178,7 +3229,7 @@ Optionally provide <code>snooze_until</code> to automatically unmute them later.
   "snooze_until": "2026-06-23T09:00:00Z"
 }
 </code></pre>
-<h3 id="example-response-3"><a class="header" href="#example-response-3">Example Response</a></h3>
+<h3 id="example-response-4"><a class="header" href="#example-response-4">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 3,
@@ -3208,7 +3259,7 @@ represent the same underlying error and should share one history going forward.<
   "group_ids": [43, 44]
 }
 </code></pre>
-<h3 id="example-response-4"><a class="header" href="#example-response-4">Example Response</a></h3>
+<h3 id="example-response-5"><a class="header" href="#example-response-5">Example Response</a></h3>
 <pre><code class="language-json">{
   "success": true,
   "processed": 2,
@@ -3277,7 +3328,8 @@ groups that have already been merged.</p>
 <li>
 <p><strong>Temporarily silence noise</strong></p>
 <ul>
-<li><code>mute_error_group_tool</code> with <code>snooze_until</code></li>
+<li><code>mute_error_group_tool</code> with <code>snooze_until</code> for time-based snoozes</li>
+<li><code>mute_error_group_tool</code> with <code>occurrences</code> to resume after the next N reports</li>
 <li><code>bulk_mute_error_groups_tool</code> when several groups share the same noisy cause</li>
 </ul>
 </li>
@@ -3333,7 +3385,7 @@ groups that have already been merged.</p>
 </tbody>
 </table>
 </div>
-<h3 id="example-response-5"><a class="header" href="#example-response-5">Example Response</a></h3>
+<h3 id="example-response-6"><a class="header" href="#example-response-6">Example Response</a></h3>
 <pre><code class="language-json">{
   "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
   "group_id": 42,
@@ -3520,7 +3572,7 @@ groups that have already been merged.</p>
 </tbody>
 </table>
 </div>
-<h3 id="example-response-6"><a class="header" href="#example-response-6">Example Response</a></h3>
+<h3 id="example-response-7"><a class="header" href="#example-response-7">Example Response</a></h3>
 <pre><code class="language-json">{
   "notes": [
     {
@@ -4080,40 +4132,62 @@ Clicking <strong>Unclaim</strong> immediately releases ownership.</p>
 <p>This simple ownership system helps avoid duplicated effort and makes it easy to see at a glance who is handling each issue.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="muting-and-snoozing"><a class="header" href="#muting-and-snoozing">Muting and Snoozing</a></h1>
-<p><strong>Muting</strong> (also called “snoozing” for temporary periods) allows you to silence
-notifications for a specific error group. This is useful when:</p>
+<p><strong>Muting</strong> silences notifications for a specific error group. Temporary
+muting is also called <strong>snoozing</strong>. This is useful when:</p>
 <ul>
 <li>An error is known and low-priority.</li>
 <li>You’re waiting on a third-party fix.</li>
 <li>The error is noisy but not urgent.</li>
+<li>You want notifications to resume only if the error keeps happening.</li>
 </ul>
 <p>When an error group is muted, <strong>no notifications</strong> (email, push, or webhook)
 will be sent for new reports in that group, regardless of your notification
 rules.</p>
 <h3 id="types-of-muting"><a class="header" href="#types-of-muting">Types of Muting</a></h3>
-<p>There are two forms:</p>
+<p>Telebugs supports three mute types:</p>
 <ul>
 <li>
-<p><strong>Temporary Snooze</strong> – Silence notifications for a fixed duration. Available
-durations:</p>
+<p><strong>Time-based snooze</strong> - Silence notifications for a fixed duration. The web
+UI offers these durations:</p>
 <ul>
 <li>1 hour</li>
 <li>4 hours</li>
 <li>8 hours</li>
 <li>1 day</li>
 <li>3 days</li>
-<li>After the time expires, notifications automatically resume.</li>
 </ul>
+<p>After the time expires, notifications automatically resume.</p>
 </li>
 <li>
-<p><strong>Permanent Mute</strong> (“Forever”) – Silence notifications indefinitely until
-manually unmuted.</p>
+<p><strong>Occurrence-based mute</strong> - Silence notifications until the group receives a
+selected number of additional reports. The web UI offers:</p>
+<ul>
+<li>Until it happens again</li>
+<li>10 more occurrences</li>
+<li>100 more occurrences</li>
+<li>1,000 more occurrences</li>
+<li>10,000 more occurrences</li>
+<li>100,000 more occurrences</li>
+</ul>
+<p>Occurrence-based muting counts from the group’s current <code>reports_count</code>. For
+example, if a group currently has 17 reports and you mute it for 10 more
+occurrences, notifications resume when the group reaches 27 reports.</p>
+</li>
+<li>
+<p><strong>Permanent mute</strong> (“Forever”) - Silence notifications indefinitely until the
+group is manually unmuted.</p>
 </li>
 </ul>
 <h3 id="how-muting-works"><a class="header" href="#how-muting-works">How Muting Works</a></h3>
 <ul>
 <li>Muting applies to the <strong>entire error group</strong>.</li>
+<li>Muting only affects <strong>notifications</strong>. New reports are still recorded,
+grouped, and visible in dashboards.</li>
+<li>Muting does not resolve the error. Resolution and muting are separate triage
+states.</li>
 <li>Any team member with access to the project can mute or unmute.</li>
+<li>Choosing a new mute option replaces the previous mute condition for that
+group.</li>
 <li>When an error is muted or unmuted, Telebugs automatically adds a system note:
 <ul>
 <li>“Error muted by [User Name].”</li>
@@ -4123,36 +4197,61 @@ manually unmuted.</p>
 <li>A badge appears on the error icon in all views (<strong>All Errors</strong>, <strong>All
 Reports</strong>, project dashboards, group detail) showing:
 <ul>
-<li>Bell-snooze icon for temporary snooze</li>
-<li>Bell-slash icon for permanent mute</li>
+<li>Bell-snooze icon for time-based snoozes</li>
+<li>Bell-slash icon for permanent and occurrence-based mutes</li>
 </ul>
 </li>
-<li>Hovering the badge reveals a popover with who muted it and (for snoozes) when
-it will resume.</li>
+<li>Hovering the badge reveals who muted it and when notifications resume:
+<ul>
+<li>Time-based snoozes show the remaining time.</li>
+<li>Occurrence-based mutes show how many more occurrences remain.</li>
+<li>Permanent mutes show that they remain muted until manually unmuted.</li>
 </ul>
+</li>
+</ul>
+<p>When a time-based or occurrence-based mute expires, Telebugs clears the mute and
+notifications resume automatically. For occurrence-based mutes, the report that
+reaches the threshold can trigger notifications.</p>
 <h3 id="how-to-mute-or-unmute-an-error"><a class="header" href="#how-to-mute-or-unmute-an-error">How to Mute or Unmute an Error</a></h3>
 <p>Controls are available on the <strong>individual error group detail page</strong>.</p>
 <h4 id="on-desktop--wider-screens-1"><a class="header" href="#on-desktop--wider-screens-1">On desktop / wider screens</a></h4>
 <p>The <strong>Mute…</strong> button appears in the header actions (next to Own it / Resolve).
-Clicking it opens a dropdown with duration options, including <strong>Forever</strong>.</p>
+The menu includes a few common choices from each category, such as <strong>For 1
+hour</strong>, <strong>For 1 day</strong>, <strong>Until it happens again</strong>, <strong>Until 10 more
+occurrences</strong>, and <strong>Forever</strong>.</p>
+<p>Choose <strong>More mute options…</strong> to see the full list of time and occurrence
+options.</p>
 <h4 id="on-mobile--narrow-screens-1"><a class="header" href="#on-mobile--narrow-screens-1">On mobile / narrow screens</a></h4>
-<p>A prominent <strong>Mute…</strong> button is shown below the error header.
-Tapping it opens a bottom sheet menu with the same duration options.</p>
+<p>A prominent <strong>Mute…</strong> button is shown below the error header. Tapping it opens
+a bottom sheet menu with the same common choices and <strong>More mute options…</strong>
+for the full list.</p>
 <h4 id="unmuting--unsnoozing"><a class="header" href="#unmuting--unsnoozing">Unmuting / Unsnoozing</a></h4>
 <p>If the error is currently muted:</p>
 <ul>
-<li>The button changes to <strong>Unmute</strong> (permanent mute) or <strong>Unsnooze</strong> (temporary).</li>
+<li>The button changes to <strong>Unmute</strong> for permanent and occurrence-based mutes, or
+<strong>Unsnooze</strong> for time-based snoozes.</li>
 <li>Clicking/tapping it immediately removes the mute and resumes notifications.</li>
+</ul>
+<h3 id="api-and-mcp-support"><a class="header" href="#api-and-mcp-support">API and MCP Support</a></h3>
+<p>Muting is also available through automation interfaces:</p>
+<ul>
+<li>The <a href="/rest-api-05-groups.html">REST API Groups endpoint</a> can mute a single group
+forever or until a number of additional occurrences. REST bulk mute creates
+permanent mutes.</li>
+<li><a href="/telebugs-mcp-05-error-groups.html">Telebugs MCP Error Groups</a> can mute a
+single group forever, until an ISO8601 <code>snooze_until</code> timestamp, or until a
+number of additional <code>occurrences</code>. MCP bulk mute supports permanent and
+time-based snoozes.</li>
 </ul>
 <h3 id="important-notes"><a class="header" href="#important-notes">Important Notes</a></h3>
 <ul>
-<li>Muting only affects <strong>notifications</strong> — new reports are still recorded,
-grouped, and visible in dashboards.</li>
 <li>Resolved errors can still be muted (useful for preventing notifications if
 they regress; see <a href="/error-reports-04-owning-errors.html">Owning Errors</a> for related triage).</li>
 <li>If a muted error receives new reports after being resolved, it will
-automatically become unresolved (as with any error), but notifications will
-remain suppressed until unmuted.</li>
+automatically become unresolved (as with any error), but notifications remain
+suppressed while the mute condition is still active.</li>
+<li>You can find muted and unmuted groups with the <code>is:muted</code> and <code>is:unmuted</code>
+search filters.</li>
 </ul>
 <p>Use muting responsibly to reduce noise while keeping full visibility into your
 error stream.</p>

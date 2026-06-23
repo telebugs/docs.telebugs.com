@@ -12,7 +12,7 @@ MCP gives AI tools powerful capabilities to list, inspect, filter, and manage er
 | `get_error_group_tool`       | `read`  | Fetch details for a single group |
 | `resolve_error_group_tool`   | `write` | Mark a group as resolved         |
 | `unresolve_error_group_tool` | `write` | Re-open a resolved group         |
-| `mute_error_group_tool`      | `write` | Mute (optionally snooze) a group |
+| `mute_error_group_tool`      | `write` | Mute a group forever, until a time, or until more occurrences |
 | `unmute_error_group_tool`    | `write` | Unmute a group                   |
 | `bulk_resolve_error_groups_tool` | `write` | Resolve multiple groups      |
 | `bulk_mute_error_groups_tool`    | `write` | Mute multiple groups         |
@@ -81,6 +81,8 @@ severity:info assignee:me
       "severity": "error",
       "resolved": false,
       "muted": false,
+      "muted_until": null,
+      "muted_until_reports_count": null,
       "reports_count": 17,
       "notes_count": 2,
       "first_occurred_at": "2026-05-20T10:12:34Z",
@@ -125,6 +127,7 @@ Fetch full details for a single error group, including assignee, mute status, an
   "resolved": false,
   "muted": false,
   "muted_until": null,
+  "muted_until_reports_count": null,
   "reports_count": 17,
   "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
@@ -177,23 +180,53 @@ Re-open a previously resolved group.
 **Tool:** `mute_error_group_tool`
 **Scope required:** `telebugs.write`
 
-Mute a group. Optionally auto-unmute at a future time using `snooze_until`.
+Mute a group forever, until a specific time, or until a number of additional
+occurrences.
+
+Omit both `snooze_until` and `occurrences` to mute forever. Use `snooze_until`
+for a time-based snooze, or `occurrences` to resume notifications after the
+next N reports in the group. Pass one condition at a time; if both are supplied,
+Telebugs applies the occurrence-based mute.
 
 ### Parameters
 
 | Parameter      | Type    | Required | Description                              |
 | -------------- | ------- | -------- | ---------------------------------------- |
-| `group_id`     | integer | Yes      | —                                        |
+| `group_id`     | integer | Yes      | Error group to mute                      |
 | `note`         | string  | No       | Reason for muting                        |
 | `snooze_until` | string  | No       | ISO8601 datetime to automatically unmute |
+| `occurrences`  | integer | No       | Additional occurrences before notifications resume |
 
 **Example:** Mute for 24 hours:
 
 ```json
 {
   "group_id": 42,
-  "note": "Investigating — suspected race condition",
+  "note": "Investigating - suspected race condition",
   "snooze_until": "2026-06-21T09:00:00Z"
+}
+```
+
+**Example:** Mute until 10 more occurrences:
+
+```json
+{
+  "group_id": 42,
+  "note": "Noisy upstream timeout",
+  "occurrences": 10
+}
+```
+
+If the group currently has `reports_count: 17`, the occurrence example above
+sets `muted_until_reports_count` to `27`.
+
+### Example Response
+
+```json
+{
+  "muted": true,
+  "muted_until": null,
+  "muted_until_reports_count": 27
 }
 ```
 
@@ -202,7 +235,8 @@ Mute a group. Optionally auto-unmute at a future time using `snooze_until`.
 **Tool:** `unmute_error_group_tool`
 **Scope required:** `telebugs.write`
 
-Remove a mute from a group.
+Remove a mute from a group. This clears permanent, time-based, and
+occurrence-based mute conditions.
 
 ### Parameters
 
@@ -250,7 +284,9 @@ processed group. Groups that are already resolved are skipped.
 **Scope required:** `telebugs.write`
 
 Mute multiple error groups at once. Groups that are already muted are skipped.
-Optionally provide `snooze_until` to automatically unmute them later.
+Optionally provide `snooze_until` to automatically unmute them later. Bulk MCP
+mute does not support occurrence-based thresholds; use `mute_error_group_tool`
+for that.
 
 ### Parameters
 
@@ -362,7 +398,8 @@ Here are typical patterns AI tools follow:
    - `bulk_resolve_error_groups_tool` when the same fix closed several groups
 
 4. **Temporarily silence noise**
-   - `mute_error_group_tool` with `snooze_until`
+   - `mute_error_group_tool` with `snooze_until` for time-based snoozes
+   - `mute_error_group_tool` with `occurrences` to resume after the next N reports
    - `bulk_mute_error_groups_tool` when several groups share the same noisy cause
 
 5. **Merge duplicate groups**
