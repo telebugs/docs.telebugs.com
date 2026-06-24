@@ -35,3 +35,26 @@ These numbers are rough estimates. Actual throughput depends on CPU, RAM, applic
 
 - Tested on Linux (Ubuntu, Debian, Alpine, Rocky) and any OS that supports Docker.
 - Also works on macOS.
+
+**Rocky Linux 9 note:** Rocky works well once Docker is installed, but the
+Telebugs installer may not be able to install Docker automatically there. If you
+see a message that Docker installation is not supported on this platform,
+install Docker first, then run your Telebugs installation command again:
+
+```bash
+sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo systemctl --now enable docker
+sudo usermod -a -G docker YOUR_USER
+```
+
+Replace `YOUR_USER` with the Linux user that will run Telebugs. Log out and back
+in, or run `newgrp docker`, so the new group membership is active. If automatic
+updates complain that `cron` is not installed, install or enable Rocky's
+`cronie` package; if needed, add a daily `telebugs update` job manually with
+`crontab -e`.
+
+See the [Rocky Linux Docker guide][1] for the latest Docker installation
+details.
+
+[1]: https://docs.rockylinux.org/gemstones/containers/docker/

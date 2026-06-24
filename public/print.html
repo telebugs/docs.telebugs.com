@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-22fe1613.js";
+            window.path_to_searchindex_js = "searchindex-00c07f4e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -356,6 +356,22 @@ You just run one command. Then sit back and have a cup of tea.</p>
 <li>Tested on Linux (Ubuntu, Debian, Alpine, Rocky) and any OS that supports Docker.</li>
 <li>Also works on macOS.</li>
 </ul>
+<p><strong>Rocky Linux 9 note:</strong> Rocky works well once Docker is installed, but the
+Telebugs installer may not be able to install Docker automatically there. If you
+see a message that Docker installation is not supported on this platform,
+install Docker first, then run your Telebugs installation command again:</p>
+<pre><code class="language-bash">sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo systemctl --now enable docker
+sudo usermod -a -G docker YOUR_USER
+</code></pre>
+<p>Replace <code>YOUR_USER</code> with the Linux user that will run Telebugs. Log out and back
+in, or run <code>newgrp docker</code>, so the new group membership is active. If automatic
+updates complain that <code>cron</code> is not installed, install or enable Rocky’s
+<code>cronie</code> package; if needed, add a daily <code>telebugs update</code> job manually with
+<code>crontab -e</code>.</p>
+<p>See the <a href="https://docs.rockylinux.org/gemstones/containers/docker/">Rocky Linux Docker guide</a> for the latest Docker installation
+details.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="installation-steps"><a class="header" href="#installation-steps">Installation Steps</a></h1>
 <p>The whole process takes less than 5 minutes. Here is how to get started.</p>
