@@ -8,16 +8,28 @@ Telebugs works with over 100 programming languages and frameworks through Sentry
 
 ## Error Throughput
 
-Use this table to estimate what your server can handle.
+Use this table to estimate sustained, fully processed error reports. These
+numbers are about reports that have made it through the ingest queue and are
+visible in Telebugs, not just HTTP requests accepted by the ingest endpoint.
 
-| CPU cores | Est. max errors/second | Est. max errors/day |
-| --------- | ---------------------- | ------------------- |
-| 2         | 30                     | 2,592,000           |
-| 4         | 60                     | 5,184,000           |
-| 8         | 120                    | 10,368,000          |
-| 16        | 240                    | 20,736,000          |
+| Server | Sustained processed reports/second | Sustained processed reports/day |
+| ------ | ---------------------------------- | -------------------------------- |
+| 2 vCPU / 4 GB RAM | ~50 | ~4,320,000 |
+| 4 vCPU / 8 GB RAM | ~100 | ~8,640,000 |
+| 8 vCPU / 16 GB RAM | ~200 | ~17,280,000 |
+| 16 vCPU / 32 GB RAM | ~400 | ~34,560,000 |
 
-These numbers are rough estimates. Actual throughput depends on CPU, RAM, application complexity, and error volume. Throughput is shared across all projects in one Telebugs installation. With two projects, each gets about half. With four projects, each gets about a quarter, and so on.
+The 2 vCPU / 4 GB RAM row is based on 10-minute benchmarks on a Hetzner CX23
+VPS with local disk. In those tests, Telebugs processed about 50 reports per
+second end-to-end under ingest-only and mixed ingest/UI workloads. The ingest
+endpoint also accepted short bursts above 160 errors per second, with queued
+reports draining afterward.
+
+Larger rows are planning estimates. Actual throughput depends on CPU, RAM, disk
+speed, application payload size, retention settings, notifications, and how much
+UI traffic the same server is handling. Throughput is shared across all projects
+in one Telebugs installation. With two busy projects, each gets about half. With
+four busy projects, each gets about a quarter, and so on.
 
 ## Recommended Minimum Specs
 
@@ -28,8 +40,8 @@ These numbers are rough estimates. Actual throughput depends on CPU, RAM, applic
 ## Recommended Specs for Small to Medium Projects
 
 - **RAM:** 4 GB
-- **Disk space:** 80 GB
-- **CPU:** 3 cores
+- **Disk space:** 40-80 GB
+- **CPU:** 2 cores
 
 ## Operating System Compatibility
 

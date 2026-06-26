@@ -11,7 +11,9 @@ about 5 minutes.
 
    ![Creating a new Hetzner server](assets/images/appendix-05-installing-on-hetzner/01.webp)
 
-   You need at least 2GB RAM and 1 CPU.
+   You need at least 2 GB RAM and 1 CPU. For a small production install, the
+   CX23 plan (2 vCPU, 4 GB RAM, 40 GB local disk) is a good starting point and
+   is the smallest Hetzner plan we currently use for [throughput benchmarks](/src/installation-02-system-requirements.md).
 
    ![CPU type selection](assets/images/appendix-05-installing-on-hetzner/02.webp)
 
