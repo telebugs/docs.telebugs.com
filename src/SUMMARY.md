@@ -68,7 +68,7 @@
   - [Owning Errors](error-reports-04-owning-errors.md)
   - [Muting and Snoozing](error-reports-05-muting-and-snoozing.md)
 
-- [Data Retention](data-retention-00.md)
+- [Instance Settings](instance-00.md)
 - [Service Messages](service-messages-00.md)
 
 - [Appendix](appendix-00.md)

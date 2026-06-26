@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Data Retention - The Telebugs Manual</title>
+        <title>Instance Settings - The Telebugs Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-688cd814.js";
+            window.path_to_searchindex_js = "searchindex-68e7a658.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9255bd16.js"></script>
+        <script src="toc-c9aa9b5c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -192,23 +192,33 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="data-retention"><a class="header" href="#data-retention">Data Retention</a></h1>
-<p>Data retention in Telebugs helps you control how long <a href="/error-reports-00.html">error reports</a> and
-artifacts (like <a href="/source-maps-00.html">source maps</a>) are kept. Automatic policies clean up old data
-based on time or disk usage, keeping storage manageable and supporting
-compliance needs.</p>
-<p>Cleanup jobs run nightly at 2 AM server time. You can also trigger manual purges
-immediately.</p>
-<p>Data retention policies can also be managed programmatically via the
-<a href="rest-api-11-data-retention.html">REST API</a>.</p>
-<p>This chapter covers error and artifact retention policies, purge types, and
-monitoring disk usage.</p>
+                        <h1 id="instance-settings"><a class="header" href="#instance-settings">Instance Settings</a></h1>
+<p>Instance settings help you keep a self-hosted Telebugs server healthy over time.
+They are global to the whole installation, not per-project.</p>
+<p>Telebugs keeps these controls in the admin UI instead of hiding them behind
+environment variables. Go to <strong>Settings</strong> &gt; <strong>Instance</strong>.</p>
+<p>This chapter covers ingest protection, error retention, artifact retention,
+purge types, and disk usage monitoring.</p>
+<h2 id="ingest-protection"><a class="header" href="#ingest-protection">Ingest Protection</a></h2>
+<p>Ingest protection limits how many incoming errors Telebugs accepts per minute.
+It protects the server during error storms, such as a runaway deploy or a noisy
+endpoint that suddenly starts raising thousands of exceptions.</p>
+<p>When ingest protection is enabled and the limit is reached, Telebugs returns
+<code>429 Too Many Requests</code> with a <code>Retry-After</code> header. Rate-limited errors are not
+written to the ingest queue and do not create background jobs.</p>
+<p>The default is enabled at <strong>3,000 accepted errors per minute</strong>. That is 50 errors
+per second, which matches the sustained processing baseline for a small 2 vCPU /
+4 GB RAM VPS in Telebugs benchmarks. Larger servers can safely use a higher
+limit.</p>
+<p>The Ingest Protection page also shows lightweight counters for accepted and
+rate-limited errors in the current minute and the last hour.</p>
 <h2 id="error-retention-policy"><a class="header" href="#error-retention-policy">Error Retention Policy</a></h2>
 <p>Error retention controls how long reports and their details (backtraces,
 breadcrumbs, tags, notes, etc.) are stored.</p>
-<p>Enable automatic cleanup to prevent unlimited growth.</p>
+<p>Enable automatic cleanup to prevent unlimited growth. Cleanup jobs run nightly
+at 2 AM server time. You can also trigger manual purges immediately.</p>
 <h3 id="enabling-error-retention"><a class="header" href="#enabling-error-retention">Enabling Error Retention</a></h3>
-<p>Go to <strong>Settings</strong> &gt; <strong>Data Retention</strong>.</p>
+<p>Go to <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Error Retention</strong>.</p>
 <p>Toggle <strong>Enable automatic error cleanup</strong> and save. The UI shows when the next
 cleanup will run.</p>
 <h3 id="time-based-cleanup"><a class="header" href="#time-based-cleanup">Time-Based Cleanup</a></h3>
@@ -220,12 +230,12 @@ Historical details are lost.</li>
 <li><strong>Partial purge</strong>: Keeps basic metadata for graphs and counts, but deletes
 heavy details like stack traces and contexts.</li>
 </ul>
-<p><strong>Example:</strong> A 90-day partial purge keeps stats for reports older than 90 days but
-removes the full payloads.</p>
+<p><strong>Example:</strong> A 90-day partial purge keeps stats for reports older than 90 days
+but removes the full payloads.</p>
 <h3 id="disk-based-cleanup"><a class="header" href="#disk-based-cleanup">Disk-Based Cleanup</a></h3>
 <p>Triggers when the database file grows too large (full purge only, oldest reports
 first).</p>
-<p>Set limit as:</p>
+<p>Set the limit as:</p>
 <ul>
 <li>Absolute size (e.g., 10 GB)</li>
 <li>Percentage of total disk (e.g., 35%)</li>
@@ -235,8 +245,8 @@ first).</p>
 <p>Artifacts (mainly source maps attached to releases) have separate retention
 rules.</p>
 <h3 id="enabling-artifact-retention"><a class="header" href="#enabling-artifact-retention">Enabling Artifact Retention</a></h3>
-<p>In <strong>Settings</strong> &gt; <strong>Data Retention</strong>, toggle <strong>Enable automatic artifact
-cleanup</strong>.</p>
+<p>Go to <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Artifact Retention</strong>.</p>
+<p>Toggle <strong>Enable automatic artifact cleanup</strong>.</p>
 <h3 id="time-based-artifact-cleanup"><a class="header" href="#time-based-artifact-cleanup">Time-Based Artifact Cleanup</a></h3>
 <p>Deletes artifacts from releases older than the set period, but only if no recent
 error reports reference them.</p>
@@ -249,12 +259,13 @@ percentage).</p>
 excess old releases (keep only the newest N, e.g., 20).</p>
 <p>Oldest inactive releases are removed first.</p>
 <h2 id="monitoring-and-maintenance"><a class="header" href="#monitoring-and-maintenance">Monitoring and Maintenance</a></h2>
-<p>The <strong>Data Retention</strong> section shows live stats:</p>
+<p>The Instance section shows live stats:</p>
 <ul>
 <li>Total and free disk space</li>
 <li>Database size and percentage used</li>
 <li>Artifact size and count</li>
 <li>Total report count</li>
+<li>Accepted and rate-limited ingest counts</li>
 </ul>
 <p>Stats refresh automatically after cleanups.</p>
 <p>Telebugs runs a nightly <code>VACUUM</code> job to reclaim unused space when there’s enough
@@ -263,6 +274,8 @@ free disk (database size + 10% buffer).</p>
 data if needed before cleanup.</p>
 <p>For quick cleanup, use the <strong>Danger Zone</strong> in <a href="/projects-04-project-settings.html">project settings</a> to purge all
 error data or note attachments manually.</p>
+<p>Retention policies can also be managed programmatically via the
+<a href="rest-api-11-data-retention.html">REST API</a>.</p>
 
                     </main>
 

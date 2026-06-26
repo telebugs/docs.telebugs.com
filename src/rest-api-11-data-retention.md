@@ -6,6 +6,30 @@ The policies are global to the instance (not per-project).
 
 All endpoints require an admin user's API key.
 
+In the Telebugs UI, these settings live under **Settings** > **Instance**.
+
+## Get Ingest Protection Policy
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_protection \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+## Update Ingest Protection Policy
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_protection \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "global_rate_limit_per_minute": 3000
+  }'
+```
+
 ## Get Error Retention Policy
 
 ```sh
@@ -59,6 +83,15 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts
   }'
 ```
 
+## Response Format (Ingest Protection)
+
+```json
+{
+  "enabled": true,
+  "global_rate_limit_per_minute": 3000
+}
+```
+
 ## Response Format (Error Retention)
 
 ```json
@@ -88,4 +121,4 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts
 }
 ```
 
-See the [Data Retention](data-retention-00.md) chapter for details on the meaning of each setting (time-based vs disk-based, full vs partial purge, etc.).
+See the [Instance Settings](instance-00.md) chapter for details on the meaning of each setting (ingest protection, time-based vs disk-based cleanup, full vs partial purge, etc.).

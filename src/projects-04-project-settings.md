@@ -53,7 +53,7 @@ Irreversible actions; back up first.
 - **Full purge**: Wipe all error data (project structure stays).
 - **Delete project**: Remove entirely; double-confirm.
 
-Use for cleanup, but export data if needed for audits (see [Data Retention][2]).
+Use for cleanup, but export data if needed for audits (see [Instance Settings][2]).
 
 [1]: /team-management-00.md
-[2]: /data-retention-00.md
+[2]: /instance-00.md

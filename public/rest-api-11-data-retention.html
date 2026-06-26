@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-688cd814.js";
+            window.path_to_searchindex_js = "searchindex-68e7a658.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9255bd16.js"></script>
+        <script src="toc-c9aa9b5c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -196,6 +196,23 @@
 <p>Data retention policies let you control how long error reports and release artifacts (such as debug symbols and minidumps) are kept. This is primarily for compliance and data minimization requirements.</p>
 <p>The policies are global to the instance (not per-project).</p>
 <p>All endpoints require an admin user’s API key.</p>
+<p>In the Telebugs UI, these settings live under <strong>Settings</strong> &gt; <strong>Instance</strong>.</p>
+<h2 id="get-ingest-protection-policy"><a class="header" href="#get-ingest-protection-policy">Get Ingest Protection Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_protection \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<h2 id="update-ingest-protection-policy"><a class="header" href="#update-ingest-protection-policy">Update Ingest Protection Policy</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_protection \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "enabled": true,
+    "global_rate_limit_per_minute": 3000
+  }'
+</code></pre>
 <h2 id="get-error-retention-policy"><a class="header" href="#get-error-retention-policy">Get Error Retention Policy</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/errors \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -237,6 +254,12 @@
     "max_releases_kept": 10
   }'
 </code></pre>
+<h2 id="response-format-ingest-protection"><a class="header" href="#response-format-ingest-protection">Response Format (Ingest Protection)</a></h2>
+<pre><code class="language-json">{
+  "enabled": true,
+  "global_rate_limit_per_minute": 3000
+}
+</code></pre>
 <h2 id="response-format-error-retention"><a class="header" href="#response-format-error-retention">Response Format (Error Retention)</a></h2>
 <pre><code class="language-json">{
   "enabled": true,
@@ -260,7 +283,7 @@
   "max_releases_kept": 10
 }
 </code></pre>
-<p>See the <a href="data-retention-00.html">Data Retention</a> chapter for details on the meaning of each setting (time-based vs disk-based, full vs partial purge, etc.).</p>
+<p>See the <a href="instance-00.html">Instance Settings</a> chapter for details on the meaning of each setting (ingest protection, time-based vs disk-based cleanup, full vs partial purge, etc.).</p>
 
                     </main>
 
