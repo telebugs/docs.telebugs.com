@@ -31,6 +31,44 @@ UI traffic the same server is handling. Throughput is shared across all projects
 in one Telebugs installation. With two busy projects, each gets about half. With
 four busy projects, each gets about a quarter, and so on.
 
+## Benchmark Methodology
+
+Telebugs includes a source-level benchmark harness at `bin/load`. This is not
+part of the customer-facing `telebugs` CLI. It is meant for repeatable release
+and sizing benchmarks.
+
+The benchmark starts an isolated Dockerized Telebugs instance in the
+`performance` environment, creates a throwaway project token, runs k6 against
+the Sentry envelope endpoint, waits for the ingest queue to drain, and prints
+both intake and processing rates.
+
+For the 2 vCPU / 4 GB RAM baseline above, we ran these 10-minute tests on a
+Hetzner CX23 VPS:
+
+```bash
+bin/load --users 100 --duration 10m --read-ratio 0 --groups 200 --drain-timeout 3600
+bin/load --users 100 --duration 10m --read-ratio 10 --groups 200 --drain-timeout 3600
+bin/load --users 100 --duration 10m --read-ratio 20 --groups 200 --drain-timeout 3600
+```
+
+The important result fields are:
+
+- **Envelope accept rate:** how quickly the ingest endpoint accepted incoming
+  reports during the k6 run. This is the burst intake rate.
+- **Reports processed end-to-end:** how many reports per second were fully
+  processed after including any queue drain time. This is the sustained sizing
+  number used in the table.
+- **HTTP p95 latency:** the 95th percentile response time during the load test.
+- **HTTP failures and failed jobs:** both should stay near zero for a healthy
+  run.
+- **Peak pending ingest payloads:** how much backlog accumulated while Telebugs
+  absorbed the burst.
+
+For capacity planning, prefer `Reports processed end-to-end`. A high
+`Envelope accept rate` with a large pending queue means Telebugs absorbed the
+burst successfully, but the server would need more CPU, faster disk, or a lower
+incoming error rate to sustain that load indefinitely.
+
 ## Recommended Minimum Specs
 
 - **RAM:** 1 GB

@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-52a6a56a.js";
+            window.path_to_searchindex_js = "searchindex-688cd814.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9255bd16.js"></script>
@@ -223,6 +223,37 @@ speed, application payload size, retention settings, notifications, and how much
 UI traffic the same server is handling. Throughput is shared across all projects
 in one Telebugs installation. With two busy projects, each gets about half. With
 four busy projects, each gets about a quarter, and so on.</p>
+<h2 id="benchmark-methodology"><a class="header" href="#benchmark-methodology">Benchmark Methodology</a></h2>
+<p>Telebugs includes a source-level benchmark harness at <code>bin/load</code>. This is not
+part of the customer-facing <code>telebugs</code> CLI. It is meant for repeatable release
+and sizing benchmarks.</p>
+<p>The benchmark starts an isolated Dockerized Telebugs instance in the
+<code>performance</code> environment, creates a throwaway project token, runs k6 against
+the Sentry envelope endpoint, waits for the ingest queue to drain, and prints
+both intake and processing rates.</p>
+<p>For the 2 vCPU / 4 GB RAM baseline above, we ran these 10-minute tests on a
+Hetzner CX23 VPS:</p>
+<pre><code class="language-bash">bin/load --users 100 --duration 10m --read-ratio 0 --groups 200 --drain-timeout 3600
+bin/load --users 100 --duration 10m --read-ratio 10 --groups 200 --drain-timeout 3600
+bin/load --users 100 --duration 10m --read-ratio 20 --groups 200 --drain-timeout 3600
+</code></pre>
+<p>The important result fields are:</p>
+<ul>
+<li><strong>Envelope accept rate:</strong> how quickly the ingest endpoint accepted incoming
+reports during the k6 run. This is the burst intake rate.</li>
+<li><strong>Reports processed end-to-end:</strong> how many reports per second were fully
+processed after including any queue drain time. This is the sustained sizing
+number used in the table.</li>
+<li><strong>HTTP p95 latency:</strong> the 95th percentile response time during the load test.</li>
+<li><strong>HTTP failures and failed jobs:</strong> both should stay near zero for a healthy
+run.</li>
+<li><strong>Peak pending ingest payloads:</strong> how much backlog accumulated while Telebugs
+absorbed the burst.</li>
+</ul>
+<p>For capacity planning, prefer <code>Reports processed end-to-end</code>. A high
+<code>Envelope accept rate</code> with a large pending queue means Telebugs absorbed the
+burst successfully, but the server would need more CPU, faster disk, or a lower
+incoming error rate to sustain that load indefinitely.</p>
 <h2 id="recommended-minimum-specs"><a class="header" href="#recommended-minimum-specs">Recommended Minimum Specs</a></h2>
 <ul>
 <li><strong>RAM:</strong> 1 GB</li>
