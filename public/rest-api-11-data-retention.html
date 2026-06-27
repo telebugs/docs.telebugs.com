@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e7a658.js";
+            window.path_to_searchindex_js = "searchindex-60589e7a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c9aa9b5c.js"></script>
+        <script src="toc-9d33fa8c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -210,7 +210,11 @@
   -H "Accept: application/json" \
   -d '{
     "enabled": true,
-    "global_rate_limit_per_minute": 3000
+    "global_rate_limit_per_minute": 3000,
+    "backlog_protection_enabled": true,
+    "max_pending_ingest_payloads": 10000,
+    "disk_protection_enabled": true,
+    "minimum_free_disk_space_mb": 2048
   }'
 </code></pre>
 <h2 id="get-error-retention-policy"><a class="header" href="#get-error-retention-policy">Get Error Retention Policy</a></h2>
@@ -255,9 +259,18 @@
   }'
 </code></pre>
 <h2 id="response-format-ingest-protection"><a class="header" href="#response-format-ingest-protection">Response Format (Ingest Protection)</a></h2>
+<p>For ingest protection, <code>enabled</code> controls the accepted-errors-per-minute limit.
+Backlog and disk protection have their own separate switches. The
+<code>minimum_free_disk_space_mb</code> value is a floor; Telebugs may pause intake earlier
+when SQLite needs more free space to compact the database safely. In practice,
+Telebugs uses the larger of this value and 2x the SQLite database size.</p>
 <pre><code class="language-json">{
   "enabled": true,
-  "global_rate_limit_per_minute": 3000
+  "global_rate_limit_per_minute": 3000,
+  "backlog_protection_enabled": true,
+  "max_pending_ingest_payloads": 10000,
+  "disk_protection_enabled": true,
+  "minimum_free_disk_space_mb": 2048
 }
 </code></pre>
 <h2 id="response-format-error-retention"><a class="header" href="#response-format-error-retention">Response Format (Error Retention)</a></h2>

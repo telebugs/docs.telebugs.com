@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e7a658.js";
+            window.path_to_searchindex_js = "searchindex-60589e7a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c9aa9b5c.js"></script>
+        <script src="toc-9d33fa8c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -254,11 +254,6 @@ absorbed the burst.</li>
 <code>Envelope accept rate</code> with a large pending queue means Telebugs absorbed the
 burst successfully, but the server would need more CPU, faster disk, or a lower
 incoming error rate to sustain that load indefinitely.</p>
-<p>Telebugs also includes <strong>Ingest Protection</strong> under <strong>Settings</strong> &gt; <strong>Instance</strong>.
-It defaults to 3,000 accepted errors per minute, which matches the 50 errors per
-second sustained baseline for a small 2 vCPU / 4 GB RAM server. If an error
-storm exceeds the configured limit, Telebugs returns <code>429 Too Many Requests</code>
-before writing to the ingest queue.</p>
 <h2 id="recommended-minimum-specs"><a class="header" href="#recommended-minimum-specs">Recommended Minimum Specs</a></h2>
 <ul>
 <li><strong>RAM:</strong> 1 GB</li>

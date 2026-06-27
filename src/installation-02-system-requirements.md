@@ -69,12 +69,6 @@ For capacity planning, prefer `Reports processed end-to-end`. A high
 burst successfully, but the server would need more CPU, faster disk, or a lower
 incoming error rate to sustain that load indefinitely.
 
-Telebugs also includes **Ingest Protection** under **Settings** > **Instance**.
-It defaults to 3,000 accepted errors per minute, which matches the 50 errors per
-second sustained baseline for a small 2 vCPU / 4 GB RAM server. If an error
-storm exceeds the configured limit, Telebugs returns `429 Too Many Requests`
-before writing to the ingest queue.
-
 ## Recommended Minimum Specs
 
 - **RAM:** 1 GB

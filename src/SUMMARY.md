@@ -69,6 +69,9 @@
   - [Muting and Snoozing](error-reports-05-muting-and-snoozing.md)
 
 - [Instance Settings](instance-00.md)
+  - [Rate Limit Active](instance-01-ingest-rate-limit-active.md)
+  - [Queue Protection Active](instance-02-queue-protection-active.md)
+  - [Disk Space Low](instance-03-disk-space-low.md)
 - [Service Messages](service-messages-00.md)
 
 - [Appendix](appendix-00.md)

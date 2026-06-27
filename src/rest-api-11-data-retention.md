@@ -26,7 +26,11 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_pr
   -H "Accept: application/json" \
   -d '{
     "enabled": true,
-    "global_rate_limit_per_minute": 3000
+    "global_rate_limit_per_minute": 3000,
+    "backlog_protection_enabled": true,
+    "max_pending_ingest_payloads": 10000,
+    "disk_protection_enabled": true,
+    "minimum_free_disk_space_mb": 2048
   }'
 ```
 
@@ -85,10 +89,20 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts
 
 ## Response Format (Ingest Protection)
 
+For ingest protection, `enabled` controls the accepted-errors-per-minute limit.
+Backlog and disk protection have their own separate switches. The
+`minimum_free_disk_space_mb` value is a floor; Telebugs may pause intake earlier
+when SQLite needs more free space to compact the database safely. In practice,
+Telebugs uses the larger of this value and 2x the SQLite database size.
+
 ```json
 {
   "enabled": true,
-  "global_rate_limit_per_minute": 3000
+  "global_rate_limit_per_minute": 3000,
+  "backlog_protection_enabled": true,
+  "max_pending_ingest_payloads": 10000,
+  "disk_protection_enabled": true,
+  "minimum_free_disk_space_mb": 2048
 }
 ```
 

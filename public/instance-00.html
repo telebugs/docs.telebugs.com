@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-68e7a658.js";
+            window.path_to_searchindex_js = "searchindex-60589e7a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-c9aa9b5c.js"></script>
+        <script src="toc-9d33fa8c.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,18 +200,153 @@ environment variables. Go to <strong>Settings</strong> &gt; <strong>Instance</st
 <p>This chapter covers ingest protection, error retention, artifact retention,
 purge types, and disk usage monitoring.</p>
 <h2 id="ingest-protection"><a class="header" href="#ingest-protection">Ingest Protection</a></h2>
-<p>Ingest protection limits how many incoming errors Telebugs accepts per minute.
-It protects the server during error storms, such as a runaway deploy or a noisy
-endpoint that suddenly starts raising thousands of exceptions.</p>
-<p>When ingest protection is enabled and the limit is reached, Telebugs returns
-<code>429 Too Many Requests</code> with a <code>Retry-After</code> header. Rate-limited errors are not
-written to the ingest queue and do not create background jobs.</p>
-<p>The default is enabled at <strong>3,000 accepted errors per minute</strong>. That is 50 errors
+<p>Ingest protection controls how many incoming errors Telebugs accepts and when it
+should temporarily pause intake to protect the instance.</p>
+<p>It protects the server during error storms, such as a runaway deploy or a noisy
+endpoint that suddenly starts raising thousands of exceptions. It also protects
+the instance when workers fall behind or disk space gets low.</p>
+<p>When an ingest protection check is enabled and a limit is reached, Telebugs
+returns <code>429 Too Many Requests</code> with a <code>Retry-After</code> header. Rejected errors are
+not written to the ingest queue and do not create background jobs.</p>
+<p>The default rate limit is <strong>3,000 accepted errors per minute</strong>. That is 50 errors
 per second, which matches the sustained processing baseline for a small 2 vCPU /
 4 GB RAM VPS in Telebugs benchmarks. Larger servers can safely use a higher
 limit.</p>
+<p>Ingest protection has three checks:</p>
+<ul>
+<li><strong>Accepted errors per minute</strong>: Caps incoming error intake.</li>
+<li><strong>Maximum queued errors</strong>: Pauses intake when too many errors are waiting to be
+processed. The default is 10,000 queued errors, which gives a small VPS a few
+minutes to catch up before the queue grows without bounds.</li>
+<li><strong>Minimum free disk space</strong>: Pauses intake before disk space gets dangerously
+low. The default floor is 2,048 MB free. Telebugs also pauses intake earlier
+if SQLite needs more free space to compact the database safely.</li>
+</ul>
+<p>The disk check looks at free space on the filesystem that contains the SQLite
+database. If another app, log file, backup, or service fills that same
+filesystem, Telebugs sees the lower free space and can pause intake. If you put
+large files on a separate mount, monitor that mount separately. You can manage
+these settings through the UI or the <a href="rest-api-11-data-retention.html#update-ingest-protection-policy">Ingest Protection REST API</a>.</p>
+<p>SQLite’s <code>VACUUM</code> command may need free disk space up to twice the current
+database size. For disk protection, Telebugs normally uses the configured
+minimum free disk space. If SQLite needs more room to compact the database
+safely, Telebugs uses that higher number instead:</p>
+<pre><code class="language-text">effective disk floor = max(configured minimum free disk space, 2x SQLite database size)
+</code></pre>
+<p>For example, if the SQLite database is 4 GB and the configured minimum is 2 GB,
+Telebugs pauses intake below 8 GB of free disk space.</p>
 <p>The Ingest Protection page also shows lightweight counters for accepted and
-rate-limited errors in the current minute and the last hour.</p>
+rate-limited errors, current queued errors, free disk space, and the current
+disk threshold where Telebugs will pause intake.</p>
+<p>For incident-specific help, see:</p>
+<ul>
+<li><a href="instance-01-ingest-rate-limit-active.html">Rate Limit Active</a></li>
+<li><a href="instance-02-queue-protection-active.html">Queue Protection Active</a></li>
+<li><a href="instance-03-disk-space-low.html">Disk Space Low</a></li>
+</ul>
+<h3 id="how-the-checks-work-together"><a class="header" href="#how-the-checks-work-together">How the Checks Work Together</a></h3>
+<p>Telebugs checks ingest protection before it writes the incoming error to the
+ingest queue or creates a background job.</p>
+<p>If more than one protection would apply at the same time, Telebugs uses this
+order:</p>
+<ol>
+<li><strong>Disk pressure</strong></li>
+<li><strong>Queued errors</strong></li>
+<li><strong>Accepted errors per minute</strong></li>
+</ol>
+<p>Disk pressure wins because a full disk can make SQLite and background jobs
+unhealthy. Queue pressure comes next because it means Telebugs is accepting
+errors faster than workers can process them. The per-minute rate limit is the
+normal front-door throttle for error storms.</p>
+<p>When a request is rejected, Telebugs returns <code>429 Too Many Requests</code> and a
+<code>Retry-After</code> header. The request is not written to <code>ingest_payloads</code> and no
+processing job is enqueued.</p>
+<h3 id="how-to-tell-what-is-happening"><a class="header" href="#how-to-tell-what-is-happening">How to Tell What Is Happening</a></h3>
+<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>When Telebugs is actively limiting or pausing incoming errors, admins also see a
+banner at the top of the app. The banner links back to Ingest Protection so the
+reason is not hidden during an incident.</p>
+<p>The stats card shows:</p>
+<ul>
+<li><strong>Status</strong>: Whether Telebugs is accepting errors, rate limiting, paused by
+queued errors, or paused by disk pressure.</li>
+<li><strong>Rate-limited errors</strong>: Total rejected errors.</li>
+<li><strong>Limited by rate limit last hour</strong>: Rejections caused by the accepted-errors
+per-minute setting.</li>
+<li><strong>Limited by queued errors last hour</strong>: Rejections caused by the queued-errors
+setting.</li>
+<li><strong>Limited by disk pressure last hour</strong>: Rejections caused by low free disk
+space.</li>
+<li><strong>Queued errors</strong>: Current pending ingest queue size.</li>
+<li><strong>Pause intake below</strong>: Current disk threshold. This may be higher than the
+configured minimum when SQLite needs extra room to compact the database.</li>
+</ul>
+<p>During an incident, the fastest read is:</p>
+<ol>
+<li>Check <strong>Status</strong>.</li>
+<li>Check which “Limited by…” counter is increasing.</li>
+<li>Check <strong>Queued errors</strong> and <strong>Free disk space</strong>.</li>
+</ol>
+<h3 id="example-error-storm"><a class="header" href="#example-error-storm">Example Error Storm</a></h3>
+<p>Suppose Telebugs is running on a small 2 vCPU / 4 GB RAM VPS with the defaults:</p>
+<ul>
+<li>Accepted errors per minute: <code>3,000</code></li>
+<li>Maximum queued errors: <code>10,000</code></li>
+<li>Minimum free disk space: <code>2,048 MB</code></li>
+</ul>
+<p>An app deploy starts sending 12,000 errors per minute.</p>
+<p>At first, Telebugs accepts up to 3,000 errors per minute and starts returning
+<code>429 Too Many Requests</code> for the rest. The <strong>Limited by rate limit last hour</strong>
+counter climbs.</p>
+<p>If workers fall behind and queued errors reach 10,000, Telebugs pauses intake
+because of queue pressure. The <strong>Status</strong> changes to queued-error pressure and
+the <strong>Limited by queued errors last hour</strong> counter starts climbing.</p>
+<p>If disk space also drops below the safe threshold, disk pressure takes over. The
+<strong>Status</strong> changes to disk pressure and the <strong>Limited by disk pressure last
+hour</strong> counter climbs. Disk pressure takes precedence over the other checks until
+free disk space recovers.</p>
+<h3 id="recommended-starting-points"><a class="header" href="#recommended-starting-points">Recommended Starting Points</a></h3>
+<p>These are starting points, not promises. Disk speed, payload size, read traffic,
+retention settings, and background job throughput all matter. Use <code>bin/load</code>
+from the source tree to benchmark your own server when you want confidence.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Server size</th><th style="text-align: right">Accepted errors per minute</th><th style="text-align: right">Maximum queued errors</th><th style="text-align: right">Minimum free disk space</th></tr>
+</thead>
+<tbody>
+<tr><td>2 vCPU / 4 GB RAM / 40 GB disk</td><td style="text-align: right">3,000</td><td style="text-align: right">10,000</td><td style="text-align: right">2,048 MB</td></tr>
+<tr><td>4 vCPU / 8 GB RAM / 80 GB disk</td><td style="text-align: right">6,000</td><td style="text-align: right">20,000</td><td style="text-align: right">4,096 MB</td></tr>
+<tr><td>8 vCPU / 16 GB RAM / 160 GB disk</td><td style="text-align: right">12,000</td><td style="text-align: right">40,000</td><td style="text-align: right">8,192 MB</td></tr>
+<tr><td>16 vCPU / 32 GB RAM / 320 GB disk</td><td style="text-align: right">24,000</td><td style="text-align: right">80,000</td><td style="text-align: right">16,384 MB</td></tr>
+</tbody>
+</table>
+</div>
+<p>For low-end VPSes, use the defaults unless you have measured otherwise.</p>
+<p>For larger servers, scale the accepted-errors-per-minute setting with your
+measured sustained processing rate. A simple starting point is:</p>
+<pre><code class="language-text">accepted errors per minute = sustained processed errors per second * 60
+</code></pre>
+<p>The queued-errors value should usually represent a few minutes of backlog, not
+hours. If it is too low, Telebugs pauses during harmless bursts. If it is too
+high, a storm can leave a long drain time and a large database write backlog.</p>
+<p>For disk space, keep the configured minimum at roughly 5% of the disk, with
+2,048 MB as the minimum. Telebugs may still pause sooner because SQLite can need
+free space up to twice the current database size for <code>VACUUM</code>.</p>
+<h3 id="tuning-advice"><a class="header" href="#tuning-advice">Tuning Advice</a></h3>
+<p>If <strong>Limited by rate limit last hour</strong> climbs but queued errors stay low, the
+instance is healthy and the rate limit is doing its job. Raise the rate limit
+only if the server has headroom and you are comfortable accepting more storm
+traffic.</p>
+<p>If <strong>Limited by queued errors last hour</strong> climbs, Telebugs is accepting errors
+faster than workers can process them. Lower the accepted-errors-per-minute value,
+increase server resources, or investigate slow disk/background processing.</p>
+<p>If <strong>Limited by disk pressure last hour</strong> climbs, do not only raise the disk
+threshold. First free disk space, enable or tighten retention, run maintenance
+when safe, or increase disk size. Disk pressure means Telebugs is protecting the
+SQLite database and job queues from operating too close to full disk.</p>
+<p>Ingest protection is a brake, not cleanup. Pair it with error retention and
+artifact retention so Telebugs does not grow forever after the storm passes.</p>
 <h2 id="error-retention-policy"><a class="header" href="#error-retention-policy">Error Retention Policy</a></h2>
 <p>Error retention controls how long reports and their details (backtraces,
 breadcrumbs, tags, notes, etc.) are stored.</p>
@@ -285,7 +420,7 @@ error data or note attachments manually.</p>
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="service-messages-00.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="instance-01-ingest-rate-limit-active.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -299,7 +434,7 @@ error data or note attachments manually.</p>
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="service-messages-00.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="instance-01-ingest-rate-limit-active.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
