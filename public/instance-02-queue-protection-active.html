@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-60589e7a.js";
+            window.path_to_searchindex_js = "searchindex-247d43d5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9d33fa8c.js"></script>
+        <script src="toc-d5e39ada.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,10 +200,11 @@ finish them. New errors are temporarily rejected with <code>429 Too Many Request
 before they are written to the ingest queue. This protects SQLite and Solid
 Queue from an unbounded backlog.</p>
 <h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Queue protection</strong> card, check:</p>
 <ul>
 <li><strong>Queued errors</strong></li>
+<li><strong>Limited by queued errors this minute</strong></li>
 <li><strong>Limited by queued errors last hour</strong></li>
 <li><strong>Reports processed during load</strong>, if you are benchmarking with <code>bin/load</code></li>
 </ul>
@@ -219,12 +220,14 @@ Queue from an unbounded backlog.</p>
 <p>If jobs are failing, fix the failing job first. Raising the queued-errors limit
 will only give Telebugs more work it cannot currently process.</p>
 <p>If jobs are running but the queue is growing, lower <strong>Accepted errors per
-minute</strong> so Telebugs accepts work at a rate the server can sustain.</p>
+minute</strong> in the <strong>Rate limit</strong> card so Telebugs accepts work at a rate the
+server can sustain.</p>
 <p>If this is normal traffic and not an error storm, the instance may need more
 CPU, faster disk, or a bigger server.</p>
-<p>Only raise <strong>Maximum queued errors</strong> when you are comfortable with a longer
-drain time. A large queue can be useful for short bursts, but it can also leave
-Telebugs working through old errors long after the incident has passed.</p>
+<p>Only raise <strong>Maximum queued errors</strong> in the <strong>Queue protection</strong> card when you
+are comfortable with a longer drain time. A large queue can be useful for short
+bursts, but it can also leave Telebugs working through old errors long after the
+incident has passed.</p>
 <h2 id="when-it-clears"><a class="header" href="#when-it-clears">When It Clears</a></h2>
 <p>Queue protection clears when pending ingest payloads fall below <strong>Maximum queued
 errors</strong>. If traffic has calmed down and workers are healthy, this should happen

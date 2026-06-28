@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-60589e7a.js";
+            window.path_to_searchindex_js = "searchindex-247d43d5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9d33fa8c.js"></script>
+        <script src="toc-d5e39ada.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,12 +200,15 @@ up to the configured limit, then returning <code>429 Too Many Requests</code> wi
 <code>Retry-After</code> header for the rest. Rejected errors are not written to the ingest
 queue and do not create background jobs.</p>
 <h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Rate limit</strong> card, check:</p>
 <ul>
 <li><strong>Accepted errors this minute</strong></li>
-<li><strong>Rate-limited errors this minute</strong></li>
+<li><strong>Limited by rate limit this minute</strong></li>
 <li><strong>Limited by rate limit last hour</strong></li>
+</ul>
+<p>In the <strong>Queue protection</strong> card, also check:</p>
+<ul>
 <li><strong>Queued errors</strong></li>
 </ul>
 <p>If queued errors stay low, the instance is healthy and the rate limit is simply
@@ -214,8 +217,9 @@ protecting Telebugs during a noisy burst.</p>
 <p>First, find the app or deploy that is sending the burst. A rate limit protects
 Telebugs, but it does not fix the underlying error storm.</p>
 <p>If the burst is expected and the server has headroom, raise <strong>Accepted errors
-per minute</strong>. Do this carefully. A higher front-door limit lets more work enter
-SQLite and the background queue.</p>
+per minute</strong> in the <strong>Rate limit</strong> card and click <strong>Update rate limit</strong>. Do this
+carefully. A higher front-door limit lets more work enter SQLite and the
+background queue.</p>
 <p>If queued errors also start climbing, do not keep raising the rate limit. Lower
 the accepted-errors-per-minute setting, give the server more CPU or faster disk,
 or reduce the noisy source.</p>

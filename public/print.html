@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-60589e7a.js";
+            window.path_to_searchindex_js = "searchindex-247d43d5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9d33fa8c.js"></script>
+        <script src="toc-d5e39ada.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -2421,7 +2421,7 @@ a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/fo
 <p>Data retention policies let you control how long error reports and release artifacts (such as debug symbols and minidumps) are kept. This is primarily for compliance and data minimization requirements.</p>
 <p>The policies are global to the instance (not per-project).</p>
 <p>All endpoints require an admin user’s API key.</p>
-<p>In the Telebugs UI, these settings live under <strong>Settings</strong> &gt; <strong>Instance</strong>.</p>
+<p>In the Telebugs UI, these settings live under the profile menu &gt; <strong>Instance</strong>.</p>
 <h2 id="get-ingest-protection-policy"><a class="header" href="#get-ingest-protection-policy">Get Ingest Protection Policy</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/ingest_protection \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -2486,9 +2486,9 @@ a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/fo
 <h2 id="response-format-ingest-protection"><a class="header" href="#response-format-ingest-protection">Response Format (Ingest Protection)</a></h2>
 <p>For ingest protection, <code>enabled</code> controls the accepted-errors-per-minute limit.
 Backlog and disk protection have their own separate switches. The
-<code>minimum_free_disk_space_mb</code> value is a floor; Telebugs may pause intake earlier
-when SQLite needs more free space to compact the database safely. In practice,
-Telebugs uses the larger of this value and 2x the SQLite database size.</p>
+<code>minimum_free_disk_space_mb</code> value is the hard free-space floor for disk
+protection. Telebugs pauses intake when the filesystem that contains the SQLite
+database falls below that value.</p>
 <pre><code class="language-json">{
   "enabled": true,
   "global_rate_limit_per_minute": 3000,
@@ -4354,7 +4354,7 @@ error stream.</p>
 <p>Instance settings help you keep a self-hosted Telebugs server healthy over time.
 They are global to the whole installation, not per-project.</p>
 <p>Telebugs keeps these controls in the admin UI instead of hiding them behind
-environment variables. Go to <strong>Settings</strong> &gt; <strong>Instance</strong>.</p>
+environment variables. Open the profile menu, then go to <strong>Instance</strong>.</p>
 <p>This chapter covers ingest protection, error retention, artifact retention,
 purge types, and disk usage monitoring.</p>
 <h2 id="ingest-protection"><a class="header" href="#ingest-protection">Ingest Protection</a></h2>
@@ -4377,8 +4377,7 @@ limit.</p>
 processed. The default is 10,000 queued errors, which gives a small VPS a few
 minutes to catch up before the queue grows without bounds.</li>
 <li><strong>Minimum free disk space</strong>: Pauses intake before disk space gets dangerously
-low. The default floor is 2,048 MB free. Telebugs also pauses intake earlier
-if SQLite needs more free space to compact the database safely.</li>
+low. The default floor is 2,048 MB free.</li>
 </ul>
 <p>The disk check looks at free space on the filesystem that contains the SQLite
 database. If another app, log file, backup, or service fills that same
@@ -4386,16 +4385,25 @@ filesystem, Telebugs sees the lower free space and can pause intake. If you put
 large files on a separate mount, monitor that mount separately. You can manage
 these settings through the UI or the <a href="#update-ingest-protection-policy">Ingest Protection REST API</a>.</p>
 <p>SQLite’s <code>VACUUM</code> command may need free disk space up to twice the current
-database size. For disk protection, Telebugs normally uses the configured
-minimum free disk space. If SQLite needs more room to compact the database
-safely, Telebugs uses that higher number instead:</p>
-<pre><code class="language-text">effective disk floor = max(configured minimum free disk space, 2x SQLite database size)
-</code></pre>
-<p>For example, if the SQLite database is 4 GB and the configured minimum is 2 GB,
-Telebugs pauses intake below 8 GB of free disk space.</p>
-<p>The Ingest Protection page also shows lightweight counters for accepted and
-rate-limited errors, current queued errors, free disk space, and the current
-disk threshold where Telebugs will pause intake.</p>
+database size to compact safely. Telebugs shows this as SQLite maintenance
+status in the <strong>Disk protection</strong> card. That maintenance status is advisory: it
+does not pause intake by itself. Intake pauses when free disk space falls below
+your configured <strong>Minimum free disk space</strong> value.</p>
+<p>The Ingest Protection page is organized into one status card and three
+guardrail cards:</p>
+<ul>
+<li><strong>Status</strong>: Shows whether Telebugs is accepting errors, rate limiting, paused
+by queued errors, or paused by disk pressure.</li>
+<li><strong>Rate limit</strong>: Shows rate-limit counters, then lets you enable the accepted
+errors per minute limit and set the limit.</li>
+<li><strong>Queue protection</strong>: Shows queued-error counters, then lets you enable the
+queued-errors limit and set the limit.</li>
+<li><strong>Disk protection</strong>: Shows free disk space, the pause threshold, SQLite
+maintenance status, and disk-pressure counters. It also lets you enable the
+free disk space limit, set the limit, and recheck disk space immediately.</li>
+</ul>
+<p>Each guardrail card has its own save button. Saving one card only updates that
+card’s settings.</p>
 <p>For incident-specific help, see:</p>
 <ul>
 <li><a href="#rate-limit-active">Rate Limit Active</a></li>
@@ -4420,30 +4428,28 @@ normal front-door throttle for error storms.</p>
 <code>Retry-After</code> header. The request is not written to <code>ingest_payloads</code> and no
 processing job is enqueued.</p>
 <h3 id="how-to-tell-what-is-happening"><a class="header" href="#how-to-tell-what-is-happening">How to Tell What Is Happening</a></h3>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
 <p>When Telebugs is actively limiting or pausing incoming errors, admins also see a
 banner at the top of the app. The banner links back to Ingest Protection so the
 reason is not hidden during an incident.</p>
-<p>The stats card shows:</p>
+<p>The cards show:</p>
 <ul>
-<li><strong>Status</strong>: Whether Telebugs is accepting errors, rate limiting, paused by
-queued errors, or paused by disk pressure.</li>
-<li><strong>Rate-limited errors</strong>: Total rejected errors.</li>
-<li><strong>Limited by rate limit last hour</strong>: Rejections caused by the accepted-errors
-per-minute setting.</li>
-<li><strong>Limited by queued errors last hour</strong>: Rejections caused by the queued-errors
-setting.</li>
-<li><strong>Limited by disk pressure last hour</strong>: Rejections caused by low free disk
-space.</li>
-<li><strong>Queued errors</strong>: Current pending ingest queue size.</li>
-<li><strong>Pause intake below</strong>: Current disk threshold. This may be higher than the
-configured minimum when SQLite needs extra room to compact the database.</li>
+<li><strong>Status card</strong>: Current status, accepted errors last hour, and rate-limited
+errors last hour.</li>
+<li><strong>Rate limit card</strong>: Accepted errors this minute, errors limited by the rate
+limit this minute, and errors limited by the rate limit last hour.</li>
+<li><strong>Queue protection card</strong>: Current queued errors, errors limited by queued
+errors this minute, and errors limited by queued errors last hour.</li>
+<li><strong>Disk protection card</strong>: Free disk space, the current pause threshold,
+SQLite maintenance status, errors limited by low disk space this minute, and
+errors limited by low disk space last hour. Use <strong>Recheck disk space</strong> after
+freeing disk if the page still shows an old value.</li>
 </ul>
 <p>During an incident, the fastest read is:</p>
 <ol>
-<li>Check <strong>Status</strong>.</li>
-<li>Check which “Limited by…” counter is increasing.</li>
-<li>Check <strong>Queued errors</strong> and <strong>Free disk space</strong>.</li>
+<li>Check the <strong>Status</strong> card.</li>
+<li>Check which guardrail card has an increasing “Limited by…” counter.</li>
+<li>Check <strong>Queued errors</strong> and <strong>Free disk space</strong> in their guardrail cards.</li>
 </ol>
 <h3 id="example-error-storm"><a class="header" href="#example-error-storm">Example Error Storm</a></h3>
 <p>Suppose Telebugs is running on a small 2 vCPU / 4 GB RAM VPS with the defaults:</p>
@@ -4460,9 +4466,9 @@ counter climbs.</p>
 because of queue pressure. The <strong>Status</strong> changes to queued-error pressure and
 the <strong>Limited by queued errors last hour</strong> counter starts climbing.</p>
 <p>If disk space also drops below the safe threshold, disk pressure takes over. The
-<strong>Status</strong> changes to disk pressure and the <strong>Limited by disk pressure last
-hour</strong> counter climbs. Disk pressure takes precedence over the other checks until
-free disk space recovers.</p>
+<strong>Status</strong> changes to disk pressure and the <strong>Limited by low disk space last
+hour</strong> counter climbs. Disk pressure takes precedence over the other checks
+until free disk space recovers.</p>
 <h3 id="recommended-starting-points"><a class="header" href="#recommended-starting-points">Recommended Starting Points</a></h3>
 <p>These are starting points, not promises. Disk speed, payload size, read traffic,
 retention settings, and background job throughput all matter. Use <code>bin/load</code>
@@ -4489,8 +4495,9 @@ measured sustained processing rate. A simple starting point is:</p>
 hours. If it is too low, Telebugs pauses during harmless bursts. If it is too
 high, a storm can leave a long drain time and a large database write backlog.</p>
 <p>For disk space, keep the configured minimum at roughly 5% of the disk, with
-2,048 MB as the minimum. Telebugs may still pause sooner because SQLite can need
-free space up to twice the current database size for <code>VACUUM</code>.</p>
+2,048 MB as the minimum. The <strong>SQLite maintenance status</strong> row may still say
+that SQLite needs more free space to compact the database. That is a maintenance
+warning, not an ingest pause by itself.</p>
 <h3 id="tuning-advice"><a class="header" href="#tuning-advice">Tuning Advice</a></h3>
 <p>If <strong>Limited by rate limit last hour</strong> climbs but queued errors stay low, the
 instance is healthy and the rate limit is doing its job. Raise the rate limit
@@ -4499,7 +4506,7 @@ traffic.</p>
 <p>If <strong>Limited by queued errors last hour</strong> climbs, Telebugs is accepting errors
 faster than workers can process them. Lower the accepted-errors-per-minute value,
 increase server resources, or investigate slow disk/background processing.</p>
-<p>If <strong>Limited by disk pressure last hour</strong> climbs, do not only raise the disk
+<p>If <strong>Limited by low disk space last hour</strong> climbs, do not only raise the disk
 threshold. First free disk space, enable or tighten retention, run maintenance
 when safe, or increase disk size. Disk pressure means Telebugs is protecting the
 SQLite database and job queues from operating too close to full disk.</p>
@@ -4511,7 +4518,7 @@ breadcrumbs, tags, notes, etc.) are stored.</p>
 <p>Enable automatic cleanup to prevent unlimited growth. Cleanup jobs run nightly
 at 2 AM server time. You can also trigger manual purges immediately.</p>
 <h3 id="enabling-error-retention"><a class="header" href="#enabling-error-retention">Enabling Error Retention</a></h3>
-<p>Go to <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Error Retention</strong>.</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Error Retention</strong>.</p>
 <p>Toggle <strong>Enable automatic error cleanup</strong> and save. The UI shows when the next
 cleanup will run.</p>
 <h3 id="time-based-cleanup"><a class="header" href="#time-based-cleanup">Time-Based Cleanup</a></h3>
@@ -4538,7 +4545,7 @@ first).</p>
 <p>Artifacts (mainly source maps attached to releases) have separate retention
 rules.</p>
 <h3 id="enabling-artifact-retention"><a class="header" href="#enabling-artifact-retention">Enabling Artifact Retention</a></h3>
-<p>Go to <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Artifact Retention</strong>.</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Artifact Retention</strong>.</p>
 <p>Toggle <strong>Enable automatic artifact cleanup</strong>.</p>
 <h3 id="time-based-artifact-cleanup"><a class="header" href="#time-based-artifact-cleanup">Time-Based Artifact Cleanup</a></h3>
 <p>Deletes artifacts from releases older than the set period, but only if no recent
@@ -4559,10 +4566,27 @@ excess old releases (keep only the newest N, e.g., 20).</p>
 <li>Artifact size and count</li>
 <li>Total report count</li>
 <li>Accepted and rate-limited ingest counts</li>
+<li>SQLite maintenance status</li>
 </ul>
 <p>Stats refresh automatically after cleanups.</p>
 <p>Telebugs runs a nightly <code>VACUUM</code> job to reclaim unused space when there’s enough
-free disk (database size + 10% buffer).</p>
+free disk. SQLite may need free space up to roughly twice the current database
+size to compact safely.</p>
+<h3 id="maintenance-activity"><a class="header" href="#maintenance-activity">Maintenance Activity</a></h3>
+<p>The <strong>Recent maintenance activity</strong> card on <strong>Instance</strong> &gt; <strong>Error Retention</strong>
+and <strong>Instance</strong> &gt; <strong>Artifact Retention</strong> shows the latest destructive
+maintenance work. It helps admins answer what cleanup ran, whether it finished,
+who or what started it, and what it deleted.</p>
+<p>Telebugs records scheduled and manual error purges, artifact purges, note
+attachment purges, and database <code>VACUUM</code> runs. Each entry shows a compact
+summary such as how many reports or artifacts were deleted, whether the task
+failed, or whether <code>VACUUM</code> was skipped because there was not enough free disk
+space.</p>
+<p>This is intentionally not a full audit log. Telebugs does not store deleted
+report titles, exception messages, stack traces, payloads, or every deleted row
+in this history. If the card says <strong>No data</strong>, no tracked maintenance has run
+yet, or the previous records were older than 90 days and have been pruned.</p>
+<p>Maintenance activity records are kept for 90 days and pruned daily.</p>
 <p><strong>Important:</strong> All automatic and manual purges are irreversible. Export critical
 data if needed before cleanup.</p>
 <p>For quick cleanup, use the <strong>Danger Zone</strong> in <a href="/projects-04-project-settings.html">project settings</a> to purge all
@@ -4578,12 +4602,15 @@ up to the configured limit, then returning <code>429 Too Many Requests</code> wi
 <code>Retry-After</code> header for the rest. Rejected errors are not written to the ingest
 queue and do not create background jobs.</p>
 <h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Rate limit</strong> card, check:</p>
 <ul>
 <li><strong>Accepted errors this minute</strong></li>
-<li><strong>Rate-limited errors this minute</strong></li>
+<li><strong>Limited by rate limit this minute</strong></li>
 <li><strong>Limited by rate limit last hour</strong></li>
+</ul>
+<p>In the <strong>Queue protection</strong> card, also check:</p>
+<ul>
 <li><strong>Queued errors</strong></li>
 </ul>
 <p>If queued errors stay low, the instance is healthy and the rate limit is simply
@@ -4592,8 +4619,9 @@ protecting Telebugs during a noisy burst.</p>
 <p>First, find the app or deploy that is sending the burst. A rate limit protects
 Telebugs, but it does not fix the underlying error storm.</p>
 <p>If the burst is expected and the server has headroom, raise <strong>Accepted errors
-per minute</strong>. Do this carefully. A higher front-door limit lets more work enter
-SQLite and the background queue.</p>
+per minute</strong> in the <strong>Rate limit</strong> card and click <strong>Update rate limit</strong>. Do this
+carefully. A higher front-door limit lets more work enter SQLite and the
+background queue.</p>
 <p>If queued errors also start climbing, do not keep raising the rate limit. Lower
 the accepted-errors-per-minute setting, give the server more CPU or faster disk,
 or reduce the noisy source.</p>
@@ -4612,10 +4640,11 @@ finish them. New errors are temporarily rejected with <code>429 Too Many Request
 before they are written to the ingest queue. This protects SQLite and Solid
 Queue from an unbounded backlog.</p>
 <h2 id="what-to-check-1"><a class="header" href="#what-to-check-1">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Queue protection</strong> card, check:</p>
 <ul>
 <li><strong>Queued errors</strong></li>
+<li><strong>Limited by queued errors this minute</strong></li>
 <li><strong>Limited by queued errors last hour</strong></li>
 <li><strong>Reports processed during load</strong>, if you are benchmarking with <code>bin/load</code></li>
 </ul>
@@ -4631,38 +4660,47 @@ Queue from an unbounded backlog.</p>
 <p>If jobs are failing, fix the failing job first. Raising the queued-errors limit
 will only give Telebugs more work it cannot currently process.</p>
 <p>If jobs are running but the queue is growing, lower <strong>Accepted errors per
-minute</strong> so Telebugs accepts work at a rate the server can sustain.</p>
+minute</strong> in the <strong>Rate limit</strong> card so Telebugs accepts work at a rate the
+server can sustain.</p>
 <p>If this is normal traffic and not an error storm, the instance may need more
 CPU, faster disk, or a bigger server.</p>
-<p>Only raise <strong>Maximum queued errors</strong> when you are comfortable with a longer
-drain time. A large queue can be useful for short bursts, but it can also leave
-Telebugs working through old errors long after the incident has passed.</p>
+<p>Only raise <strong>Maximum queued errors</strong> in the <strong>Queue protection</strong> card when you
+are comfortable with a longer drain time. A large queue can be useful for short
+bursts, but it can also leave Telebugs working through old errors long after the
+incident has passed.</p>
 <h2 id="when-it-clears-1"><a class="header" href="#when-it-clears-1">When It Clears</a></h2>
 <p>Queue protection clears when pending ingest payloads fall below <strong>Maximum queued
 errors</strong>. If traffic has calmed down and workers are healthy, this should happen
 as the queue drains.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="disk-space-low"><a class="header" href="#disk-space-low">Disk Space Low</a></h1>
-<p>Telebugs shows this warning when free disk space is below the safe threshold for
-the SQLite database filesystem.</p>
+<p>Telebugs shows this warning when free disk space is below the configured
+threshold for the SQLite database filesystem.</p>
 <p>This is the most serious ingest protection state. A full disk can make SQLite,
 Solid Queue, and normal application writes unhealthy. Telebugs rejects new
 errors with <code>429 Too Many Requests</code> before writing them to the ingest queue.</p>
 <h2 id="what-to-check-2"><a class="header" href="#what-to-check-2">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Disk protection</strong> card, check:</p>
 <ul>
 <li><strong>Free disk space</strong></li>
 <li><strong>Pause intake below</strong></li>
-<li><strong>Limited by disk pressure last hour</strong></li>
+<li><strong>SQLite maintenance needs</strong></li>
+<li><strong>SQLite maintenance status</strong></li>
+<li><strong>Limited by low disk space this minute</strong></li>
+<li><strong>Limited by low disk space last hour</strong></li>
 </ul>
 <p>The disk check watches the filesystem that contains the SQLite database. If
 another app, log file, backup, or service fills that same filesystem, Telebugs
 sees the lower free space and can pause intake. If large files live on a
 separate mount, monitor that mount separately.</p>
-<p>SQLite may need free disk space up to twice the current database size to compact
-the database safely. Because of that, <strong>Pause intake below</strong> can be higher than
-the configured <strong>Minimum free disk space</strong> value.</p>
+<p><strong>Pause intake below</strong> is the configured hard floor. If free disk space is below
+that number, Telebugs pauses incoming errors.</p>
+<p>SQLite maintenance is shown separately. SQLite may need free disk space up to
+twice the current database size to compact the database safely. If <strong>SQLite
+maintenance status</strong> says more space is needed, Telebugs can still accept errors
+as long as free disk space is above <strong>Pause intake below</strong>, but <code>VACUUM</code> may skip
+compaction until there is more room.</p>
 <h2 id="what-to-do-2"><a class="header" href="#what-to-do-2">What To Do</a></h2>
 <p>Free disk space first.</p>
 <p>Good options:</p>
@@ -4676,24 +4714,27 @@ the configured <strong>Minimum free disk space</strong> value.</p>
 <p>Do not simply lower the disk threshold to make the warning disappear. That can
 put SQLite and the job queue closer to a hard full-disk failure.</p>
 <p>If the database has recently had a large purge, Telebugs may need enough free
-space to run maintenance and reclaim unused SQLite pages safely.</p>
+space to run maintenance and reclaim unused SQLite pages safely. After freeing
+space, click <strong>Recheck disk space</strong> in the <strong>Disk protection</strong> card if the page
+still shows the old value.</p>
 <h2 id="when-it-clears-2"><a class="header" href="#when-it-clears-2">When It Clears</a></h2>
-<p>Disk protection clears when free disk space rises above the effective threshold.
-That threshold is the higher of your configured minimum and SQLite’s current
-compaction safety requirement.</p>
+<p>Disk protection clears when free disk space rises above <strong>Pause intake below</strong>.
+Telebugs measures disk space periodically and also refreshes the cached
+measurement after purge and database maintenance jobs. The <strong>Recheck disk
+space</strong> button clears the cached measurement immediately.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="service-messages"><a class="header" href="#service-messages">Service Messages</a></h1>
 <p>Service Messages guide admins through important maintenance tasks (like database
 optimization or post-update cleanup) directly in the dashboard. No command-line
 access is required.</p>
 <p>Pending messages show as a red badge on your profile picture in the top-right
-corner (visible only to admins). Once all messages are addressed, the badge
-disappears for everyone.</p>
+corner (visible only to admins). The <strong>Instance</strong> menu item and the <strong>Service
+Messages</strong> sidebar item also show the badge while there is something to review.</p>
 <h2 id="accessing-service-messages"><a class="header" href="#accessing-service-messages">Accessing Service Messages</a></h2>
 <ol>
-<li>Click your profile picture in the top-right.</li>
-<li>Look for the <strong>Service Messages</strong> entry in the dropdown (highlighted with the
-red badge if pending).</li>
+<li>Open the profile menu in the top-right.</li>
+<li>Click <strong>Instance</strong>.</li>
+<li>Click <strong>Service Messages</strong> in the Instance sidebar.</li>
 </ol>
 <p>The index page lists all messages in a simple table with titles and statuses.
 Click a title for details.</p>

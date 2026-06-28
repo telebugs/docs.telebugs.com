@@ -10,11 +10,12 @@ Queue from an unbounded backlog.
 
 ## What To Check
 
-Open **Settings** > **Instance** > **Ingest Protection**.
+Open the profile menu, then go to **Instance** > **Ingest Protection**.
 
-Check:
+In the **Queue protection** card, check:
 
 - **Queued errors**
+- **Limited by queued errors this minute**
 - **Limited by queued errors last hour**
 - **Reports processed during load**, if you are benchmarking with `bin/load`
 
@@ -33,14 +34,16 @@ If jobs are failing, fix the failing job first. Raising the queued-errors limit
 will only give Telebugs more work it cannot currently process.
 
 If jobs are running but the queue is growing, lower **Accepted errors per
-minute** so Telebugs accepts work at a rate the server can sustain.
+minute** in the **Rate limit** card so Telebugs accepts work at a rate the
+server can sustain.
 
 If this is normal traffic and not an error storm, the instance may need more
 CPU, faster disk, or a bigger server.
 
-Only raise **Maximum queued errors** when you are comfortable with a longer
-drain time. A large queue can be useful for short bursts, but it can also leave
-Telebugs working through old errors long after the incident has passed.
+Only raise **Maximum queued errors** in the **Queue protection** card when you
+are comfortable with a longer drain time. A large queue can be useful for short
+bursts, but it can also leave Telebugs working through old errors long after the
+incident has passed.
 
 ## When It Clears
 

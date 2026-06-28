@@ -5,14 +5,14 @@ optimization or post-update cleanup) directly in the dashboard. No command-line
 access is required.
 
 Pending messages show as a red badge on your profile picture in the top-right
-corner (visible only to admins). Once all messages are addressed, the badge
-disappears for everyone.
+corner (visible only to admins). The **Instance** menu item and the **Service
+Messages** sidebar item also show the badge while there is something to review.
 
 ## Accessing Service Messages
 
-1. Click your profile picture in the top-right.
-2. Look for the **Service Messages** entry in the dropdown (highlighted with the
-   red badge if pending).
+1. Open the profile menu in the top-right.
+2. Click **Instance**.
+3. Click **Service Messages** in the Instance sidebar.
 
 The index page lists all messages in a simple table with titles and statuses.
 Click a title for details.

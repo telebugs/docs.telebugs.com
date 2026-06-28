@@ -6,7 +6,7 @@ The policies are global to the instance (not per-project).
 
 All endpoints require an admin user's API key.
 
-In the Telebugs UI, these settings live under **Settings** > **Instance**.
+In the Telebugs UI, these settings live under the profile menu > **Instance**.
 
 ## Get Ingest Protection Policy
 
@@ -91,9 +91,9 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts
 
 For ingest protection, `enabled` controls the accepted-errors-per-minute limit.
 Backlog and disk protection have their own separate switches. The
-`minimum_free_disk_space_mb` value is a floor; Telebugs may pause intake earlier
-when SQLite needs more free space to compact the database safely. In practice,
-Telebugs uses the larger of this value and 2x the SQLite database size.
+`minimum_free_disk_space_mb` value is the hard free-space floor for disk
+protection. Telebugs pauses intake when the filesystem that contains the SQLite
+database falls below that value.
 
 ```json
 {

@@ -10,13 +10,16 @@ queue and do not create background jobs.
 
 ## What To Check
 
-Open **Settings** > **Instance** > **Ingest Protection**.
+Open the profile menu, then go to **Instance** > **Ingest Protection**.
 
-Check:
+In the **Rate limit** card, check:
 
 - **Accepted errors this minute**
-- **Rate-limited errors this minute**
+- **Limited by rate limit this minute**
 - **Limited by rate limit last hour**
+
+In the **Queue protection** card, also check:
+
 - **Queued errors**
 
 If queued errors stay low, the instance is healthy and the rate limit is simply
@@ -28,8 +31,9 @@ First, find the app or deploy that is sending the burst. A rate limit protects
 Telebugs, but it does not fix the underlying error storm.
 
 If the burst is expected and the server has headroom, raise **Accepted errors
-per minute**. Do this carefully. A higher front-door limit lets more work enter
-SQLite and the background queue.
+per minute** in the **Rate limit** card and click **Update rate limit**. Do this
+carefully. A higher front-door limit lets more work enter SQLite and the
+background queue.
 
 If queued errors also start climbing, do not keep raising the rate limit. Lower
 the accepted-errors-per-minute setting, give the server more CPU or faster disk,

@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-60589e7a.js";
+            window.path_to_searchindex_js = "searchindex-247d43d5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9d33fa8c.js"></script>
+        <script src="toc-d5e39ada.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -193,26 +193,33 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="disk-space-low"><a class="header" href="#disk-space-low">Disk Space Low</a></h1>
-<p>Telebugs shows this warning when free disk space is below the safe threshold for
-the SQLite database filesystem.</p>
+<p>Telebugs shows this warning when free disk space is below the configured
+threshold for the SQLite database filesystem.</p>
 <p>This is the most serious ingest protection state. A full disk can make SQLite,
 Solid Queue, and normal application writes unhealthy. Telebugs rejects new
 errors with <code>429 Too Many Requests</code> before writing them to the ingest queue.</p>
 <h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open <strong>Settings</strong> &gt; <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>Check:</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
+<p>In the <strong>Disk protection</strong> card, check:</p>
 <ul>
 <li><strong>Free disk space</strong></li>
 <li><strong>Pause intake below</strong></li>
-<li><strong>Limited by disk pressure last hour</strong></li>
+<li><strong>SQLite maintenance needs</strong></li>
+<li><strong>SQLite maintenance status</strong></li>
+<li><strong>Limited by low disk space this minute</strong></li>
+<li><strong>Limited by low disk space last hour</strong></li>
 </ul>
 <p>The disk check watches the filesystem that contains the SQLite database. If
 another app, log file, backup, or service fills that same filesystem, Telebugs
 sees the lower free space and can pause intake. If large files live on a
 separate mount, monitor that mount separately.</p>
-<p>SQLite may need free disk space up to twice the current database size to compact
-the database safely. Because of that, <strong>Pause intake below</strong> can be higher than
-the configured <strong>Minimum free disk space</strong> value.</p>
+<p><strong>Pause intake below</strong> is the configured hard floor. If free disk space is below
+that number, Telebugs pauses incoming errors.</p>
+<p>SQLite maintenance is shown separately. SQLite may need free disk space up to
+twice the current database size to compact the database safely. If <strong>SQLite
+maintenance status</strong> says more space is needed, Telebugs can still accept errors
+as long as free disk space is above <strong>Pause intake below</strong>, but <code>VACUUM</code> may skip
+compaction until there is more room.</p>
 <h2 id="what-to-do"><a class="header" href="#what-to-do">What To Do</a></h2>
 <p>Free disk space first.</p>
 <p>Good options:</p>
@@ -226,11 +233,14 @@ the configured <strong>Minimum free disk space</strong> value.</p>
 <p>Do not simply lower the disk threshold to make the warning disappear. That can
 put SQLite and the job queue closer to a hard full-disk failure.</p>
 <p>If the database has recently had a large purge, Telebugs may need enough free
-space to run maintenance and reclaim unused SQLite pages safely.</p>
+space to run maintenance and reclaim unused SQLite pages safely. After freeing
+space, click <strong>Recheck disk space</strong> in the <strong>Disk protection</strong> card if the page
+still shows the old value.</p>
 <h2 id="when-it-clears"><a class="header" href="#when-it-clears">When It Clears</a></h2>
-<p>Disk protection clears when free disk space rises above the effective threshold.
-That threshold is the higher of your configured minimum and SQLite’s current
-compaction safety requirement.</p>
+<p>Disk protection clears when free disk space rises above <strong>Pause intake below</strong>.
+Telebugs measures disk space periodically and also refreshes the cached
+measurement after purge and database maintenance jobs. The <strong>Recheck disk
+space</strong> button clears the cached measurement immediately.</p>
 
                     </main>
 
@@ -240,7 +250,7 @@ compaction safety requirement.</p>
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="service-messages-00.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="instance-04-service-messages.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -254,7 +264,7 @@ compaction safety requirement.</p>
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="service-messages-00.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="instance-04-service-messages.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
