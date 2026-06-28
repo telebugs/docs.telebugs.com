@@ -38,6 +38,7 @@
   - [Errors](rest-api-03-errors.md)
   - [Problems](rest-api/problems/index.md)
     - [Unauthorized](rest-api/problems/unauthorized.md)
+    - [Forbidden](rest-api/problems/forbidden.md)
     - [Validation Error](rest-api/problems/validation-error.md)
   - [Projects](rest-api-04-projects.md)
   - [Groups](rest-api-05-groups.md)

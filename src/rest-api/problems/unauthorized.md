@@ -8,7 +8,7 @@
 
 **Type URI**
 
-`https://docs.telebugs.com/rest-api/problems/unauthorized`
+`https://docs.telebugs.com/rest-api/problems/unauthorized.html`
 
 **Status code**
 
@@ -41,7 +41,7 @@ HTTP/1.1 401 Unauthorized
 Content-Type: application/problem+json
 
 {
-  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized.html",
   "title": "Unauthorized",
   "status": 401,
   "detail": "Invalid API key"

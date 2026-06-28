@@ -13,12 +13,13 @@ List endpoints return two important fields:
 
 ### Example Response
 
-````json
+```json
 {
   "projects": [...],
   "next_cursor": 12345,
   "has_more": true
 }
+```
 
 ## Fetching the Next Page
 
@@ -28,7 +29,7 @@ To get the next page, pass the `next_cursor` value as the `cursor` parameter:
 curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
-````
+```
 
 ## Controlling Page Size
 

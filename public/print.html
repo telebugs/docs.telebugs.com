@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-247d43d5.js";
+            window.path_to_searchindex_js = "searchindex-67d8c92d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5e39ada.js"></script>
+        <script src="toc-a73917c9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1557,13 +1557,10 @@ with an empty body. Validation and authorization failures return
   "next_cursor": 12345,
   "has_more": true
 }
-
-## Fetching the Next Page
-
-To get the next page, pass the `next_cursor` value as the `cursor` parameter:
-
-```sh
-curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
+</code></pre>
+<h2 id="fetching-the-next-page"><a class="header" href="#fetching-the-next-page">Fetching the Next Page</a></h2>
+<p>To get the next page, pass the <code>next_cursor</code> value as the <code>cursor</code> parameter:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
@@ -1604,7 +1601,7 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" 
 Content-Type: application/problem+json
 
 {
-  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized.html",
   "title": "Unauthorized",
   "status": 401,
   "detail": "Invalid API key"
@@ -1645,9 +1642,9 @@ Content-Type: application/problem+json
 <tr><th>Type URI (used in responses)</th><th>Title</th><th>Status Code</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td><code>https://docs.telebugs.com/rest-api/problems/unauthorized</code></td><td>Unauthorized</td><td>401 Unauthorized</td><td>The request did not include valid authentication credentials.</td></tr>
-<tr><td><code>https://docs.telebugs.com/rest-api/problems/forbidden</code></td><td>Forbidden</td><td>403 Forbidden</td><td>The authenticated caller lacks permission for the requested action.</td></tr>
-<tr><td><code>https://docs.telebugs.com/rest-api/problems/validation-error</code></td><td>Validation Failed</td><td>422 Unprocessable Content</td><td>The submitted data failed validation.</td></tr>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/unauthorized.html</code></td><td>Unauthorized</td><td>401 Unauthorized</td><td>The request did not include valid authentication credentials.</td></tr>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/forbidden.html</code></td><td>Forbidden</td><td>403 Forbidden</td><td>The authenticated caller lacks permission for the requested action.</td></tr>
+<tr><td><code>https://docs.telebugs.com/rest-api/problems/validation-error.html</code></td><td>Validation Failed</td><td>422 Unprocessable Content</td><td>The submitted data failed validation.</td></tr>
 </tbody>
 </table>
 </div>
@@ -1665,7 +1662,7 @@ Content-Type: application/problem+json
 <p><strong>Problem type</strong></p>
 <p><code>unauthorized</code></p>
 <p><strong>Type URI</strong></p>
-<p><code>https://docs.telebugs.com/rest-api/problems/unauthorized</code></p>
+<p><code>https://docs.telebugs.com/rest-api/problems/unauthorized.html</code></p>
 <p><strong>Status code</strong></p>
 <p><code>401 Unauthorized</code></p>
 <h2 id="reasons"><a class="header" href="#reasons">Reasons</a></h2>
@@ -1686,7 +1683,7 @@ Content-Type: application/problem+json
 Content-Type: application/problem+json
 
 {
-  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized",
+  "type": "https://docs.telebugs.com/rest-api/problems/unauthorized.html",
   "title": "Unauthorized",
   "status": 401,
   "detail": "Invalid API key"
@@ -1694,15 +1691,48 @@ Content-Type: application/problem+json
 </code></pre>
 <p>The <code>detail</code> value may vary (<code>"Missing API key"</code>, <code>"Invalid API key"</code>, etc.) while the <code>type</code> remains stable.</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="forbidden"><a class="header" href="#forbidden">Forbidden</a></h1>
+<h2 id="forbidden-1"><a class="header" href="#forbidden-1">Forbidden</a></h2>
+<p><strong>Problem type</strong></p>
+<p><code>forbidden</code></p>
+<p><strong>Type URI</strong></p>
+<p><code>https://docs.telebugs.com/rest-api/problems/forbidden.html</code></p>
+<p><strong>Status code</strong></p>
+<p><code>403 Forbidden</code></p>
+<h2 id="reasons-1"><a class="header" href="#reasons-1">Reasons</a></h2>
+<p>The server understood the request but refuses to authorize it.</p>
+<p>This problem occurs when:</p>
+<ol>
+<li>The authenticated user does not have the required privileges (e.g. admin role).</li>
+<li>The user does not have access to the requested resource (e.g. a project or app they are not a member of).</li>
+</ol>
+<h2 id="remedy-1"><a class="header" href="#remedy-1">Remedy</a></h2>
+<ul>
+<li>Use an API key belonging to a user with the necessary role or membership.</li>
+<li>For admin-only operations, ensure the key is for an admin user (see Account Settings → Team).</li>
+</ul>
+<h2 id="example-problem-document-1"><a class="header" href="#example-problem-document-1">Example Problem Document</a></h2>
+<pre><code class="language-http">HTTP/1.1 403 Forbidden
+Content-Type: application/problem+json
+
+{
+  "type": "https://docs.telebugs.com/rest-api/problems/forbidden.html",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Admin access required"
+}
+</code></pre>
+<p>The <code>detail</code> value explains the specific reason.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="validation-error"><a class="header" href="#validation-error">Validation Error</a></h1>
 <h2 id="validation-failed"><a class="header" href="#validation-failed">Validation Failed</a></h2>
 <p><strong>Problem type</strong></p>
 <p><code>validation-error</code></p>
 <p><strong>Type URI</strong></p>
-<p><code>https://docs.telebugs.com/rest-api/problems/validation-error</code></p>
+<p><code>https://docs.telebugs.com/rest-api/problems/validation-error.html</code></p>
 <p><strong>Status code</strong></p>
 <p><code>422 Unprocessable Content</code></p>
-<h2 id="reasons-1"><a class="header" href="#reasons-1">Reasons</a></h2>
+<h2 id="reasons-2"><a class="header" href="#reasons-2">Reasons</a></h2>
 <p>The server understood the request but could not process it because the payload failed validation.</p>
 <p>This typically happens on <code>POST</code>, <code>PATCH</code>, or other mutating requests when one or more fields are:</p>
 <ul>
@@ -1710,15 +1740,15 @@ Content-Type: application/problem+json
 <li>Of the wrong type or format</li>
 <li>Violating uniqueness or other domain constraints</li>
 </ul>
-<h2 id="remedy-1"><a class="header" href="#remedy-1">Remedy</a></h2>
+<h2 id="remedy-2"><a class="header" href="#remedy-2">Remedy</a></h2>
 <p>Read the <code>errors</code> extension in the response. It is a map of attribute names to arrays of validation messages.</p>
 <p>Fix the invalid fields and resubmit the request.</p>
-<h2 id="example-problem-document-1"><a class="header" href="#example-problem-document-1">Example Problem Document</a></h2>
+<h2 id="example-problem-document-2"><a class="header" href="#example-problem-document-2">Example Problem Document</a></h2>
 <pre><code class="language-http">HTTP/1.1 422 Unprocessable Content
 Content-Type: application/problem+json
 
 {
-  "type": "https://docs.telebugs.com/rest-api/problems/validation-error",
+  "type": "https://docs.telebugs.com/rest-api/problems/validation-error.html",
   "title": "Validation Failed",
   "status": 422,
   "detail": "The request could not be processed due to validation errors.",
@@ -2281,7 +2311,7 @@ control which users have access to which projects.</p>
 <blockquote>
 <p><strong>Note:</strong> Listing users, updating roles, deactivating users, and managing
 project memberships all require admin access. Non-admin requests receive
-a <code>403 Forbidden</code> problem document (see <a href="rest-api/problems/forbidden.html">Problems - Forbidden</a>).</p>
+a <code>403 Forbidden</code> problem document (see <a href="#forbidden">Problems - Forbidden</a>).</p>
 </blockquote>
 <h2 id="the-user-object"><a class="header" href="#the-user-object">The User Object</a></h2>
 <pre><code class="language-json">{
@@ -5094,7 +5124,7 @@ about 5 minutes.</p>
 <p><img src="assets/images/appendix-05-installing-on-hetzner/01.webp" alt="Creating a new Hetzner server"></p>
 <p>You need at least 2 GB RAM and 1 CPU. For a small production install, the
 CX23 plan (2 vCPU, 4 GB RAM, 40 GB local disk) is a good starting point and
-is the smallest Hetzner plan we currently use for <a href="/src/installation-02-system-requirements.html">throughput benchmarks</a>.</p>
+is the smallest Hetzner plan we currently use for <a href="/installation-02-system-requirements.html">throughput benchmarks</a>.</p>
 <p><img src="assets/images/appendix-05-installing-on-hetzner/02.webp" alt="CPU type selection"></p>
 </li>
 <li>

@@ -8,7 +8,7 @@
 
 **Type URI**
 
-`https://docs.telebugs.com/rest-api/problems/validation-error`
+`https://docs.telebugs.com/rest-api/problems/validation-error.html`
 
 **Status code**
 
@@ -37,7 +37,7 @@ HTTP/1.1 422 Unprocessable Content
 Content-Type: application/problem+json
 
 {
-  "type": "https://docs.telebugs.com/rest-api/problems/validation-error",
+  "type": "https://docs.telebugs.com/rest-api/problems/validation-error.html",
   "title": "Validation Failed",
   "status": 422,
   "detail": "The request could not be processed due to validation errors.",

@@ -50,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-247d43d5.js";
+            window.path_to_searchindex_js = "searchindex-67d8c92d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5e39ada.js"></script>
+        <script src="toc-a73917c9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -207,13 +207,10 @@
   "next_cursor": 12345,
   "has_more": true
 }
-
-## Fetching the Next Page
-
-To get the next page, pass the `next_cursor` value as the `cursor` parameter:
-
-```sh
-curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
+</code></pre>
+<h2 id="fetching-the-next-page"><a class="header" href="#fetching-the-next-page">Fetching the Next Page</a></h2>
+<p>To get the next page, pass the <code>next_cursor</code> value as the <code>cursor</code> parameter:</p>
+<pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects?cursor=12345" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
 </code></pre>
