@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-67d8c92d.js";
+            window.path_to_searchindex_js = "searchindex-a24b3261.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-a73917c9.js"></script>
@@ -415,20 +415,24 @@ excess old releases (keep only the newest N, e.g., 20).</p>
 free disk. SQLite may need free space up to roughly twice the current database
 size to compact safely.</p>
 <h3 id="maintenance-activity"><a class="header" href="#maintenance-activity">Maintenance Activity</a></h3>
-<p>The <strong>Recent maintenance activity</strong> card on <strong>Instance</strong> &gt; <strong>Error Retention</strong>
-and <strong>Instance</strong> &gt; <strong>Artifact Retention</strong> shows the latest destructive
-maintenance work. It helps admins answer what cleanup ran, whether it finished,
-who or what started it, and what it deleted.</p>
+<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Maintenance Activity</strong>.</p>
+<p>The <strong>Recent maintenance activity</strong> list shows destructive maintenance work
+across the whole instance. It helps admins answer what cleanup ran, whether it
+finished, who or what started it, and what it deleted.</p>
 <p>Telebugs records scheduled and manual error purges, artifact purges, note
-attachment purges, and database <code>VACUUM</code> runs. Each entry shows a compact
-summary such as how many reports or artifacts were deleted, whether the task
-failed, or whether <code>VACUUM</code> was skipped because there was not enough free disk
-space.</p>
+attachment purges, and database <code>VACUUM</code> runs. Each entry shows the task name,
+status, short result, project scope, actor, source, and timestamp. Statuses can
+be <strong>Running</strong>, <strong>Completed</strong>, <strong>Failed</strong>, or <strong>Skipped</strong>.</p>
+<p>Click an entry to open a linkable detail page. Detail pages show UTC started
+and finished timestamps plus safe summary fields, such as cutoff date, deleted
+counts, database size, free disk space, or a short error class.</p>
 <p>This is intentionally not a full audit log. Telebugs does not store deleted
 report titles, exception messages, stack traces, payloads, or every deleted row
-in this history. If the card says <strong>No data</strong>, no tracked maintenance has run
+in this history. If the list says <strong>No data</strong>, no tracked maintenance has run
 yet, or the previous records were older than 90 days and have been pruned.</p>
-<p>Maintenance activity records are kept for 90 days and pruned daily.</p>
+<p>The list uses cursor pagination, so older records are available without loading
+the entire history at once. Maintenance activity records are kept for 90 days
+and pruned daily.</p>
 <p><strong>Important:</strong> All automatic and manual purges are irreversible. Export critical
 data if needed before cleanup.</p>
 <p>For quick cleanup, use the <strong>Danger Zone</strong> in <a href="/projects-04-project-settings.html">project settings</a> to purge all

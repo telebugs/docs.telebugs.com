@@ -281,23 +281,29 @@ size to compact safely.
 
 ### Maintenance Activity
 
-The **Recent maintenance activity** card on **Instance** > **Error Retention**
-and **Instance** > **Artifact Retention** shows the latest destructive
-maintenance work. It helps admins answer what cleanup ran, whether it finished,
-who or what started it, and what it deleted.
+Open the profile menu, then go to **Instance** > **Maintenance Activity**.
+
+The **Recent maintenance activity** list shows destructive maintenance work
+across the whole instance. It helps admins answer what cleanup ran, whether it
+finished, who or what started it, and what it deleted.
 
 Telebugs records scheduled and manual error purges, artifact purges, note
-attachment purges, and database `VACUUM` runs. Each entry shows a compact
-summary such as how many reports or artifacts were deleted, whether the task
-failed, or whether `VACUUM` was skipped because there was not enough free disk
-space.
+attachment purges, and database `VACUUM` runs. Each entry shows the task name,
+status, short result, project scope, actor, source, and timestamp. Statuses can
+be **Running**, **Completed**, **Failed**, or **Skipped**.
+
+Click an entry to open a linkable detail page. Detail pages show UTC started
+and finished timestamps plus safe summary fields, such as cutoff date, deleted
+counts, database size, free disk space, or a short error class.
 
 This is intentionally not a full audit log. Telebugs does not store deleted
 report titles, exception messages, stack traces, payloads, or every deleted row
-in this history. If the card says **No data**, no tracked maintenance has run
+in this history. If the list says **No data**, no tracked maintenance has run
 yet, or the previous records were older than 90 days and have been pruned.
 
-Maintenance activity records are kept for 90 days and pruned daily.
+The list uses cursor pagination, so older records are available without loading
+the entire history at once. Maintenance activity records are kept for 90 days
+and pruned daily.
 
 **Important:** All automatic and manual purges are irreversible. Export critical
 data if needed before cleanup.
