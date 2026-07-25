@@ -6,7 +6,7 @@ notifications.
 Click your profile icon in the top-right and select **Account Settings**.
 
 The page includes a sidebar navigation with sections such as **General**,
-**Security**, **Sessions**, and **Notifications**.
+**Appearance**, **Security**, **Sessions**, and **Notifications**.
 
 ## General
 

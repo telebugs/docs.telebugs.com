@@ -1,15 +1,30 @@
 # Appearance
 
-The **Appearance** settings allow you to customize the look and feel of the
-Telebugs user interface to match your preferences. You can access these settings
-by clicking your avatar in the top-right corner and clicking the **Appearance**
-button.
+The **Appearance** settings let you customize the Telebugs interface for your
+account.
 
-**Important:** These settings are global and apply to **all users** on your
-Telebugs instance. Changes made here will affect the interface appearance for
-everyone.
+To open them, click your avatar in the top-right corner, select **Account
+Settings**, then select **Appearance** from the sidebar.
 
-The dialog provides three independent customization options:
+Select a tile for each setting, then click **Update appearance**. Your choices
+apply only to your account.
+
+## Theme
+
+Controls the color scheme of the interface.
+
+- **Light**
+
+  Uses the light theme regardless of your operating system’s preference.
+
+- **Dark**
+
+  Uses the dark theme regardless of your operating system’s preference.
+
+- **Auto** (default)
+
+  Follows your operating system’s appearance setting and automatically switches
+  between light and dark mode.
 
 ## Width
 
@@ -41,18 +56,3 @@ uses modern system fonts by default for a clean, native look.
   Switches the entire interface to use a monospace font globally (e.g., similar
   to Consolas, Menlo, or DejaVu Sans Mono). This applies to all UI text,
   including menus, tables, and dashboards—not just code areas.
-
-## Theme
-
-Controls the color scheme of the entire application.
-
-- **Follow system** (default)
-
-  Automatically switches between light and dark mode based on your operating
-  system’s appearance setting.
-
-- **Light**
-  Forces the interface to use the light theme regardless of system preference.
-
-- **Dark**
-  Forces the interface to use the dark theme regardless of system preference.
