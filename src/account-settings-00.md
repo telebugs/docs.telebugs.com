@@ -6,7 +6,8 @@ notifications.
 Click your profile icon in the top-right and select **Account Settings**.
 
 The page includes a sidebar navigation with sections such as **General**,
-**Appearance**, **Security**, **Sessions**, and **Notifications**.
+**Appearance**, **Accessibility**, **Security**, **Sessions**, and
+**Notifications**.
 
 ## General
 
@@ -105,6 +106,15 @@ Control which projects send you email notifications.
 Go to the **Notifications** tab, then toggle checkboxes for each project.
 
 Changes save automatically.
+
+## Accessibility and Keyboard Shortcuts
+
+Go to the **Accessibility** tab to enable or disable character-key shortcuts
+for your account. You can also review the shortcuts for navigating error and
+report lists.
+
+See [Accessibility](/account-settings-02-accessibility.md) for the complete
+shortcut reference and behavior.
 
 # API
 

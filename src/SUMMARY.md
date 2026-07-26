@@ -15,6 +15,7 @@
 - [Team Management](team-management-00.md)
 - [Account Settings](account-settings-00.md)
   - [Appearance](account-settings-01-appearance.md)
+  - [Accessibility](account-settings-02-accessibility.md)
 
 - [Notifications](notifications-00.md)
   - [Email](notifications-01-email.md)

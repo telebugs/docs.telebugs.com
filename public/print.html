@@ -52,10 +52,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4b3a8e73.js";
+            window.path_to_searchindex_js = "searchindex-6edca981.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-a73917c9.js"></script>
+        <script src="toc-b7ebbca9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -746,7 +746,8 @@ demote).</p>
 notifications.</p>
 <p>Click your profile icon in the top-right and select <strong>Account Settings</strong>.</p>
 <p>The page includes a sidebar navigation with sections such as <strong>General</strong>,
-<strong>Appearance</strong>, <strong>Security</strong>, <strong>Sessions</strong>, and <strong>Notifications</strong>.</p>
+<strong>Appearance</strong>, <strong>Accessibility</strong>, <strong>Security</strong>, <strong>Sessions</strong>, and
+<strong>Notifications</strong>.</p>
 <h2 id="general"><a class="header" href="#general">General</a></h2>
 <p>The General section contains settings for your profile, name, and local
 development preferences.</p>
@@ -823,6 +824,12 @@ device</strong>.</p>
 <p>Control which projects send you email notifications.</p>
 <p>Go to the <strong>Notifications</strong> tab, then toggle checkboxes for each project.</p>
 <p>Changes save automatically.</p>
+<h2 id="accessibility-and-keyboard-shortcuts"><a class="header" href="#accessibility-and-keyboard-shortcuts">Accessibility and Keyboard Shortcuts</a></h2>
+<p>Go to the <strong>Accessibility</strong> tab to enable or disable character-key shortcuts
+for your account. You can also review the shortcuts for navigating error and
+report lists.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+shortcut reference and behavior.</p>
 <h1 id="api"><a class="header" href="#api">API</a></h1>
 <p>The <strong>API access</strong> section in Account Settings contains your personal API key.</p>
 <h2 id="your-api-key"><a class="header" href="#your-api-key">Your API Key</a></h2>
@@ -901,6 +908,71 @@ to Consolas, Menlo, or DejaVu Sans Mono). This applies to all UI text,
 including menus, tables, and dashboards—not just code areas.</p>
 </li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h1>
+<p>The <strong>Accessibility</strong> settings let you control Telebugs’ character-key
+shortcuts for your account.</p>
+<p>To open them, click your profile icon in the top-right corner, select <strong>Account
+Settings</strong>, then select <strong>Accessibility</strong> from the sidebar.</p>
+<h2 id="character-key-shortcuts"><a class="header" href="#character-key-shortcuts">Character-Key Shortcuts</a></h2>
+<p>Character-key shortcuts are enabled by default. They provide fast navigation on
+these list pages:</p>
+<ul>
+<li><strong>All Errors</strong></li>
+<li>The error list on an individual project page</li>
+<li><strong>All Reports</strong></li>
+<li>The report list within an error group</li>
+</ul>
+<p>To disable or re-enable them:</p>
+<ol>
+<li>Open <strong>Account Settings → Accessibility</strong>.</li>
+<li>Clear or select <strong>Enable character-key shortcuts</strong>.</li>
+<li>Click <strong>Update accessibility</strong>.</li>
+</ol>
+<p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, and <code>?</code>
+shortcuts. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
+focus a list with <code>Tab</code> and use the arrow keys to move through it.</p>
+<h2 id="shortcut-reference"><a class="header" href="#shortcut-reference">Shortcut Reference</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Shortcut</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr><td><code>J</code> or <code>ArrowDown</code></td><td>Highlight and focus the next visible item.</td></tr>
+<tr><td><code>K</code> or <code>ArrowUp</code></td><td>Highlight and focus the previous visible item.</td></tr>
+<tr><td><code>O</code> or <code>Enter</code></td><td>Open the highlighted item’s primary link.</td></tr>
+<tr><td><code>X</code></td><td>Select or deselect the highlighted item on an error list.</td></tr>
+<tr><td><code>Escape</code></td><td>Clear the list highlight.</td></tr>
+<tr><td><code>?</code></td><td>Open the keyboard shortcut reference.</td></tr>
+</tbody>
+</table>
+</div>
+<p>You can open the shortcut reference by pressing <code>?</code> when character-key
+shortcuts are enabled. It is always available by opening the account menu and
+selecting <strong>Keyboard shortcuts</strong>.</p>
+<h2 id="how-list-navigation-works"><a class="header" href="#how-list-navigation-works">How List Navigation Works</a></h2>
+<p>The list highlight is a cursor, not a selection. Moving with <code>J</code>, <code>K</code>, or the
+arrow keys does not select an error or change any data. Use <code>X</code> separately when
+you want to add or remove an error from the bulk selection.</p>
+<p>Forward movement starts at the first visible item. Backward movement starts at
+the last visible item. Navigation stops at the first or last item on the
+current page and does not automatically change pages.</p>
+<p>Telebugs remembers the highlighted item when possible. Returning with the
+browser’s Back button or updating a list with search or filters can restore the
+highlight if that item is still visible. On responsive pages, only the visible
+desktop or mobile version of an item participates in navigation.</p>
+<h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
+<p>List shortcuts do not activate while you are:</p>
+<ul>
+<li>Typing in an input, text area, or editable region</li>
+<li>Using a select control</li>
+<li>Interacting with an open dialog or menu</li>
+<li>Composing text with an input method editor</li>
+<li>Holding <code>Shift</code>, <code>Command</code>, <code>Control</code>, or <code>Alt</code></li>
+</ul>
+<p>The <code>?</code> help shortcut remains available because typing it may require <code>Shift</code>
+on your keyboard.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="notifications"><a class="header" href="#notifications">Notifications</a></h1>
 <p>Telebugs supports email, push notifications, and webhooks for real-time alerts
@@ -1207,6 +1279,12 @@ reports, settings, and access controls.</p>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
+<p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
+or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
+highlighted error from the bulk selection, or <code>Escape</code> to clear the highlight.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="pinning-projects"><a class="header" href="#pinning-projects">Pinning Projects</a></h1>
 <p>Pin projects to keep them at the top of the dashboard for quick access.</p>
@@ -1389,6 +1467,12 @@ link to view all reports.</li>
 </ul>
 <p>This dashboard is ideal for triaging new or recurring issues across your entire
 deployment, spotting widespread problems, or monitoring overall error volume.</p>
+<h2 id="keyboard-navigation-1"><a class="header" href="#keyboard-navigation-1">Keyboard Navigation</a></h2>
+<p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
+or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
+highlighted error from the bulk selection, or <code>Escape</code> to clear the highlight.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="all-reports"><a class="header" href="#all-reports">All Reports</a></h1>
 <p>The <strong>All Reports</strong> view provides a global, cross-project list of every
@@ -1448,6 +1532,12 @@ report detail.</li>
 <p>This dashboard complements the <strong>All Errors</strong> view by letting you drill into the
 raw stream of incoming reports, making it ideal for monitoring live traffic or
 troubleshooting issues that may not yet be grouped effectively.</p>
+<h2 id="keyboard-navigation-2"><a class="header" href="#keyboard-navigation-2">Keyboard Navigation</a></h2>
+<p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible reports, and use
+<code>O</code> or <code>Enter</code> to open the highlighted report. Press <code>Escape</code> to clear the
+highlight.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="getting-started-with-the-rest-api"><a class="header" href="#getting-started-with-the-rest-api">Getting Started with the REST API</a></h1>
 <p>Telebugs exposes a REST API that lets you manage projects, groups, reports,
@@ -4019,6 +4109,12 @@ diagnose problems quickly.</p>
 <p>Similar errors are automatically grouped into issues to reduce noise.</p>
 <p>Teams can add notes (with attachments) to discuss and track resolution (see
 <a href="/error-reports-03-notes-and-collaboration.html">Notes and Collaboration</a>).</p>
+<h2 id="keyboard-navigation-3"><a class="header" href="#keyboard-navigation-3">Keyboard Navigation</a></h2>
+<p>When viewing the reports within an error group, use <code>J</code> / <code>K</code> or the arrow keys
+to move through the visible reports. Use <code>O</code> or <code>Enter</code> to open the highlighted
+report, or press <code>Escape</code> to clear the highlight.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+shortcut reference, supported contexts, and account preference.</p>
 <p>See the following sections for details.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="error-report-structure"><a class="header" href="#error-report-structure">Error Report Structure</a></h1>

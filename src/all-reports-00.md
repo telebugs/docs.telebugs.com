@@ -55,3 +55,12 @@ Each row/card shows:
 This dashboard complements the **All Errors** view by letting you drill into the
 raw stream of incoming reports, making it ideal for monitoring live traffic or
 troubleshooting issues that may not yet be grouped effectively.
+
+## Keyboard Navigation
+
+Use `J` / `K` or the arrow keys to move through the visible reports, and use
+`O` or `Enter` to open the highlighted report. Press `Escape` to clear the
+highlight.
+
+See [Accessibility](/account-settings-02-accessibility.md) for the complete
+shortcut reference, supported contexts, and account preference.

@@ -64,3 +64,12 @@ Each row/card shows:
 
 This dashboard is ideal for triaging new or recurring issues across your entire
 deployment, spotting widespread problems, or monitoring overall error volume.
+
+## Keyboard Navigation
+
+Use `J` / `K` or the arrow keys to move through the visible errors, and use `O`
+or `Enter` to open the highlighted error. Press `X` to add or remove the
+highlighted error from the bulk selection, or `Escape` to clear the highlight.
+
+See [Accessibility](/account-settings-02-accessibility.md) for the complete
+shortcut reference, supported contexts, and account preference.
