@@ -110,8 +110,9 @@ Changes save automatically.
 ## Accessibility and Keyboard Shortcuts
 
 Go to the **Accessibility** tab to enable or disable character-key shortcuts
-for your account. You can also review the shortcuts for navigating error and
-report lists.
+for your account. You can also review global navigation sequences and the
+contextual command palette for navigating, searching, filtering, and acting on
+errors.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference and behavior.

@@ -62,5 +62,8 @@ Use `J` / `K` or the arrow keys to move through the visible reports, and use
 `O` or `Enter` to open the highlighted report. Press `Escape` to clear the
 highlight.
 
+Press `Command-K` or `Control-K` to open the command palette and change the
+project or date filter, clear active filters, or navigate elsewhere.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, supported contexts, and account preference.

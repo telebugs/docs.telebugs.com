@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e497aa02.js";
+            window.path_to_searchindex_js = "searchindex-3da8ec44.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -216,9 +216,11 @@ and error-group actions on these pages:</p>
 <li>Click <strong>Update accessibility</strong>.</li>
 </ol>
 <p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, <code>P</code>, <code>N</code>,
-<code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts. Native <code>Tab</code> and <code>Enter</code> behavior
-remains available. You can also focus a list with <code>Tab</code> and use the arrow keys
-to move through it.</p>
+<code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts, together with the <code>G</code> navigation
+sequences. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
+focus a list with <code>Tab</code> and use the arrow keys to move through it.</p>
+<p>The modifier-based <code>Command-K</code> or <code>Control-K</code> command palette remains available
+when character-key shortcuts are disabled.</p>
 <h2 id="shortcut-reference"><a class="header" href="#shortcut-reference">Shortcut Reference</a></h2>
 <div class="table-wrapper">
 <table>
@@ -237,6 +239,12 @@ to move through it.</p>
 <tr><td>Any error-group tab</td><td><code>R</code></td><td>Resolve or unresolve the error.</td></tr>
 <tr><td>Any error-group tab</td><td><code>M</code></td><td>Open mute choices, or immediately unmute or unsnooze the error.</td></tr>
 <tr><td>Any error-group tab</td><td><code>A</code></td><td>Claim or unclaim the error for yourself.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>P</code></td><td>Go to Projects.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>E</code></td><td>Go to All Errors.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>R</code></td><td>Go to All Reports.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>S</code></td><td>Go to Account Settings.</td></tr>
+<tr><td>Outside editing fields</td><td><code>Command-K</code> or <code>Control-K</code></td><td>Open the command palette.</td></tr>
+<tr><td>Inside editing fields</td><td><code>Command-Option-K</code> or <code>Control-Alt-K</code></td><td>Open the command palette without replacing the field’s native shortcut.</td></tr>
 <tr><td>Supported pages</td><td><code>?</code></td><td>Open the shortcuts available on the current page.</td></tr>
 </tbody>
 </table>
@@ -244,6 +252,34 @@ to move through it.</p>
 <p>You can open the shortcut reference by pressing <code>?</code> when character-key
 shortcuts are enabled. It is always available by opening the account menu and
 selecting <strong>Keyboard shortcuts</strong>.</p>
+<h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
+<p>Open the command palette with <code>Command-K</code> on macOS or <code>Control-K</code> on other
+platforms. You can also open the account menu and select <strong>Command palette</strong>.</p>
+<p>Start typing to find:</p>
+<ul>
+<li>Projects and applications you can access</li>
+<li>Global destinations such as All Errors, All Reports, and Account Settings</li>
+<li>Navigation and error actions available on the current page</li>
+<li>Existing search, status, project, and date filters</li>
+<li>Applicable bulk actions when errors are selected</li>
+</ul>
+<p>Use <code>ArrowUp</code> and <code>ArrowDown</code>, <code>Home</code>, or <code>End</code> to change the active result,
+then press <code>Enter</code> to run it. <code>Command-Enter</code> or <code>Control-Enter</code> opens a
+navigation result in a new tab; it never submits an action. Press <code>Escape</code>, use
+the opening shortcut again, or select the close button to close the palette.</p>
+<p>Telebugs does not replace the normal <code>Command-K</code> or <code>Control-K</code> behavior while
+you are editing a field. Use <code>Command-Option-K</code> on macOS or <code>Control-Alt-K</code> on
+other platforms when you intentionally want the palette from an editing
+field.</p>
+<p>Palette actions use the same visible controls, permissions, confirmations, and
+endpoints as pointer interaction. Project and application results are loaded
+only from resources your account can access.</p>
+<h2 id="global-navigation-sequences"><a class="header" href="#global-navigation-sequences">Global Navigation Sequences</a></h2>
+<p>Press <code>G</code>, then <code>P</code>, <code>E</code>, <code>R</code>, or <code>S</code> to navigate globally. A small <strong>Go to</strong>
+reference appears after <code>G</code> and lists the valid second keys. The sequence
+cancels after three seconds, when you press <code>Escape</code>, or when you press an
+unrecognized second key. It never falls through and activates another
+single-key command.</p>
 <h2 id="how-list-navigation-works"><a class="header" href="#how-list-navigation-works">How List Navigation Works</a></h2>
 <p>The list highlight is a cursor, not a selection. Moving with <code>J</code>, <code>K</code>, or the
 arrow keys does not select an error or change any data. Use <code>X</code> separately when
@@ -286,6 +322,10 @@ reassignment.</li>
 </ul>
 <p>These actions use the same visible controls as pointer and touch interaction.
 They are ignored while an earlier action is still being processed.</p>
+<p>The same actions appear in the command palette when they are available. When
+errors are selected on an error list, the palette also exposes applicable
+resolve, unresolve, mute, unmute, and merge actions with the selected count.
+Merge retains its existing confirmation.</p>
 <h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
 <p>Shortcuts do not activate while you are:</p>
 <ul>
@@ -293,7 +333,8 @@ They are ignored while an earlier action is still being processed.</p>
 <li>Using a select control</li>
 <li>Interacting with an open dialog or menu</li>
 <li>Composing text with an input method editor</li>
-<li>Holding <code>Command</code>, <code>Control</code>, or <code>Alt</code>, or using another modifier chord</li>
+<li>Holding a modifier for a shortcut other than the documented command-palette
+chords</li>
 </ul>
 <p>The layout-generated <code>Shift</code> needed to type <code>?</code> is allowed; other modified
 character commands are left to the browser and operating system. Held keys do

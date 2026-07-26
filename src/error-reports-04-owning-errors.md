@@ -51,6 +51,9 @@ Press `A` on the **Details**, **Reports**, or **Notes** tab to use the current
 person owns the error because Telebugs currently supports self-claiming, not
 reassignment.
 
+You can also open the command palette with `Command-K` or `Control-K` and
+select **Own it** or **Unclaim** when that action is available.
+
 See [Accessibility](/account-settings-02-accessibility.md) for shortcut
 preferences and safety behavior.
 

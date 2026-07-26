@@ -25,9 +25,12 @@ To disable or re-enable them:
 3. Click **Update accessibility**.
 
 Disabling this setting turns off the printable `J`, `K`, `O`, `X`, `P`, `N`,
-`U`, `R`, `M`, `A`, and `?` shortcuts. Native `Tab` and `Enter` behavior
-remains available. You can also focus a list with `Tab` and use the arrow keys
-to move through it.
+`U`, `R`, `M`, `A`, and `?` shortcuts, together with the `G` navigation
+sequences. Native `Tab` and `Enter` behavior remains available. You can also
+focus a list with `Tab` and use the arrow keys to move through it.
+
+The modifier-based `Command-K` or `Control-K` command palette remains available
+when character-key shortcuts are disabled.
 
 ## Shortcut Reference
 
@@ -44,11 +47,52 @@ to move through it.
 | Any error-group tab | `R` | Resolve or unresolve the error. |
 | Any error-group tab | `M` | Open mute choices, or immediately unmute or unsnooze the error. |
 | Any error-group tab | `A` | Claim or unclaim the error for yourself. |
+| Authenticated pages | `G`, then `P` | Go to Projects. |
+| Authenticated pages | `G`, then `E` | Go to All Errors. |
+| Authenticated pages | `G`, then `R` | Go to All Reports. |
+| Authenticated pages | `G`, then `S` | Go to Account Settings. |
+| Outside editing fields | `Command-K` or `Control-K` | Open the command palette. |
+| Inside editing fields | `Command-Option-K` or `Control-Alt-K` | Open the command palette without replacing the field's native shortcut. |
 | Supported pages | `?` | Open the shortcuts available on the current page. |
 
 You can open the shortcut reference by pressing `?` when character-key
 shortcuts are enabled. It is always available by opening the account menu and
 selecting **Keyboard shortcuts**.
+
+## Command Palette
+
+Open the command palette with `Command-K` on macOS or `Control-K` on other
+platforms. You can also open the account menu and select **Command palette**.
+
+Start typing to find:
+
+- Projects and applications you can access
+- Global destinations such as All Errors, All Reports, and Account Settings
+- Navigation and error actions available on the current page
+- Existing search, status, project, and date filters
+- Applicable bulk actions when errors are selected
+
+Use `ArrowUp` and `ArrowDown`, `Home`, or `End` to change the active result,
+then press `Enter` to run it. `Command-Enter` or `Control-Enter` opens a
+navigation result in a new tab; it never submits an action. Press `Escape`, use
+the opening shortcut again, or select the close button to close the palette.
+
+Telebugs does not replace the normal `Command-K` or `Control-K` behavior while
+you are editing a field. Use `Command-Option-K` on macOS or `Control-Alt-K` on
+other platforms when you intentionally want the palette from an editing
+field.
+
+Palette actions use the same visible controls, permissions, confirmations, and
+endpoints as pointer interaction. Project and application results are loaded
+only from resources your account can access.
+
+## Global Navigation Sequences
+
+Press `G`, then `P`, `E`, `R`, or `S` to navigate globally. A small **Go to**
+reference appears after `G` and lists the valid second keys. The sequence
+cancels after three seconds, when you press `Escape`, or when you press an
+unrecognized second key. It never falls through and activates another
+single-key command.
 
 ## How List Navigation Works
 
@@ -103,6 +147,11 @@ The `R`, `M`, and `A` shortcuts work on the **Details**, **Reports**, and
 These actions use the same visible controls as pointer and touch interaction.
 They are ignored while an earlier action is still being processed.
 
+The same actions appear in the command palette when they are available. When
+errors are selected on an error list, the palette also exposes applicable
+resolve, unresolve, mute, unmute, and merge actions with the selected count.
+Merge retains its existing confirmation.
+
 ## When Shortcuts Are Paused
 
 Shortcuts do not activate while you are:
@@ -111,7 +160,8 @@ Shortcuts do not activate while you are:
 - Using a select control
 - Interacting with an open dialog or menu
 - Composing text with an input method editor
-- Holding `Command`, `Control`, or `Alt`, or using another modifier chord
+- Holding a modifier for a shortcut other than the documented command-palette
+  chords
 
 The layout-generated `Shift` needed to type `?` is allowed; other modified
 character commands are left to the browser and operating system. Held keys do

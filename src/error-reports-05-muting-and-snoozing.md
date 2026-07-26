@@ -106,8 +106,10 @@ duration or occurrence threshold. For a muted or snoozed error, it immediately
 uses the current **Unmute** or **Unsnooze** action.
 
 Press `R` on the same tabs to use the current **Resolve** or **Unresolve**
-action. See [Accessibility](/account-settings-02-accessibility.md) for the
-complete context-aware shortcut reference.
+action. These available actions also appear in the command palette opened with
+`Command-K` or `Control-K`. See
+[Accessibility](/account-settings-02-accessibility.md) for the complete
+context-aware shortcut reference.
 
 ### API and MCP Support
 

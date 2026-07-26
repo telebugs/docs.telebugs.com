@@ -18,6 +18,9 @@ The error-group header also provides `R` to resolve or unresolve, `M` to mute
 or unmute, and `A` to claim or unclaim the error for yourself. These actions
 work on the **Details**, **Reports**, and **Notes** tabs.
 
+The same available occurrence and error actions appear in the command palette,
+which opens with `Command-K` or `Control-K`.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 context-aware shortcut reference and safety behavior.
 

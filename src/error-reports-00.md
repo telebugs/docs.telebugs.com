@@ -19,6 +19,10 @@ On an individual report, use `P` / `N` for the previous or next occurrence and
 `U` to return to the originating list. `R`, `M`, and `A` provide the current
 resolve, mute, and self-claim actions on every error-group tab.
 
+Press `Command-K` or `Control-K` to open the command palette. On the Reports
+tab it can open message search and date filters. On an individual report it
+includes available occurrence navigation and error actions.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, supported contexts, and account preference.
 

@@ -71,5 +71,9 @@ Use `J` / `K` or the arrow keys to move through the visible errors, and use `O`
 or `Enter` to open the highlighted error. Press `X` to add or remove the
 highlighted error from the bulk selection, or `Escape` to clear the highlight.
 
+Press `Command-K` or `Control-K` to open the command palette. It can change the
+status, project, or date filter, clear active filters, and run applicable bulk
+resolve, mute, or merge actions for selected errors.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, supported contexts, and account preference.

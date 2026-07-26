@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e497aa02.js";
+            window.path_to_searchindex_js = "searchindex-3da8ec44.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -826,8 +826,9 @@ device</strong>.</p>
 <p>Changes save automatically.</p>
 <h2 id="accessibility-and-keyboard-shortcuts"><a class="header" href="#accessibility-and-keyboard-shortcuts">Accessibility and Keyboard Shortcuts</a></h2>
 <p>Go to the <strong>Accessibility</strong> tab to enable or disable character-key shortcuts
-for your account. You can also review the shortcuts for navigating error and
-report lists.</p>
+for your account. You can also review global navigation sequences and the
+contextual command palette for navigating, searching, filtering, and acting on
+errors.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference and behavior.</p>
 <h1 id="api"><a class="header" href="#api">API</a></h1>
@@ -932,9 +933,11 @@ and error-group actions on these pages:</p>
 <li>Click <strong>Update accessibility</strong>.</li>
 </ol>
 <p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, <code>P</code>, <code>N</code>,
-<code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts. Native <code>Tab</code> and <code>Enter</code> behavior
-remains available. You can also focus a list with <code>Tab</code> and use the arrow keys
-to move through it.</p>
+<code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts, together with the <code>G</code> navigation
+sequences. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
+focus a list with <code>Tab</code> and use the arrow keys to move through it.</p>
+<p>The modifier-based <code>Command-K</code> or <code>Control-K</code> command palette remains available
+when character-key shortcuts are disabled.</p>
 <h2 id="shortcut-reference"><a class="header" href="#shortcut-reference">Shortcut Reference</a></h2>
 <div class="table-wrapper">
 <table>
@@ -953,6 +956,12 @@ to move through it.</p>
 <tr><td>Any error-group tab</td><td><code>R</code></td><td>Resolve or unresolve the error.</td></tr>
 <tr><td>Any error-group tab</td><td><code>M</code></td><td>Open mute choices, or immediately unmute or unsnooze the error.</td></tr>
 <tr><td>Any error-group tab</td><td><code>A</code></td><td>Claim or unclaim the error for yourself.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>P</code></td><td>Go to Projects.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>E</code></td><td>Go to All Errors.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>R</code></td><td>Go to All Reports.</td></tr>
+<tr><td>Authenticated pages</td><td><code>G</code>, then <code>S</code></td><td>Go to Account Settings.</td></tr>
+<tr><td>Outside editing fields</td><td><code>Command-K</code> or <code>Control-K</code></td><td>Open the command palette.</td></tr>
+<tr><td>Inside editing fields</td><td><code>Command-Option-K</code> or <code>Control-Alt-K</code></td><td>Open the command palette without replacing the field’s native shortcut.</td></tr>
 <tr><td>Supported pages</td><td><code>?</code></td><td>Open the shortcuts available on the current page.</td></tr>
 </tbody>
 </table>
@@ -960,6 +969,34 @@ to move through it.</p>
 <p>You can open the shortcut reference by pressing <code>?</code> when character-key
 shortcuts are enabled. It is always available by opening the account menu and
 selecting <strong>Keyboard shortcuts</strong>.</p>
+<h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
+<p>Open the command palette with <code>Command-K</code> on macOS or <code>Control-K</code> on other
+platforms. You can also open the account menu and select <strong>Command palette</strong>.</p>
+<p>Start typing to find:</p>
+<ul>
+<li>Projects and applications you can access</li>
+<li>Global destinations such as All Errors, All Reports, and Account Settings</li>
+<li>Navigation and error actions available on the current page</li>
+<li>Existing search, status, project, and date filters</li>
+<li>Applicable bulk actions when errors are selected</li>
+</ul>
+<p>Use <code>ArrowUp</code> and <code>ArrowDown</code>, <code>Home</code>, or <code>End</code> to change the active result,
+then press <code>Enter</code> to run it. <code>Command-Enter</code> or <code>Control-Enter</code> opens a
+navigation result in a new tab; it never submits an action. Press <code>Escape</code>, use
+the opening shortcut again, or select the close button to close the palette.</p>
+<p>Telebugs does not replace the normal <code>Command-K</code> or <code>Control-K</code> behavior while
+you are editing a field. Use <code>Command-Option-K</code> on macOS or <code>Control-Alt-K</code> on
+other platforms when you intentionally want the palette from an editing
+field.</p>
+<p>Palette actions use the same visible controls, permissions, confirmations, and
+endpoints as pointer interaction. Project and application results are loaded
+only from resources your account can access.</p>
+<h2 id="global-navigation-sequences"><a class="header" href="#global-navigation-sequences">Global Navigation Sequences</a></h2>
+<p>Press <code>G</code>, then <code>P</code>, <code>E</code>, <code>R</code>, or <code>S</code> to navigate globally. A small <strong>Go to</strong>
+reference appears after <code>G</code> and lists the valid second keys. The sequence
+cancels after three seconds, when you press <code>Escape</code>, or when you press an
+unrecognized second key. It never falls through and activates another
+single-key command.</p>
 <h2 id="how-list-navigation-works"><a class="header" href="#how-list-navigation-works">How List Navigation Works</a></h2>
 <p>The list highlight is a cursor, not a selection. Moving with <code>J</code>, <code>K</code>, or the
 arrow keys does not select an error or change any data. Use <code>X</code> separately when
@@ -1002,6 +1039,10 @@ reassignment.</li>
 </ul>
 <p>These actions use the same visible controls as pointer and touch interaction.
 They are ignored while an earlier action is still being processed.</p>
+<p>The same actions appear in the command palette when they are available. When
+errors are selected on an error list, the palette also exposes applicable
+resolve, unresolve, mute, unmute, and merge actions with the selected count.
+Merge retains its existing confirmation.</p>
 <h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
 <p>Shortcuts do not activate while you are:</p>
 <ul>
@@ -1009,7 +1050,8 @@ They are ignored while an earlier action is still being processed.</p>
 <li>Using a select control</li>
 <li>Interacting with an open dialog or menu</li>
 <li>Composing text with an input method editor</li>
-<li>Holding <code>Command</code>, <code>Control</code>, or <code>Alt</code>, or using another modifier chord</li>
+<li>Holding a modifier for a shortcut other than the documented command-palette
+chords</li>
 </ul>
 <p>The layout-generated <code>Shift</code> needed to type <code>?</code> is allowed; other modified
 character commands are left to the browser and operating system. Held keys do
@@ -1325,6 +1367,9 @@ reports, settings, and access controls.</p>
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
 or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
 highlighted error from the bulk selection, or <code>Escape</code> to clear the highlight.</p>
+<p>Press <code>Command-K</code> or <code>Control-K</code> to search errors, change the status or date
+filter, run applicable actions for selected errors, or navigate to another
+project or application.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -1513,6 +1558,9 @@ deployment, spotting widespread problems, or monitoring overall error volume.</p
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
 or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
 highlighted error from the bulk selection, or <code>Escape</code> to clear the highlight.</p>
+<p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette. It can change the
+status, project, or date filter, clear active filters, and run applicable bulk
+resolve, mute, or merge actions for selected errors.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -1578,6 +1626,8 @@ troubleshooting issues that may not yet be grouped effectively.</p>
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible reports, and use
 <code>O</code> or <code>Enter</code> to open the highlighted report. Press <code>Escape</code> to clear the
 highlight.</p>
+<p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette and change the
+project or date filter, clear active filters, or navigate elsewhere.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, supported contexts, and account preference.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -4158,6 +4208,9 @@ report, or press <code>Escape</code> to clear the highlight.</p>
 <p>On an individual report, use <code>P</code> / <code>N</code> for the previous or next occurrence and
 <code>U</code> to return to the originating list. <code>R</code>, <code>M</code>, and <code>A</code> provide the current
 resolve, mute, and self-claim actions on every error-group tab.</p>
+<p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette. On the Reports
+tab it can open message search and date filters. On an individual report it
+includes available occurrence navigation and error actions.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, supported contexts, and account preference.</p>
 <p>See the following sections for details.</p>
@@ -4176,6 +4229,8 @@ list.</p>
 <p>The error-group header also provides <code>R</code> to resolve or unresolve, <code>M</code> to mute
 or unmute, and <code>A</code> to claim or unclaim the error for yourself. These actions
 work on the <strong>Details</strong>, <strong>Reports</strong>, and <strong>Notes</strong> tabs.</p>
+<p>The same available occurrence and error actions appear in the command palette,
+which opens with <code>Command-K</code> or <code>Control-K</code>.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 context-aware shortcut reference and safety behavior.</p>
 <h2 id="report-details"><a class="header" href="#report-details">Report Details</a></h2>
@@ -4405,6 +4460,8 @@ Clicking <strong>Unclaim</strong> immediately releases ownership.</p>
 <strong>Own it</strong> or <strong>Unclaim</strong> action. The shortcut is unavailable when another
 person owns the error because Telebugs currently supports self-claiming, not
 reassignment.</p>
+<p>You can also open the command palette with <code>Command-K</code> or <code>Control-K</code> and
+select <strong>Own it</strong> or <strong>Unclaim</strong> when that action is available.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for shortcut
 preferences and safety behavior.</p>
 <h3 id="best-practices-3"><a class="header" href="#best-practices-3">Best Practices</a></h3>
@@ -4522,8 +4579,10 @@ error, it opens and focuses the existing mute choices, where you select a
 duration or occurrence threshold. For a muted or snoozed error, it immediately
 uses the current <strong>Unmute</strong> or <strong>Unsnooze</strong> action.</p>
 <p>Press <code>R</code> on the same tabs to use the current <strong>Resolve</strong> or <strong>Unresolve</strong>
-action. See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the
-complete context-aware shortcut reference.</p>
+action. These available actions also appear in the command palette opened with
+<code>Command-K</code> or <code>Control-K</code>. See
+<a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+context-aware shortcut reference.</p>
 <h3 id="api-and-mcp-support"><a class="header" href="#api-and-mcp-support">API and MCP Support</a></h3>
 <p>Muting is also available through automation interfaces:</p>
 <ul>
