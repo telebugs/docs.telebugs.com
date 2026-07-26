@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-6edca981.js";
+            window.path_to_searchindex_js = "searchindex-e497aa02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -196,6 +196,19 @@
                         <h1 id="error-report-structure"><a class="header" href="#error-report-structure">Error Report Structure</a></h1>
 <p>An individual error report page in Telebugs is divided into sections that
 provide layered context about the error.</p>
+<h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
+<p>Use <code>P</code> and <code>N</code> to open the previous or next occurrence in the active ordering.
+If you opened a report from a filtered error-group Reports list, that ordering
+includes the full filtered result. Navigation stops at either boundary.</p>
+<p>Use <code>U</code> to return to the originating list. Same-tab navigation restores its
+URL, filters, pagination, scroll position, and any visible keyboard cursor.
+Direct, shared, and new-tab reports fall back to the error group’s Reports
+list.</p>
+<p>The error-group header also provides <code>R</code> to resolve or unresolve, <code>M</code> to mute
+or unmute, and <code>A</code> to claim or unclaim the error for yourself. These actions
+work on the <strong>Details</strong>, <strong>Reports</strong>, and <strong>Notes</strong> tabs.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+context-aware shortcut reference and safety behavior.</p>
 <h2 id="report-details"><a class="header" href="#report-details">Report Details</a></h2>
 <p>High-level overview:</p>
 <ul>

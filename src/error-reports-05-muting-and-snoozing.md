@@ -98,6 +98,17 @@ If the error is currently muted:
   **Unsnooze** for time-based snoozes.
 - Clicking/tapping it immediately removes the mute and resumes notifications.
 
+### Keyboard Shortcut
+
+Press `M` on the **Details**, **Reports**, or **Notes** tab. For an unmuted
+error, it opens and focuses the existing mute choices, where you select a
+duration or occurrence threshold. For a muted or snoozed error, it immediately
+uses the current **Unmute** or **Unsnooze** action.
+
+Press `R` on the same tabs to use the current **Resolve** or **Unresolve**
+action. See [Accessibility](/account-settings-02-accessibility.md) for the
+complete context-aware shortcut reference.
+
 ### API and MCP Support
 
 Muting is also available through automation interfaces:

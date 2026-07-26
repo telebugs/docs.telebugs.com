@@ -3,6 +3,24 @@
 An individual error report page in Telebugs is divided into sections that
 provide layered context about the error.
 
+## Keyboard Navigation
+
+Use `P` and `N` to open the previous or next occurrence in the active ordering.
+If you opened a report from a filtered error-group Reports list, that ordering
+includes the full filtered result. Navigation stops at either boundary.
+
+Use `U` to return to the originating list. Same-tab navigation restores its
+URL, filters, pagination, scroll position, and any visible keyboard cursor.
+Direct, shared, and new-tab reports fall back to the error group's Reports
+list.
+
+The error-group header also provides `R` to resolve or unresolve, `M` to mute
+or unmute, and `A` to claim or unclaim the error for yourself. These actions
+work on the **Details**, **Reports**, and **Notes** tabs.
+
+See [Accessibility](/account-settings-02-accessibility.md) for the complete
+context-aware shortcut reference and safety behavior.
+
 ## Report Details
 
 High-level overview:

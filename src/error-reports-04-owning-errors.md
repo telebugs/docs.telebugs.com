@@ -44,6 +44,16 @@ Clicking **Unclaim** immediately releases ownership.
 
 No confirmation dialog is required — the action is fast and reversible.
 
+### Keyboard Shortcut
+
+Press `A` on the **Details**, **Reports**, or **Notes** tab to use the current
+**Own it** or **Unclaim** action. The shortcut is unavailable when another
+person owns the error because Telebugs currently supports self-claiming, not
+reassignment.
+
+See [Accessibility](/account-settings-02-accessibility.md) for shortcut
+preferences and safety behavior.
+
 ### Best Practices
 
 - Claim an error when you start actively working on it.

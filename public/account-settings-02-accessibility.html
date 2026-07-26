@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-6edca981.js";
+            window.path_to_searchindex_js = "searchindex-e497aa02.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -199,13 +199,15 @@ shortcuts for your account.</p>
 <p>To open them, click your profile icon in the top-right corner, select <strong>Account
 Settings</strong>, then select <strong>Accessibility</strong> from the sidebar.</p>
 <h2 id="character-key-shortcuts"><a class="header" href="#character-key-shortcuts">Character-Key Shortcuts</a></h2>
-<p>Character-key shortcuts are enabled by default. They provide fast navigation on
-these list pages:</p>
+<p>Character-key shortcuts are enabled by default. They provide fast navigation
+and error-group actions on these pages:</p>
 <ul>
 <li><strong>All Errors</strong></li>
 <li>The error list on an individual project page</li>
 <li><strong>All Reports</strong></li>
 <li>The report list within an error group</li>
+<li>Individual report pages</li>
+<li>The <strong>Details</strong>, <strong>Reports</strong>, and <strong>Notes</strong> tabs of an error group</li>
 </ul>
 <p>To disable or re-enable them:</p>
 <ol>
@@ -213,22 +215,29 @@ these list pages:</p>
 <li>Clear or select <strong>Enable character-key shortcuts</strong>.</li>
 <li>Click <strong>Update accessibility</strong>.</li>
 </ol>
-<p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, and <code>?</code>
-shortcuts. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
-focus a list with <code>Tab</code> and use the arrow keys to move through it.</p>
+<p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, <code>P</code>, <code>N</code>,
+<code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts. Native <code>Tab</code> and <code>Enter</code> behavior
+remains available. You can also focus a list with <code>Tab</code> and use the arrow keys
+to move through it.</p>
 <h2 id="shortcut-reference"><a class="header" href="#shortcut-reference">Shortcut Reference</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Shortcut</th><th>Action</th></tr>
+<tr><th>Context</th><th>Shortcut</th><th>Action</th></tr>
 </thead>
 <tbody>
-<tr><td><code>J</code> or <code>ArrowDown</code></td><td>Highlight and focus the next visible item.</td></tr>
-<tr><td><code>K</code> or <code>ArrowUp</code></td><td>Highlight and focus the previous visible item.</td></tr>
-<tr><td><code>O</code> or <code>Enter</code></td><td>Open the highlighted item’s primary link.</td></tr>
-<tr><td><code>X</code></td><td>Select or deselect the highlighted item on an error list.</td></tr>
-<tr><td><code>Escape</code></td><td>Clear the list highlight.</td></tr>
-<tr><td><code>?</code></td><td>Open the keyboard shortcut reference.</td></tr>
+<tr><td>Error and report lists</td><td><code>J</code> or <code>ArrowDown</code></td><td>Highlight and focus the next visible item.</td></tr>
+<tr><td>Error and report lists</td><td><code>K</code> or <code>ArrowUp</code></td><td>Highlight and focus the previous visible item.</td></tr>
+<tr><td>Error and report lists</td><td><code>O</code> or <code>Enter</code></td><td>Open the highlighted item’s primary link.</td></tr>
+<tr><td>Error lists</td><td><code>X</code></td><td>Select or deselect the highlighted error.</td></tr>
+<tr><td>Error and report lists</td><td><code>Escape</code></td><td>Clear the list highlight.</td></tr>
+<tr><td>Individual report</td><td><code>P</code></td><td>Open the previous occurrence in the active ordering.</td></tr>
+<tr><td>Individual report</td><td><code>N</code></td><td>Open the next occurrence in the active ordering.</td></tr>
+<tr><td>Individual report</td><td><code>U</code></td><td>Return to the originating list.</td></tr>
+<tr><td>Any error-group tab</td><td><code>R</code></td><td>Resolve or unresolve the error.</td></tr>
+<tr><td>Any error-group tab</td><td><code>M</code></td><td>Open mute choices, or immediately unmute or unsnooze the error.</td></tr>
+<tr><td>Any error-group tab</td><td><code>A</code></td><td>Claim or unclaim the error for yourself.</td></tr>
+<tr><td>Supported pages</td><td><code>?</code></td><td>Open the shortcuts available on the current page.</td></tr>
 </tbody>
 </table>
 </div>
@@ -243,20 +252,53 @@ you want to add or remove an error from the bulk selection.</p>
 the last visible item. Navigation stops at the first or last item on the
 current page and does not automatically change pages.</p>
 <p>Telebugs remembers the highlighted item when possible. Returning with the
-browser’s Back button or updating a list with search or filters can restore the
-highlight if that item is still visible. On responsive pages, only the visible
-desktop or mobile version of an item participates in navigation.</p>
+browser’s Back button, using <code>U</code> from an individual report, or updating a list
+with search or filters can restore the highlight if that item is still visible.
+On responsive pages, only the visible desktop or mobile version of an item
+participates in navigation.</p>
+<h2 id="navigating-occurrences"><a class="header" href="#navigating-occurrences">Navigating Occurrences</a></h2>
+<p>On an individual report page, use <code>P</code> and <code>N</code> to move through occurrences of
+the same error. Navigation stops at the first or last occurrence and never
+wraps.</p>
+<p>When you open a report from a filtered error-group Reports list, <code>P</code> and <code>N</code>
+follow that list’s date range, search, and ascending or descending order across
+the complete filtered result, not only the current page. The counter and
+visible previous and next controls use the same ordering. Direct links and
+reports opened from other lists use all occurrences in chronological order.</p>
+<p>Use <code>U</code> to return to the originating list. For a report opened in the same tab,
+Telebugs restores the exact list URL, filters, pagination, scroll position, and
+keyboard cursor when one was visible. A report opened with the pointer returns
+without adding a row highlight.</p>
+<p>For a direct, shared, or new-tab report, <code>U</code> falls back to the error group’s
+Reports list. It preserves a valid occurrence filter when available; otherwise,
+it opens the day containing the current occurrence.</p>
+<h2 id="error-group-actions"><a class="header" href="#error-group-actions">Error-Group Actions</a></h2>
+<p>The <code>R</code>, <code>M</code>, and <code>A</code> shortcuts work on the <strong>Details</strong>, <strong>Reports</strong>, and
+<strong>Notes</strong> tabs:</p>
+<ul>
+<li><code>R</code> uses the current <strong>Resolve</strong> or <strong>Unresolve</strong> action.</li>
+<li><code>M</code> opens the existing mute choices when the error is unmuted. Muting still
+requires you to choose a duration or occurrence threshold. When the error is
+muted or snoozed, <code>M</code> immediately uses <strong>Unmute</strong> or <strong>Unsnooze</strong>.</li>
+<li><code>A</code> uses <strong>Own it</strong> or <strong>Unclaim</strong> for your account. It is unavailable when
+another person owns the error because Telebugs does not currently support
+reassignment.</li>
+</ul>
+<p>These actions use the same visible controls as pointer and touch interaction.
+They are ignored while an earlier action is still being processed.</p>
 <h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
-<p>List shortcuts do not activate while you are:</p>
+<p>Shortcuts do not activate while you are:</p>
 <ul>
 <li>Typing in an input, text area, or editable region</li>
 <li>Using a select control</li>
 <li>Interacting with an open dialog or menu</li>
 <li>Composing text with an input method editor</li>
-<li>Holding <code>Shift</code>, <code>Command</code>, <code>Control</code>, or <code>Alt</code></li>
+<li>Holding <code>Command</code>, <code>Control</code>, or <code>Alt</code>, or using another modifier chord</li>
 </ul>
-<p>The <code>?</code> help shortcut remains available because typing it may require <code>Shift</code>
-on your keyboard.</p>
+<p>The layout-generated <code>Shift</code> needed to type <code>?</code> is allowed; other modified
+character commands are left to the browser and operating system. Held keys do
+not repeatedly open pages, show help, or submit actions. <code>J</code>, <code>K</code>, and arrow
+movement may repeat so you can move through a list efficiently.</p>
 
                     </main>
 

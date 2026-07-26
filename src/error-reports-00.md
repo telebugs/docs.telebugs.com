@@ -15,6 +15,10 @@ When viewing the reports within an error group, use `J` / `K` or the arrow keys
 to move through the visible reports. Use `O` or `Enter` to open the highlighted
 report, or press `Escape` to clear the highlight.
 
+On an individual report, use `P` / `N` for the previous or next occurrence and
+`U` to return to the originating list. `R`, `M`, and `A` provide the current
+resolve, mute, and self-claim actions on every error-group tab.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, supported contexts, and account preference.
 
