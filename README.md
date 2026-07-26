@@ -18,8 +18,32 @@ Prerequisites:
 
 * Install mdBook: `cargo install mdbook`
 * Run locally: `mdbook serve --open` (opens in your browser with live reload)
-* Build static site: `mdbook build` (outputs to `./book`)
+* Build static site: `mdbook build` (outputs to `./public`)
 * Edit files in `src/` and send [PRs][4]
+
+## URL stability
+
+The public URL contract is recorded in `url-stability-baseline.json`. After
+building the site, verify that all existing pages, assets, redirects, internal
+links, heading fragments, REST API problem-type URLs, and crawl directives
+remain valid:
+
+```sh
+mdbook build
+python3 scripts/url_stability.py check
+```
+
+The check fails when an existing HTML path or public asset disappears, an nginx
+redirect changes, a link or fragment breaks, a problem-type URL changes, a
+canonical points outside `docs.telebugs.com`, or a new `noindex` directive
+appears.
+
+Only recapture the baseline when an intentional change to the public URL
+contract has been explicitly approved:
+
+```sh
+python3 scripts/url_stability.py capture
+```
 
 ## Contributing
 
