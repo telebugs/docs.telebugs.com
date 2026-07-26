@@ -9,3 +9,4 @@ build-dir = "public"
 
 [output.html]
 git-repository-url = "https://github.com/telebugs/docs.telebugs.com"
+additional-css = ["theme/telebugs.css"]
