@@ -6,20 +6,22 @@ account.
 To open them, click your avatar in the top-right corner, select **Account
 Settings**, then select **Appearance** from the sidebar.
 
-Select a tile for each setting, then click **Update appearance**. Your choices
-apply only to your account.
+Select a tile for **Color mode** and **Width**, choose the **Font** and **Text
+size** options you prefer, then click **Update appearance**. Your choices apply
+only to your account.
 
-## Theme
+<h2 id="theme"><a class="header" href="#theme">Color mode</a></h2>
 
-Controls the color scheme of the interface.
+Controls whether the interface uses light or dark colors without defining a
+broader visual theme.
 
 - **Light**
 
-  Uses the light theme regardless of your operating system’s preference.
+  Uses light mode regardless of your operating system’s preference.
 
 - **Dark**
 
-  Uses the dark theme regardless of your operating system’s preference.
+  Uses dark mode regardless of your operating system’s preference.
 
 - **Auto** (default)
 
@@ -56,3 +58,26 @@ uses modern system fonts by default for a clean, native look.
   Switches the entire interface to use a monospace font globally (e.g., similar
   to Consolas, Menlo, or DejaVu Sans Mono). This applies to all UI text,
   including menus, tables, and dashboards—not just code areas.
+
+## Text size
+
+Changes the scale of text and the surrounding interface. Line heights, spacing,
+and controls scale together so the layout keeps consistent proportions.
+
+- **Smaller**
+
+  Uses 87.5% of the standard interface scale. This is equivalent to 14px text
+  when your browser's default text size is 16px.
+
+- **Standard** (default)
+
+  Uses your browser's standard interface scale, typically 16px for regular
+  text.
+
+- **Larger**
+
+  Uses 112.5% of the standard interface scale. This is equivalent to 18px text
+  when your browser's default text size is 16px.
+
+All three text sizes work with both the **Default** and **Monospace** font
+options.
