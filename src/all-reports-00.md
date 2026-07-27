@@ -68,4 +68,4 @@ Press `Command-K` or `Control-K` to open the command palette and change the
 project or date filter, clear active filters, or navigate elsewhere.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
-shortcut reference, supported contexts, and account preference.
+shortcut reference, custom assignments, favorites, and safety behavior.

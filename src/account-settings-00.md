@@ -109,10 +109,13 @@ Changes save automatically.
 
 ## Accessibility and Keyboard Shortcuts
 
-Go to the **Accessibility** tab to enable or disable character-key shortcuts
-for your account. You can also review global navigation sequences and the
-contextual command palette for navigating, searching, filtering, and acting on
-errors.
+Go to the **Accessibility** tab to enable or disable character-key shortcuts,
+record safe custom assignments, and manage favorite palette commands for your
+account. You can also review global navigation sequences and the contextual
+command palette for navigating, searching, filtering, and acting on errors.
+
+Favorite commands sync with your account. Recently executed palette commands
+remain private to the current browser.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference and behavior.

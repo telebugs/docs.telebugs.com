@@ -27,7 +27,7 @@ The Reports chart includes **View chart data**, which exposes its time-series
 values and release links in a keyboard-accessible table.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
-shortcut reference, supported contexts, and account preference.
+shortcut reference, custom assignments, favorites, and safety behavior.
 
 See the following sections for details.
 

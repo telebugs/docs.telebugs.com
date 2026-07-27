@@ -77,4 +77,4 @@ status, project, or date filter, clear active filters, and run applicable bulk
 resolve, mute, or merge actions for selected errors.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
-shortcut reference, supported contexts, and account preference.
+shortcut reference, custom assignments, favorites, and safety behavior.

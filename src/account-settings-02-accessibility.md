@@ -1,7 +1,7 @@
 # Accessibility
 
-The **Accessibility** settings let you control Telebugs' character-key
-shortcuts for your account.
+The **Accessibility** settings let you control Telebugs' keyboard shortcuts
+and favorite commands for your account.
 
 To open them, click your profile icon in the top-right corner, select **Account
 Settings**, then select **Accessibility** from the sidebar.
@@ -43,12 +43,13 @@ Disabling this setting turns off the printable `J`, `K`, `O`, `X`, `P`, `N`,
 sequences. Native `Tab` and `Enter` behavior remains available. You can also
 focus a list with `Tab` and use the arrow keys to move through it.
 
-The modifier-based `Command-K` or `Control-K` command palette remains available
-when character-key shortcuts are disabled.
+Modifier-based shortcuts remain available when character-key shortcuts are
+disabled. This includes the default `Command-K` or `Control-K` command-palette
+shortcut and any character command that you remap to a modifier chord.
 
-## Shortcut Reference
+## Default Shortcut Reference
 
-| Context | Shortcut | Action |
+| Context | Default shortcut | Action |
 | --- | --- | --- |
 | Error and report lists | `J` or `ArrowDown` | Highlight and focus the next visible item. |
 | Error and report lists | `K` or `ArrowUp` | Highlight and focus the previous visible item. |
@@ -72,6 +73,36 @@ when character-key shortcuts are disabled.
 You can open the shortcut reference by pressing `?` when character-key
 shortcuts are enabled. It is always available by opening the account menu and
 selecting **Keyboard shortcuts**.
+
+## Customizing Shortcuts
+
+Open **Account Settings → Accessibility**, then find **Custom shortcuts**.
+Each command shows its current assignment:
+
+1. Select **Record** beside the command.
+2. Press the new key, chord, or two-key sequence.
+3. Select **Update accessibility**.
+
+Direct commands accept one printable key or a portable chord containing
+`Command` on macOS or `Control` on other platforms. A chord can also include
+`Option`/`Alt` or `Shift`. Navigation sequences contain exactly two printable
+keys without modifiers. Telebugs uses the character produced by your keyboard
+layout rather than the physical key position.
+
+Telebugs does not allow `Tab`, the arrow keys, `Enter`, or `Escape` to be
+remapped. These native alternatives remain available even if you clear the
+corresponding character shortcut. Browser and operating-system shortcuts such
+as `Command-L`/`Control-L`, reload, closing a tab, and restoring a tab are also
+reserved.
+
+Each direct assignment and complete sequence must be unique. A sequence's
+first key cannot also be assigned as a direct character shortcut. If a new
+assignment conflicts with another command, Telebugs names the conflicting
+command and keeps the existing assignments unchanged.
+
+Select **Clear** to leave one command unassigned, or **Reset** to restore that
+command's default. **Restore default shortcuts** resets every assignment after
+confirmation but keeps your favorite commands.
 
 ## Command Palette
 
@@ -99,6 +130,24 @@ field.
 Palette actions use the same visible controls, permissions, confirmations, and
 endpoints as pointer interaction. Project and application results are loaded
 only from resources your account can access.
+
+### Favorites and Recent Commands
+
+When a favoritable command is active in the palette, use **Add to favorites**
+or **Remove from favorites** without closing the palette. You can also manage
+all favorite commands under **Account Settings → Accessibility**. Favorites
+sync with your Telebugs account and appear first when the palette opens with
+an empty search.
+
+Commands you run from the palette appear in **Recent** suggestions on that
+browser. Recent commands are deduplicated and limited to ten. They stay in the
+browser's local storage and are never synced or sent to Telebugs. Project and
+application results, raw keystrokes, and shortcuts used outside the palette
+are not added to this history.
+
+Favorites and recent entries never make a command appear on a page where it is
+unavailable. Projects, applications, current-project results, and dynamic
+project filters cannot be favorited.
 
 ## Global Navigation Sequences
 
@@ -201,10 +250,9 @@ Shortcuts do not activate while you are:
 - Using a select control
 - Interacting with an open dialog or menu
 - Composing text with an input method editor
-- Holding a modifier for a shortcut other than the documented command-palette
-  chords
+- Holding an unsupported modifier combination
 
-The layout-generated `Shift` needed to type `?` is allowed; other modified
-character commands are left to the browser and operating system. Held keys do
-not repeatedly open pages, show help, or submit actions. `J`, `K`, and arrow
-movement may repeat so you can move through a list efficiently.
+The layout-generated `Shift` needed to type a printable character is allowed.
+Unassigned modifier combinations are left to the browser and operating
+system. Held keys do not repeatedly open pages, show help, or submit actions.
+List movement may repeat so you can move through a list efficiently.

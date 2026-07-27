@@ -29,4 +29,4 @@ filter, run applicable actions for selected errors, or navigate to another
 project or application.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
-shortcut reference, supported contexts, and account preference.
+shortcut reference, custom assignments, favorites, and safety behavior.
