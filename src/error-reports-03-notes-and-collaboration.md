@@ -22,7 +22,13 @@ The first attachment on the group becomes the issue's thumbnail in the dashboard
 3. Attach files via **Attach files** or drag-and-drop (multiple supported).
 4. Click **Add note**.
 
-Progress is shown for large uploads.
+Progress is shown for large uploads. Telebugs announces queued-file changes and
+upload status to assistive technology. Each queued file has a labelled removal
+button; after removal, keyboard focus moves to the next available file or back
+to **Attach files**.
+
+See [Accessibility](/account-settings-02-accessibility.md) for general keyboard,
+dialog, status-message, and file-control behavior.
 
 ## Managing Notes
 

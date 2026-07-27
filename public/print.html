@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8d537e1.js";
+            window.path_to_searchindex_js = "searchindex-b4318780.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -940,6 +940,16 @@ options.</p>
 shortcuts for your account.</p>
 <p>To open them, click your profile icon in the top-right corner, select <strong>Account
 Settings</strong>, then select <strong>Accessibility</strong> from the sidebar.</p>
+<h2 id="general-keyboard-access"><a class="header" href="#general-keyboard-access">General Keyboard Access</a></h2>
+<p>Press <code>Tab</code> after a page loads to reveal <strong>Skip to main content</strong>. Activating it
+moves focus past the repeated navigation and into the page content.</p>
+<p>Telebugs shows a visible focus indicator on links, buttons, fields, switches,
+menus, and other interactive controls. Dialogs and mobile sheets move focus to
+a useful control when they open, close with <code>Escape</code>, keep focus inside while
+open, and return focus to the control that opened them.</p>
+<p>Status and timestamp details that appear on pointer hover are also available
+by focusing or activating their labelled buttons. Press <code>Escape</code> to close an
+open detail popover.</p>
 <h2 id="character-key-shortcuts"><a class="header" href="#character-key-shortcuts">Character-Key Shortcuts</a></h2>
 <p>Character-key shortcuts are enabled by default. They provide fast navigation
 and error-group actions on these pages:</p>
@@ -1068,6 +1078,25 @@ They are ignored while an earlier action is still being processed.</p>
 errors are selected on an error list, the palette also exposes applicable
 resolve, unresolve, mute, unmute, and merge actions with the selected count.
 Merge retains its existing confirmation.</p>
+<h2 id="charts-and-data-tables"><a class="header" href="#charts-and-data-tables">Charts and Data Tables</a></h2>
+<p>Charts include a <strong>View chart data</strong> control. Open it to read the chart as a
+table with time labels, current values, comparison values when present, and
+links to applicable releases. This table is the nonvisual and keyboard
+alternative to inspecting points on the canvas.</p>
+<p>Small decorative trend charts are skipped by screen readers when the same
+change is already written next to them.</p>
+<h2 id="notes-and-file-attachments"><a class="header" href="#notes-and-file-attachments">Notes and File Attachments</a></h2>
+<p>The note attachment control works with a file picker as well as drag and drop.
+After you choose files, Telebugs announces the updated file count. Each queued
+file has a labelled removal button, and removing a file returns focus to the
+next file, the previous file, or the attachment control.</p>
+<p>Upload progress, successful note creation, and validation failures are exposed
+as status or alert messages without moving focus unexpectedly.</p>
+<h2 id="display-preferences"><a class="header" href="#display-preferences">Display Preferences</a></h2>
+<p>Telebugs respects the operating system’s reduced-motion preference and keeps
+controls and focus indicators distinguishable in forced-colors modes. Browser
+zoom and text-size controls can be used without changing the keyboard
+shortcuts described here.</p>
 <h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
 <p>Shortcuts do not activate while you are:</p>
 <ul>
@@ -1382,7 +1411,8 @@ reports, settings, and access controls.</p>
 <li>Search bar: Find errors by message, type, or details (live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
-<li>Interactive chart: Error volume over time; zoom on spikes.</li>
+<li>Interactive chart: Error volume over time; zoom on spikes. Open <strong>View chart
+data</strong> for the same values and release links in a keyboard-accessible table.</li>
 <li>Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.</li>
 <li>Filters: All, resolved, unresolved; sort by last seen or count.</li>
 </ul>
@@ -1560,8 +1590,8 @@ from the error reports.
 <ul>
 <li>Badges overlay the icon if the error has an <strong>owner</strong>, is <strong>muted/snoozed</strong>,
 or is <strong>resolved</strong>.</li>
-<li>Hovering the icon reveals a popover with details about ownership, mute
-status, and resolution.</li>
+<li>Hovering, focusing, or activating the labelled status button reveals
+details about ownership, mute status, and resolution.</li>
 </ul>
 </li>
 <li><strong>Error type and culprit</strong> – e.g., <code>TypeError</code> in <code>app/controllers/users_controller.rb</code>.</li>
@@ -1573,7 +1603,8 @@ link to view all reports.</li>
 <ul>
 <li>“Last seen” (e.g., “5 minutes ago”) – primary sort key.</li>
 <li>“First seen” (e.g., “3 days old”).</li>
-<li>Hovering reveals exact UTC timestamps in a popover.</li>
+<li>Hovering, focusing, or activating the timestamp button reveals exact UTC
+timestamps.</li>
 </ul>
 </li>
 </ul>
@@ -1635,12 +1666,14 @@ report detail.</li>
 <li>Owner (user icon or profile picture)</li>
 <li>Muted or snoozed (bell icons)</li>
 <li>Resolved (check icon)</li>
-<li>Hovering the icons reveals a popover with detailed ownership, mute/snooze, and resolution information.</li>
+<li>Hovering, focusing, or activating the labelled status button reveals
+detailed ownership, mute/snooze, and resolution information.</li>
 </ul>
 </li>
 <li><strong>Occurred at</strong> – Relative time (e.g., “5 minutes ago”).
 <ul>
-<li>Hovering reveals the exact UTC timestamp in a popover.</li>
+<li>Hovering, focusing, or activating the timestamp button reveals the exact
+UTC timestamp.</li>
 </ul>
 </li>
 </ul>
@@ -4236,6 +4269,8 @@ resolve, mute, and self-claim actions on every error-group tab.</p>
 <p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette. On the Reports
 tab it can open message search and date filters. On an individual report it
 includes available occurrence navigation and error actions.</p>
+<p>The Reports chart includes <strong>View chart data</strong>, which exposes its time-series
+values and release links in a keyboard-accessible table.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, supported contexts, and account preference.</p>
 <p>See the following sections for details.</p>
@@ -4427,7 +4462,12 @@ and track progress toward resolution.</p>
 <li>Attach files via <strong>Attach files</strong> or drag-and-drop (multiple supported).</li>
 <li>Click <strong>Add note</strong>.</li>
 </ol>
-<p>Progress is shown for large uploads.</p>
+<p>Progress is shown for large uploads. Telebugs announces queued-file changes and
+upload status to assistive technology. Each queued file has a labelled removal
+button; after removal, keyboard focus moves to the next available file or back
+to <strong>Attach files</strong>.</p>
+<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for general keyboard,
+dialog, status-message, and file-control behavior.</p>
 <h2 id="managing-notes"><a class="header" href="#managing-notes">Managing Notes</a></h2>
 <ul>
 <li>Notes cannot be edited after posting (delete and repost if needed).</li>
@@ -4459,7 +4499,8 @@ screenshots, log files, or “fixed in deploy X” updates.</p>
 <li>The individual error group detail page</li>
 </ul>
 </li>
-<li>Hovering the owner badge shows a popover with the owner’s name (and link to their profile if applicable).</li>
+<li>Hovering, focusing, or activating the owner button shows a popover with the
+owner’s name and a profile link when applicable.</li>
 </ul>
 <p>Ownership does <strong>not</strong> currently affect:</p>
 <ul>
@@ -4567,7 +4608,8 @@ Reports</strong>, project dashboards, group detail) showing:
 <li>Bell-slash icon for permanent and occurrence-based mutes</li>
 </ul>
 </li>
-<li>Hovering the badge reveals who muted it and when notifications resume:
+<li>Hovering, focusing, or activating the mute-status button reveals who muted it
+and when notifications resume:
 <ul>
 <li>Time-based snoozes show the remaining time.</li>
 <li>Occurrence-based mutes show how many more occurrences remain.</li>

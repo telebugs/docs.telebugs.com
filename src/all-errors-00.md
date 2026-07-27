@@ -50,8 +50,8 @@ Each row/card shows:
   from the error reports.
   - Badges overlay the icon if the error has an **owner**, is **muted/snoozed**,
     or is **resolved**.
-  - Hovering the icon reveals a popover with details about ownership, mute
-    status, and resolution.
+  - Hovering, focusing, or activating the labelled status button reveals
+    details about ownership, mute status, and resolution.
 - **Error type and culprit** – e.g., `TypeError` in `app/controllers/users_controller.rb`.
 - **Error message** – Truncated preview, clickable to open the full error group
   detail.
@@ -60,7 +60,8 @@ Each row/card shows:
 - **Seen times** –
   - "Last seen" (e.g., "5 minutes ago") – primary sort key.
   - "First seen" (e.g., "3 days old").
-  - Hovering reveals exact UTC timestamps in a popover.
+  - Hovering, focusing, or activating the timestamp button reveals exact UTC
+    timestamps.
 
 This dashboard is ideal for triaging new or recurring issues across your entire
 deployment, spotting widespread problems, or monitoring overall error volume.

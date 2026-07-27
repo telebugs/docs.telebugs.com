@@ -15,7 +15,8 @@
   - **All Reports** view
   - Individual project dashboards
   - The individual error group detail page
-- Hovering the owner badge shows a popover with the owner's name (and link to their profile if applicable).
+- Hovering, focusing, or activating the owner button shows a popover with the
+  owner's name and a profile link when applicable.
 
 Ownership does **not** currently affect:
 

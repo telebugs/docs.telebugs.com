@@ -61,7 +61,8 @@ Telebugs supports three mute types:
   Reports**, project dashboards, group detail) showing:
   - Bell-snooze icon for time-based snoozes
   - Bell-slash icon for permanent and occurrence-based mutes
-- Hovering the badge reveals who muted it and when notifications resume:
+- Hovering, focusing, or activating the mute-status button reveals who muted it
+  and when notifications resume:
   - Time-based snoozes show the remaining time.
   - Occurrence-based mutes show how many more occurrences remain.
   - Permanent mutes show that they remain muted until manually unmuted.

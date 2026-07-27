@@ -6,6 +6,20 @@ shortcuts for your account.
 To open them, click your profile icon in the top-right corner, select **Account
 Settings**, then select **Accessibility** from the sidebar.
 
+## General Keyboard Access
+
+Press `Tab` after a page loads to reveal **Skip to main content**. Activating it
+moves focus past the repeated navigation and into the page content.
+
+Telebugs shows a visible focus indicator on links, buttons, fields, switches,
+menus, and other interactive controls. Dialogs and mobile sheets move focus to
+a useful control when they open, close with `Escape`, keep focus inside while
+open, and return focus to the control that opened them.
+
+Status and timestamp details that appear on pointer hover are also available
+by focusing or activating their labelled buttons. Press `Escape` to close an
+open detail popover.
+
 ## Character-Key Shortcuts
 
 Character-key shortcuts are enabled by default. They provide fast navigation
@@ -151,6 +165,33 @@ The same actions appear in the command palette when they are available. When
 errors are selected on an error list, the palette also exposes applicable
 resolve, unresolve, mute, unmute, and merge actions with the selected count.
 Merge retains its existing confirmation.
+
+## Charts and Data Tables
+
+Charts include a **View chart data** control. Open it to read the chart as a
+table with time labels, current values, comparison values when present, and
+links to applicable releases. This table is the nonvisual and keyboard
+alternative to inspecting points on the canvas.
+
+Small decorative trend charts are skipped by screen readers when the same
+change is already written next to them.
+
+## Notes and File Attachments
+
+The note attachment control works with a file picker as well as drag and drop.
+After you choose files, Telebugs announces the updated file count. Each queued
+file has a labelled removal button, and removing a file returns focus to the
+next file, the previous file, or the attachment control.
+
+Upload progress, successful note creation, and validation failures are exposed
+as status or alert messages without moving focus unexpectedly.
+
+## Display Preferences
+
+Telebugs respects the operating system's reduced-motion preference and keeps
+controls and focus indicators distinguishable in forced-colors modes. Browser
+zoom and text-size controls can be used without changing the keyboard
+shortcuts described here.
 
 ## When Shortcuts Are Paused
 

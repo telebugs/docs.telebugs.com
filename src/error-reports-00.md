@@ -23,6 +23,9 @@ Press `Command-K` or `Control-K` to open the command palette. On the Reports
 tab it can open message search and date filters. On an individual report it
 includes available occurrence navigation and error actions.
 
+The Reports chart includes **View chart data**, which exposes its time-series
+values and release links in a keyboard-accessible table.
+
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, supported contexts, and account preference.
 

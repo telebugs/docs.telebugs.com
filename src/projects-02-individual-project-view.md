@@ -9,7 +9,8 @@ Key elements:
 - Search bar: Find errors by message, type, or details (live updates).
 - Date range selector: Filter by time (e.g., today, last week) with pager.
 - Stats overview: Total reports, new vs. reoccurred.
-- Interactive chart: Error volume over time; zoom on spikes.
+- Interactive chart: Error volume over time; zoom on spikes. Open **View chart
+  data** for the same values and release links in a keyboard-accessible table.
 - Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.
 - Filters: All, resolved, unresolved; sort by last seen or count.
 

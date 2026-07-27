@@ -48,9 +48,11 @@ Each row/card shows:
   - Owner (user icon or profile picture)
   - Muted or snoozed (bell icons)
   - Resolved (check icon)
-  - Hovering the icons reveals a popover with detailed ownership, mute/snooze, and resolution information.
+  - Hovering, focusing, or activating the labelled status button reveals
+    detailed ownership, mute/snooze, and resolution information.
 - **Occurred at** – Relative time (e.g., "5 minutes ago").
-  - Hovering reveals the exact UTC timestamp in a popover.
+  - Hovering, focusing, or activating the timestamp button reveals the exact
+    UTC timestamp.
 
 This dashboard complements the **All Errors** view by letting you drill into the
 raw stream of incoming reports, making it ideal for monitoring live traffic or

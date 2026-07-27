@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a8d537e1.js";
+            window.path_to_searchindex_js = "searchindex-b4318780.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -198,6 +198,16 @@
 shortcuts for your account.</p>
 <p>To open them, click your profile icon in the top-right corner, select <strong>Account
 Settings</strong>, then select <strong>Accessibility</strong> from the sidebar.</p>
+<h2 id="general-keyboard-access"><a class="header" href="#general-keyboard-access">General Keyboard Access</a></h2>
+<p>Press <code>Tab</code> after a page loads to reveal <strong>Skip to main content</strong>. Activating it
+moves focus past the repeated navigation and into the page content.</p>
+<p>Telebugs shows a visible focus indicator on links, buttons, fields, switches,
+menus, and other interactive controls. Dialogs and mobile sheets move focus to
+a useful control when they open, close with <code>Escape</code>, keep focus inside while
+open, and return focus to the control that opened them.</p>
+<p>Status and timestamp details that appear on pointer hover are also available
+by focusing or activating their labelled buttons. Press <code>Escape</code> to close an
+open detail popover.</p>
 <h2 id="character-key-shortcuts"><a class="header" href="#character-key-shortcuts">Character-Key Shortcuts</a></h2>
 <p>Character-key shortcuts are enabled by default. They provide fast navigation
 and error-group actions on these pages:</p>
@@ -326,6 +336,25 @@ They are ignored while an earlier action is still being processed.</p>
 errors are selected on an error list, the palette also exposes applicable
 resolve, unresolve, mute, unmute, and merge actions with the selected count.
 Merge retains its existing confirmation.</p>
+<h2 id="charts-and-data-tables"><a class="header" href="#charts-and-data-tables">Charts and Data Tables</a></h2>
+<p>Charts include a <strong>View chart data</strong> control. Open it to read the chart as a
+table with time labels, current values, comparison values when present, and
+links to applicable releases. This table is the nonvisual and keyboard
+alternative to inspecting points on the canvas.</p>
+<p>Small decorative trend charts are skipped by screen readers when the same
+change is already written next to them.</p>
+<h2 id="notes-and-file-attachments"><a class="header" href="#notes-and-file-attachments">Notes and File Attachments</a></h2>
+<p>The note attachment control works with a file picker as well as drag and drop.
+After you choose files, Telebugs announces the updated file count. Each queued
+file has a labelled removal button, and removing a file returns focus to the
+next file, the previous file, or the attachment control.</p>
+<p>Upload progress, successful note creation, and validation failures are exposed
+as status or alert messages without moving focus unexpectedly.</p>
+<h2 id="display-preferences"><a class="header" href="#display-preferences">Display Preferences</a></h2>
+<p>Telebugs respects the operating system’s reduced-motion preference and keeps
+controls and focus indicators distinguishable in forced-colors modes. Browser
+zoom and text-size controls can be used without changing the keyboard
+shortcuts described here.</p>
 <h2 id="when-shortcuts-are-paused"><a class="header" href="#when-shortcuts-are-paused">When Shortcuts Are Paused</a></h2>
 <p>Shortcuts do not activate while you are:</p>
 <ul>
