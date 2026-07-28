@@ -35,8 +35,11 @@ and error-group actions on these pages:
 To disable or re-enable them:
 
 1. Open **Account Settings → Accessibility**.
-2. Clear or select **Enable character-key shortcuts**.
-3. Click **Update accessibility**.
+2. Open the **Shortcuts** tab.
+3. Clear or select **Character-key shortcuts**.
+
+The change saves automatically. A **Saved** status remains visible with the
+tabs as you scroll, without moving you away from the active tab.
 
 Disabling this setting turns off the printable `J`, `K`, `O`, `X`, `P`, `N`,
 `U`, `R`, `M`, `A`, and `?` shortcuts, together with the `G` navigation
@@ -44,8 +47,9 @@ sequences. Native `Tab` and `Enter` behavior remains available. You can also
 focus a list with `Tab` and use the arrow keys to move through it.
 
 Modifier-based shortcuts remain available when character-key shortcuts are
-disabled. This includes the default `Command-K` or `Control-K` command-palette
-shortcut and any character command that you remap to a modifier chord.
+disabled. This includes the default `Command` + `K` or `Control` + `K`
+command-palette shortcut and any character command that you remap to a
+modifier chord.
 
 ## Default Shortcut Reference
 
@@ -66,22 +70,32 @@ shortcut and any character command that you remap to a modifier chord.
 | Authenticated pages | `G`, then `E` | Go to All Errors. |
 | Authenticated pages | `G`, then `R` | Go to All Reports. |
 | Authenticated pages | `G`, then `S` | Go to Account Settings. |
-| Outside editing fields | `Command-K` or `Control-K` | Open the command palette. |
-| Inside editing fields | `Command-Option-K` or `Control-Alt-K` | Open the command palette without replacing the field's native shortcut. |
+| Outside editing fields | `Command` + `K` or `Control` + `K` | Open the command palette. |
+| Inside editing fields | `Command` + `Option` + `K` or `Control` + `Alt` + `K` | Open the command palette without replacing the field's native shortcut. |
 | Supported pages | `?` | Open the shortcuts available on the current page. |
 
+Keys joined by a plus sign are pressed together. Keys separated by **then**
+are pressed in order.
+
 You can open the shortcut reference by pressing `?` when character-key
-shortcuts are enabled. It is always available by opening the account menu and
-selecting **Keyboard shortcuts**.
+shortcuts are enabled. It is always available by selecting **Search** in the
+navigation bar and choosing **Keyboard shortcuts** from the command palette.
+The Search control displays the current command-palette shortcut, and
+**Keyboard shortcuts** appears in the initial suggestions so you do not need
+to search for it.
 
 ## Customizing Shortcuts
 
-Open **Account Settings → Accessibility**, then find **Custom shortcuts**.
+Open **Account Settings → Accessibility**, then open the **Shortcuts** tab.
 Each command shows its current assignment:
 
-1. Select **Record** beside the command.
+1. Select the labelled edit button beside the command.
 2. Press the new key, chord, or two-key sequence.
-3. Select **Update accessibility**.
+
+The edit button remains in place while the current key changes to **Press
+keys…**. The assignment saves automatically after you finish recording, and
+Telebugs displays **Saved** in the sticky tab bar without reloading the page.
+Press `Escape` or move focus away to cancel without changing the assignment.
 
 Direct commands accept one printable key or a portable chord containing
 `Command` on macOS or `Control` on other platforms. A chord can also include
@@ -92,22 +106,24 @@ layout rather than the physical key position.
 Telebugs does not allow `Tab`, the arrow keys, `Enter`, or `Escape` to be
 remapped. These native alternatives remain available even if you clear the
 corresponding character shortcut. Browser and operating-system shortcuts such
-as `Command-L`/`Control-L`, reload, closing a tab, and restoring a tab are also
-reserved.
+as `Command` + `L` or `Control` + `L`, reload, closing a tab, and restoring a
+tab are also reserved.
 
 Each direct assignment and complete sequence must be unique. A sequence's
 first key cannot also be assigned as a direct character shortcut. If a new
 assignment conflicts with another command, Telebugs names the conflicting
 command and keeps the existing assignments unchanged.
 
-Select **Clear** to leave one command unassigned, or **Reset** to restore that
-command's default. **Restore default shortcuts** resets every assignment after
-confirmation but keeps your favorite commands.
+Use the labelled clear icon to leave one command unassigned, or the reset icon
+to restore that command's default. **Restore defaults** resets every assignment
+after confirmation but keeps your favorite commands. These changes also save
+automatically.
 
 ## Command Palette
 
-Open the command palette with `Command-K` on macOS or `Control-K` on other
-platforms. You can also open the account menu and select **Command palette**.
+Open the command palette with `Command` + `K` on macOS or `Control` + `K` on
+other platforms. You can also select **Search** in the navigation bar. Its key
+hint follows your customized command-palette binding.
 
 Start typing to find:
 
@@ -118,14 +134,15 @@ Start typing to find:
 - Applicable bulk actions when errors are selected
 
 Use `ArrowUp` and `ArrowDown`, `Home`, or `End` to change the active result,
-then press `Enter` to run it. `Command-Enter` or `Control-Enter` opens a
-navigation result in a new tab; it never submits an action. Press `Escape`, use
-the opening shortcut again, or select the close button to close the palette.
+then press `Enter` to run it. `Command` + `Enter` or `Control` + `Enter` opens
+a navigation result in a new tab; it never submits an action. Press `Escape`,
+use the opening shortcut again, or select the close button to close the
+palette.
 
-Telebugs does not replace the normal `Command-K` or `Control-K` behavior while
-you are editing a field. Use `Command-Option-K` on macOS or `Control-Alt-K` on
-other platforms when you intentionally want the palette from an editing
-field.
+Telebugs does not replace the normal `Command` + `K` or `Control` + `K`
+behavior while you are editing a field. Use `Command` + `Option` + `K` on
+macOS or `Control` + `Alt` + `K` on other platforms when you intentionally
+want the palette from an editing field.
 
 Palette actions use the same visible controls, permissions, confirmations, and
 endpoints as pointer interaction. Project and application results are loaded
@@ -133,11 +150,14 @@ only from resources your account can access.
 
 ### Favorites and Recent Commands
 
-When a favoritable command is active in the palette, use **Add to favorites**
-or **Remove from favorites** without closing the palette. You can also manage
-all favorite commands under **Account Settings → Accessibility**. Favorites
-sync with your Telebugs account and appear first when the palette opens with
-an empty search.
+When a favoritable command is active in the palette, use the star at the end
+of its highlighted row. An outlined star adds the command to favorites; a
+filled star removes it. The palette stays open and the command remains in
+place while you manage it. Use **Customize shortcuts** at the bottom of the
+palette, or open **Account Settings → Accessibility → Command palette**, to
+manage all favorite commands. Changes made there save automatically.
+Favorites sync with your Telebugs account and appear first the next time the
+palette opens with an empty search.
 
 Commands you run from the palette appear in **Recent** suggestions on that
 browser. Recent commands are deduplicated and limited to ten. They stay in the

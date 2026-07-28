@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b88bc9e1.js";
+            window.path_to_searchindex_js = "searchindex-9cc5b6b9.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -966,16 +966,19 @@ and error-group actions on these pages:</p>
 <p>To disable or re-enable them:</p>
 <ol>
 <li>Open <strong>Account Settings → Accessibility</strong>.</li>
-<li>Clear or select <strong>Enable character-key shortcuts</strong>.</li>
-<li>Click <strong>Update accessibility</strong>.</li>
+<li>Open the <strong>Shortcuts</strong> tab.</li>
+<li>Clear or select <strong>Character-key shortcuts</strong>.</li>
 </ol>
+<p>The change saves automatically. A <strong>Saved</strong> status remains visible with the
+tabs as you scroll, without moving you away from the active tab.</p>
 <p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, <code>P</code>, <code>N</code>,
 <code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts, together with the <code>G</code> navigation
 sequences. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
 focus a list with <code>Tab</code> and use the arrow keys to move through it.</p>
 <p>Modifier-based shortcuts remain available when character-key shortcuts are
-disabled. This includes the default <code>Command-K</code> or <code>Control-K</code> command-palette
-shortcut and any character command that you remap to a modifier chord.</p>
+disabled. This includes the default <code>Command</code> + <code>K</code> or <code>Control</code> + <code>K</code>
+command-palette shortcut and any character command that you remap to a
+modifier chord.</p>
 <h2 id="default-shortcut-reference"><a class="header" href="#default-shortcut-reference">Default Shortcut Reference</a></h2>
 <div class="table-wrapper">
 <table>
@@ -998,23 +1001,31 @@ shortcut and any character command that you remap to a modifier chord.</p>
 <tr><td>Authenticated pages</td><td><code>G</code>, then <code>E</code></td><td>Go to All Errors.</td></tr>
 <tr><td>Authenticated pages</td><td><code>G</code>, then <code>R</code></td><td>Go to All Reports.</td></tr>
 <tr><td>Authenticated pages</td><td><code>G</code>, then <code>S</code></td><td>Go to Account Settings.</td></tr>
-<tr><td>Outside editing fields</td><td><code>Command-K</code> or <code>Control-K</code></td><td>Open the command palette.</td></tr>
-<tr><td>Inside editing fields</td><td><code>Command-Option-K</code> or <code>Control-Alt-K</code></td><td>Open the command palette without replacing the field’s native shortcut.</td></tr>
+<tr><td>Outside editing fields</td><td><code>Command</code> + <code>K</code> or <code>Control</code> + <code>K</code></td><td>Open the command palette.</td></tr>
+<tr><td>Inside editing fields</td><td><code>Command</code> + <code>Option</code> + <code>K</code> or <code>Control</code> + <code>Alt</code> + <code>K</code></td><td>Open the command palette without replacing the field’s native shortcut.</td></tr>
 <tr><td>Supported pages</td><td><code>?</code></td><td>Open the shortcuts available on the current page.</td></tr>
 </tbody>
 </table>
 </div>
+<p>Keys joined by a plus sign are pressed together. Keys separated by <strong>then</strong>
+are pressed in order.</p>
 <p>You can open the shortcut reference by pressing <code>?</code> when character-key
-shortcuts are enabled. It is always available by opening the account menu and
-selecting <strong>Keyboard shortcuts</strong>.</p>
+shortcuts are enabled. It is always available by selecting <strong>Search</strong> in the
+navigation bar and choosing <strong>Keyboard shortcuts</strong> from the command palette.
+The Search control displays the current command-palette shortcut, and
+<strong>Keyboard shortcuts</strong> appears in the initial suggestions so you do not need
+to search for it.</p>
 <h2 id="customizing-shortcuts"><a class="header" href="#customizing-shortcuts">Customizing Shortcuts</a></h2>
-<p>Open <strong>Account Settings → Accessibility</strong>, then find <strong>Custom shortcuts</strong>.
+<p>Open <strong>Account Settings → Accessibility</strong>, then open the <strong>Shortcuts</strong> tab.
 Each command shows its current assignment:</p>
 <ol>
-<li>Select <strong>Record</strong> beside the command.</li>
+<li>Select the labelled edit button beside the command.</li>
 <li>Press the new key, chord, or two-key sequence.</li>
-<li>Select <strong>Update accessibility</strong>.</li>
 </ol>
+<p>The edit button remains in place while the current key changes to <strong>Press
+keys…</strong>. The assignment saves automatically after you finish recording, and
+Telebugs displays <strong>Saved</strong> in the sticky tab bar without reloading the page.
+Press <code>Escape</code> or move focus away to cancel without changing the assignment.</p>
 <p>Direct commands accept one printable key or a portable chord containing
 <code>Command</code> on macOS or <code>Control</code> on other platforms. A chord can also include
 <code>Option</code>/<code>Alt</code> or <code>Shift</code>. Navigation sequences contain exactly two printable
@@ -1023,18 +1034,20 @@ layout rather than the physical key position.</p>
 <p>Telebugs does not allow <code>Tab</code>, the arrow keys, <code>Enter</code>, or <code>Escape</code> to be
 remapped. These native alternatives remain available even if you clear the
 corresponding character shortcut. Browser and operating-system shortcuts such
-as <code>Command-L</code>/<code>Control-L</code>, reload, closing a tab, and restoring a tab are also
-reserved.</p>
+as <code>Command</code> + <code>L</code> or <code>Control</code> + <code>L</code>, reload, closing a tab, and restoring a
+tab are also reserved.</p>
 <p>Each direct assignment and complete sequence must be unique. A sequence’s
 first key cannot also be assigned as a direct character shortcut. If a new
 assignment conflicts with another command, Telebugs names the conflicting
 command and keeps the existing assignments unchanged.</p>
-<p>Select <strong>Clear</strong> to leave one command unassigned, or <strong>Reset</strong> to restore that
-command’s default. <strong>Restore default shortcuts</strong> resets every assignment after
-confirmation but keeps your favorite commands.</p>
+<p>Use the labelled clear icon to leave one command unassigned, or the reset icon
+to restore that command’s default. <strong>Restore defaults</strong> resets every assignment
+after confirmation but keeps your favorite commands. These changes also save
+automatically.</p>
 <h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
-<p>Open the command palette with <code>Command-K</code> on macOS or <code>Control-K</code> on other
-platforms. You can also open the account menu and select <strong>Command palette</strong>.</p>
+<p>Open the command palette with <code>Command</code> + <code>K</code> on macOS or <code>Control</code> + <code>K</code> on
+other platforms. You can also select <strong>Search</strong> in the navigation bar. Its key
+hint follows your customized command-palette binding.</p>
 <p>Start typing to find:</p>
 <ul>
 <li>Projects and applications you can access</li>
@@ -1044,22 +1057,26 @@ platforms. You can also open the account menu and select <strong>Command palette
 <li>Applicable bulk actions when errors are selected</li>
 </ul>
 <p>Use <code>ArrowUp</code> and <code>ArrowDown</code>, <code>Home</code>, or <code>End</code> to change the active result,
-then press <code>Enter</code> to run it. <code>Command-Enter</code> or <code>Control-Enter</code> opens a
-navigation result in a new tab; it never submits an action. Press <code>Escape</code>, use
-the opening shortcut again, or select the close button to close the palette.</p>
-<p>Telebugs does not replace the normal <code>Command-K</code> or <code>Control-K</code> behavior while
-you are editing a field. Use <code>Command-Option-K</code> on macOS or <code>Control-Alt-K</code> on
-other platforms when you intentionally want the palette from an editing
-field.</p>
+then press <code>Enter</code> to run it. <code>Command</code> + <code>Enter</code> or <code>Control</code> + <code>Enter</code> opens
+a navigation result in a new tab; it never submits an action. Press <code>Escape</code>,
+use the opening shortcut again, or select the close button to close the
+palette.</p>
+<p>Telebugs does not replace the normal <code>Command</code> + <code>K</code> or <code>Control</code> + <code>K</code>
+behavior while you are editing a field. Use <code>Command</code> + <code>Option</code> + <code>K</code> on
+macOS or <code>Control</code> + <code>Alt</code> + <code>K</code> on other platforms when you intentionally
+want the palette from an editing field.</p>
 <p>Palette actions use the same visible controls, permissions, confirmations, and
 endpoints as pointer interaction. Project and application results are loaded
 only from resources your account can access.</p>
 <h3 id="favorites-and-recent-commands"><a class="header" href="#favorites-and-recent-commands">Favorites and Recent Commands</a></h3>
-<p>When a favoritable command is active in the palette, use <strong>Add to favorites</strong>
-or <strong>Remove from favorites</strong> without closing the palette. You can also manage
-all favorite commands under <strong>Account Settings → Accessibility</strong>. Favorites
-sync with your Telebugs account and appear first when the palette opens with
-an empty search.</p>
+<p>When a favoritable command is active in the palette, use the star at the end
+of its highlighted row. An outlined star adds the command to favorites; a
+filled star removes it. The palette stays open and the command remains in
+place while you manage it. Use <strong>Customize shortcuts</strong> at the bottom of the
+palette, or open <strong>Account Settings → Accessibility → Command palette</strong>, to
+manage all favorite commands. Changes made there save automatically.
+Favorites sync with your Telebugs account and appear first the next time the
+palette opens with an empty search.</p>
 <p>Commands you run from the palette appear in <strong>Recent</strong> suggestions on that
 browser. Recent commands are deduplicated and limited to ten. They stay in the
 browser’s local storage and are never synced or sent to Telebugs. Project and
@@ -1452,13 +1469,24 @@ reports, settings, and access controls.</p>
 <li>Search bar: Find errors by message, type, or details (live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
-<li>Interactive chart: Error volume over time; zoom on spikes. Open <strong>View chart
-data</strong> for the same values and release links in a keyboard-accessible table.</li>
+<li>Interactive chart: Error volume over time; expand it for closer inspection.
+Open <strong>View data table</strong> for exact values and release links, or download the
+displayed data as CSV.</li>
 <li>Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.</li>
 <li>Filters: All, resolved, unresolved; sort by last seen or count.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="chart-data-and-csv-exports"><a class="header" href="#chart-data-and-csv-exports">Chart Data and CSV Exports</a></h2>
+<p>The chart is the quickest way to spot spikes and changes over time. Select
+<strong>Expand chart</strong> for more vertical detail.</p>
+<p>Select <strong>View data table</strong> when you need exact values, keyboard navigation, or
+a screen-reader-friendly alternative to the visual chart. The table follows
+the selected date range and includes both periods when comparison is enabled.
+Release links appear when a release marker falls within the displayed range.</p>
+<p>With the table open, select <strong>Download CSV</strong> to export the same rows. The CSV
+includes the selected comparison periods and release labels, making it useful
+for spreadsheets, incident reviews, and sharing trend data outside Telebugs.</p>
 <h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
 or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
@@ -4310,8 +4338,10 @@ resolve, mute, and self-claim actions on every error-group tab.</p>
 <p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette. On the Reports
 tab it can open message search and date filters. On an individual report it
 includes available occurrence navigation and error actions.</p>
-<p>The Reports chart includes <strong>View chart data</strong>, which exposes its time-series
-values and release links in a keyboard-accessible table.</p>
+<p>The Reports chart includes <strong>View data table</strong>, which exposes exact time-series
+values and release links in a keyboard-accessible format. With the table open,
+select <strong>Download CSV</strong> to export the selected range. Comparison exports include
+both periods.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <p>See the following sections for details.</p>
