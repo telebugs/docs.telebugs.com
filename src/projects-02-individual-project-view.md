@@ -9,14 +9,29 @@ Key elements:
 - Search bar: Find errors by message, type, or details (live updates).
 - Date range selector: Filter by time (e.g., today, last week) with pager.
 - Stats overview: Total reports, new vs. reoccurred.
-- Interactive chart: Error volume over time; zoom on spikes. Open **View chart
-  data** for the same values and release links in a keyboard-accessible table.
+- Interactive chart: Error volume over time; expand it for closer inspection.
+  Open **View data table** for exact values and release links, or download the
+  displayed data as CSV.
 - Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.
 - Filters: All, resolved, unresolved; sort by last seen or count.
 
 If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.
 
 Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.
+
+## Chart Data and CSV Exports
+
+The chart is the quickest way to spot spikes and changes over time. Select
+**Expand chart** for more vertical detail.
+
+Select **View data table** when you need exact values, keyboard navigation, or
+a screen-reader-friendly alternative to the visual chart. The table follows
+the selected date range and includes both periods when comparison is enabled.
+Release links appear when a release marker falls within the displayed range.
+
+With the table open, select **Download CSV** to export the same rows. The CSV
+includes the selected comparison periods and release labels, making it useful
+for spreadsheets, incident reviews, and sharing trend data outside Telebugs.
 
 ## Keyboard Navigation
 

@@ -202,13 +202,24 @@
 <li>Search bar: Find errors by message, type, or details (live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
-<li>Interactive chart: Error volume over time; zoom on spikes. Open <strong>View chart
-data</strong> for the same values and release links in a keyboard-accessible table.</li>
+<li>Interactive chart: Error volume over time; expand it for closer inspection.
+Open <strong>View data table</strong> for exact values and release links, or download the
+displayed data as CSV.</li>
 <li>Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.</li>
 <li>Filters: All, resolved, unresolved; sort by last seen or count.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="chart-data-and-csv-exports"><a class="header" href="#chart-data-and-csv-exports">Chart Data and CSV Exports</a></h2>
+<p>The chart is the quickest way to spot spikes and changes over time. Select
+<strong>Expand chart</strong> for more vertical detail.</p>
+<p>Select <strong>View data table</strong> when you need exact values, keyboard navigation, or
+a screen-reader-friendly alternative to the visual chart. The table follows
+the selected date range and includes both periods when comparison is enabled.
+Release links appear when a release marker falls within the displayed range.</p>
+<p>With the table open, select <strong>Download CSV</strong> to export the same rows. The CSV
+includes the selected comparison periods and release labels, making it useful
+for spreadsheets, incident reviews, and sharing trend data outside Telebugs.</p>
 <h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
 or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the
