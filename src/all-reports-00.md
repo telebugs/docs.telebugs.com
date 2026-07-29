@@ -20,12 +20,17 @@ This view is particularly useful for:
 
 Filter controls at the top of the page (all times are in UTC):
 
-- **Project**: Select a specific project or leave as "All" to see reports across
-  all your projects.
-- **From / To**: Date-time range picker to restrict reports to those that
-  occurred within the specified window. Defaults to the full range of available
-  data.
-- **Reset link**: Quickly clear all filters.
+- **Project**: Select a specific project or leave it at **All projects** to see
+  reports across every project you can access.
+- **Date preset**: Choose **All time**, **Today**, **Last 7 days**, **Last 28
+  days**, or **Last 91 days**.
+- **Custom range**: Set a From time, a To time, or both. Custom boundaries are
+  interpreted and displayed in UTC.
+- **Clear filters**: Return to all projects and all available history.
+
+On desktop, project and preset changes apply immediately. On a narrow screen,
+Telebugs opens the filters in a sheet so you can stage several changes and
+apply them together.
 
 ### Sorting and Pagination
 
@@ -66,6 +71,10 @@ highlight.
 
 Press `Command-K` or `Control-K` to open the command palette and change the
 project or date filter, clear active filters, or navigate elsewhere.
+
+When character shortcuts are enabled, the date presets are also available
+directly from the keyboard. The command palette shows the bindings that apply
+to the current page.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.

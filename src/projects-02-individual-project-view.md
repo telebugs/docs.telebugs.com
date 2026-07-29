@@ -4,10 +4,13 @@ Click a project to open its dashboard for analyzing errors.
 
 Key elements:
 
-- Project picker dropdown: Switch projects or access settings.
+- Project picker: Search the projects you can access, switch to a matching
+  project, or open the current project's settings. Press `Enter` when the
+  search leaves one match.
 - Releases link: View release history.
 - Search bar: Find errors by message, type, or details (live updates).
-- Date range selector: Filter by time (e.g., today, last week) with pager.
+- Date range selector: Filter by time (e.g., today, last week) with pager, and
+  compare supported ranges with the immediately preceding period.
 - Stats overview: Total reports, new vs. reoccurred.
 - Interactive chart: Error volume over time; expand it for closer inspection.
   Open **View data table** for exact values and release links, or download the
@@ -18,6 +21,22 @@ Key elements:
 If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.
 
 Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.
+
+## Previous-Period Comparisons
+
+Open the date menu and select **Compare with previous period** to add the
+immediately preceding range to the dashboard. For example, **Last 28 days**
+compares with the 28 days before it. The date button shows **vs. prev.** while
+comparison is active, and totals display the direction and size of the change.
+
+Telebugs aligns the two periods point by point, including partial current
+hours, so an in-progress period is not compared with a complete one. Release
+markers remain attached to the current period. Select the comparison item
+again, press `X`, or use the command palette to turn comparison off.
+
+Comparison is available for bounded ranges. **All time** has no equally sized
+preceding period, so its comparison control is hidden. Changing to **All time**
+also clears an active comparison.
 
 ## Chart Data and CSV Exports
 
@@ -30,8 +49,10 @@ the selected date range and includes both periods when comparison is enabled.
 Release links appear when a release marker falls within the displayed range.
 
 With the table open, select **Download CSV** to export the same rows. The CSV
-includes the selected comparison periods and release labels, making it useful
-for spreadsheets, incident reviews, and sharing trend data outside Telebugs.
+contains the displayed timestamps, current values, previous-period values when
+enabled, and release labels. It uses the same filters as the chart, making it
+useful for spreadsheets, incident reviews, and sharing trend data outside
+Telebugs.
 
 ## Keyboard Navigation
 
