@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-70b2dbd3.js";
+            window.path_to_searchindex_js = "searchindex-470d71e8.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -197,10 +197,13 @@
 <p>Click a project to open its dashboard for analyzing errors.</p>
 <p>Key elements:</p>
 <ul>
-<li>Project picker dropdown: Switch projects or access settings.</li>
+<li>Project picker: Search the projects you can access, switch to a matching
+project, or open the current project’s settings. Press <code>Enter</code> when the
+search leaves one match.</li>
 <li>Releases link: View release history.</li>
 <li>Search bar: Find errors by message, type, or details (live updates).</li>
-<li>Date range selector: Filter by time (e.g., today, last week) with pager.</li>
+<li>Date range selector: Filter by time (e.g., today, last week) with pager, and
+compare supported ranges with the immediately preceding period.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
 <li>Interactive chart: Error volume over time; expand it for closer inspection.
 Open <strong>View data table</strong> for exact values and release links, or download the
@@ -210,6 +213,18 @@ displayed data as CSV.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="previous-period-comparisons"><a class="header" href="#previous-period-comparisons">Previous-Period Comparisons</a></h2>
+<p>Open the date menu and select <strong>Compare with previous period</strong> to add the
+immediately preceding range to the dashboard. For example, <strong>Last 28 days</strong>
+compares with the 28 days before it. The date button shows <strong>vs. prev.</strong> while
+comparison is active, and totals display the direction and size of the change.</p>
+<p>Telebugs aligns the two periods point by point, including partial current
+hours, so an in-progress period is not compared with a complete one. Release
+markers remain attached to the current period. Select the comparison item
+again, press <code>X</code>, or use the command palette to turn comparison off.</p>
+<p>Comparison is available for bounded ranges. <strong>All time</strong> has no equally sized
+preceding period, so its comparison control is hidden. Changing to <strong>All time</strong>
+also clears an active comparison.</p>
 <h2 id="chart-data-and-csv-exports"><a class="header" href="#chart-data-and-csv-exports">Chart Data and CSV Exports</a></h2>
 <p>The chart is the quickest way to spot spikes and changes over time. Select
 <strong>Expand chart</strong> for more vertical detail.</p>
@@ -218,8 +233,10 @@ a screen-reader-friendly alternative to the visual chart. The table follows
 the selected date range and includes both periods when comparison is enabled.
 Release links appear when a release marker falls within the displayed range.</p>
 <p>With the table open, select <strong>Download CSV</strong> to export the same rows. The CSV
-includes the selected comparison periods and release labels, making it useful
-for spreadsheets, incident reviews, and sharing trend data outside Telebugs.</p>
+contains the displayed timestamps, current values, previous-period values when
+enabled, and release labels. It uses the same filters as the chart, making it
+useful for spreadsheets, incident reviews, and sharing trend data outside
+Telebugs.</p>
 <h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
 <p>Use <code>J</code> / <code>K</code> or the arrow keys to move through the visible errors, and use <code>O</code>
 or <code>Enter</code> to open the highlighted error. Press <code>X</code> to add or remove the

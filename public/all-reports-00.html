@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-70b2dbd3.js";
+            window.path_to_searchindex_js = "searchindex-470d71e8.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -212,13 +212,17 @@ reports.</li>
 <h3 id="filtering"><a class="header" href="#filtering">Filtering</a></h3>
 <p>Filter controls at the top of the page (all times are in UTC):</p>
 <ul>
-<li><strong>Project</strong>: Select a specific project or leave as “All” to see reports across
-all your projects.</li>
-<li><strong>From / To</strong>: Date-time range picker to restrict reports to those that
-occurred within the specified window. Defaults to the full range of available
-data.</li>
-<li><strong>Reset link</strong>: Quickly clear all filters.</li>
+<li><strong>Project</strong>: Select a specific project or leave it at <strong>All projects</strong> to see
+reports across every project you can access.</li>
+<li><strong>Date preset</strong>: Choose <strong>All time</strong>, <strong>Today</strong>, <strong>Last 7 days</strong>, <strong>Last 28
+days</strong>, or <strong>Last 91 days</strong>.</li>
+<li><strong>Custom range</strong>: Set a From time, a To time, or both. Custom boundaries are
+interpreted and displayed in UTC.</li>
+<li><strong>Clear filters</strong>: Return to all projects and all available history.</li>
 </ul>
+<p>On desktop, project and preset changes apply immediately. On a narrow screen,
+Telebugs opens the filters in a sheet so you can stage several changes and
+apply them together.</p>
 <h3 id="sorting-and-pagination"><a class="header" href="#sorting-and-pagination">Sorting and Pagination</a></h3>
 <ul>
 <li>Reports are sorted by <strong>occurred at</strong> time (most recent first).</li>
@@ -259,6 +263,9 @@ troubleshooting issues that may not yet be grouped effectively.</p>
 highlight.</p>
 <p>Press <code>Command-K</code> or <code>Control-K</code> to open the command palette and change the
 project or date filter, clear active filters, or navigate elsewhere.</p>
+<p>When character shortcuts are enabled, the date presets are also available
+directly from the keyboard. The command palette shows the bindings that apply
+to the current page.</p>
 <p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 

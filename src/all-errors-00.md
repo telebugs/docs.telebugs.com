@@ -17,12 +17,17 @@ entire system at a glance.
 You can narrow down the list using the filter controls at the top of the page
 (all times are in UTC):
 
-- **Project**: Select a specific project or leave as "All" to see errors across
-  all your projects.
-- **From / To**: Date-time range picker to show only errors whose first or last
-  occurrence falls within the specified window. Defaults to the full range of
-  available data.
-- **Reset link**: Quickly clear all filters.
+- **Project**: Select a specific project or leave it at **All projects** to see
+  errors across every project you can access.
+- **Date preset**: Choose **All time**, **Today**, **Last 7 days**, **Last 28
+  days**, or **Last 91 days**.
+- **Custom range**: Set a From time, a To time, or both. Custom boundaries are
+  interpreted and displayed in UTC.
+- **Clear filters**: Return to all projects and all available history.
+
+On desktop, project and preset changes apply immediately. On a narrow screen,
+Telebugs opens the filters in a sheet so you can stage several changes and
+apply them together.
 
 ### Status Tabs
 
@@ -75,6 +80,10 @@ highlighted error from the bulk selection, or `Escape` to clear the highlight.
 Press `Command-K` or `Control-K` to open the command palette. It can change the
 status, project, or date filter, clear active filters, and run applicable bulk
 resolve, mute, or merge actions for selected errors.
+
+When character shortcuts are enabled, the date presets are also available
+directly from the keyboard. The command palette shows the bindings that apply
+to the current page.
 
 See [Accessibility](/account-settings-02-accessibility.md) for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.
