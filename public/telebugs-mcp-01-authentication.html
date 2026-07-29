@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-9cc5b6b9.js";
+            window.path_to_searchindex_js = "searchindex-70b2dbd3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -208,7 +208,7 @@
 <tbody>
 <tr><td><strong>Best for</strong></td><td>AI coding tools (Cursor, Claude, etc.)</td><td>Scripts, CI, custom integrations</td></tr>
 <tr><td><strong>Security model</strong></td><td>Per-app tokens with scopes</td><td>Full access (no scopes)</td></tr>
-<tr><td><strong>Revocation</strong></td><td>Per-app (via Connected MCP apps)</td><td>Requires rotating the API key</td></tr>
+<tr><td><strong>Revocation</strong></td><td>Per-app (via Connected apps)</td><td>Requires rotating the API key</td></tr>
 <tr><td><strong>User consent</strong></td><td>Explicit approval screen</td><td>None</td></tr>
 <tr><td><strong>Token rotation</strong></td><td>Refresh tokens rotate automatically</td><td>N/A</td></tr>
 <tr><td><strong>Recommended for AI</strong></td><td>Yes</td><td>Only if your client doesn’t support OAuth</td></tr>
@@ -269,7 +269,7 @@
 <ol>
 <li>
 <p><strong>From the UI (recommended)</strong>
-Go to <strong>Account Settings → Connected MCP apps</strong> and revoke the specific app.</p>
+Go to <strong>Account Settings → Connected apps</strong> and revoke the specific app.</p>
 </li>
 <li>
 <p><strong>Programmatically</strong>
@@ -286,7 +286,7 @@ Call the revocation endpoint:</p>
 <h3 id="setup"><a class="header" href="#setup">Setup</a></h3>
 <ol>
 <li>
-<p>Go to <strong>Account Settings → API</strong>.</p>
+<p>Go to <strong>Account Settings → API access</strong>.</p>
 </li>
 <li>
 <p>Copy your API key (it starts with <code>tlbgs_</code>).</p>

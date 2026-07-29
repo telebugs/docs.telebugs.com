@@ -22,7 +22,7 @@ Windsurf, and Claude — to your Telebugs instance.
 4. Approve the requested scopes on the Telebugs consent screen.
 5. Once connected, Telebugs tools appear in Cursor's tool list.
 
-To revoke access later, go to **Account Settings → Connected MCP apps** in
+To revoke access later, go to **Account Settings → Connected apps** in
 Telebugs.
 
 ## Windsurf
@@ -80,7 +80,7 @@ Claude discovers OAuth metadata automatically — no manual client registration 
 required on your side.
 
 To revoke access, disconnect the connector in Claude or remove the app under
-**Account Settings → Connected MCP apps** in Telebugs.
+**Account Settings → Connected apps** in Telebugs.
 
 ## Other MCP Clients
 
@@ -115,4 +115,4 @@ If authentication fails, check:
 
 - The Telebugs URL is correct and reachable
 - Your account is active
-- The connected app has not been revoked under **Connected MCP apps**
+- The connected app has not been revoked under **Connected apps**

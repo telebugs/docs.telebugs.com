@@ -1,18 +1,20 @@
 # Account Settings
 
-Account settings let you update your profile, manage security, and control
-notifications.
+Account settings let you update your profile, manage security, configure local
+development, and control notifications.
 
 Click your profile icon in the top-right and select **Account Settings**.
 
-The page includes a sidebar navigation with sections such as **General**,
-**Appearance**, **Accessibility**, **Security**, **Sessions**, and
-**Notifications**.
+On desktop, the navigation is grouped into **Personal**, **Security**, and
+**Developer** sections. On smaller screens, use the **Settings section**
+selector. The available pages are **Profile**, **Appearance**,
+**Accessibility**, **Notifications**, **Security**, **Local development**,
+**API access**, and **Connected apps**.
 
-## General
+<span id="profile"></span>
+<h2 id="general">Profile</h2>
 
-The General section contains settings for your profile, name, and local
-development preferences.
+The **Profile** page contains only your profile picture and name.
 
 ### Profile Picture
 
@@ -20,7 +22,7 @@ Your profile picture shows next to your name in the dashboard and team views.
 
 To upload or change it:
 
-1. In the **Your profile picture** card, click the preview area (shows your
+1. In the **Your profile picture** card, click the preview area (it shows your
    current picture or the default user icon).
 2. Select a new image file from your device.
 3. The preview updates immediately.
@@ -28,8 +30,8 @@ To upload or change it:
 
 To remove it and revert to the default icon:
 
-1. Hover over (or click) the preview area – a trash icon overlay will appear if
-   a custom picture is set.
+1. Hover over or focus the preview area. A trash icon appears when a custom
+   picture is set.
 2. Click the trash icon to clear the picture.
 3. Click **Update profile picture** to confirm.
 
@@ -37,118 +39,109 @@ To remove it and revert to the default icon:
 
 Your name appears in team lists and notes.
 
-To change it:
-
-1. In the **Your name** card, enter your new full name in the text field.
-2. Click **Change name**.
+To change it, enter your full name in the **Your name** card and click **Change
+name**.
 
 There are no restrictions on length or characters.
 
+## Local Development
+
+Use **Account Settings → Local development** to configure editor links and
+local source paths.
+
 ### Preferred Local Editor
 
-Choose your preferred text editor for "Open in Editor" links in error
-backtraces. This allows you to quickly open source files locally from Telebugs.
+Choose the editor used by **Open in Editor** links in error backtraces.
 
-To set it:
-
-1. In the **Preferred local editor** card, select your editor from the **Local
-   editor** dropdown.
-   - Options include **None (disable local open)** and supported editors (e.g.,
-     VS Code, RubyMine, etc.).
-2. Click **Update editor preference**.
+1. In the **Preferred local editor** card, select an editor from the **Local
+   editor** menu.
+2. Select **None (disable local open)** to disable editor links.
+3. Click **Update editor preference**.
 
 ### Local Source Code Paths (per project)
 
 Configure the local path to each project's source code on your machine. This
-enables "Open in Editor" links for errors from production/deployed environments
-when a preferred editor is selected.
+lets Telebugs open source files from production error backtraces in your
+preferred editor.
 
-To configure paths:
+Configured projects appear as independently editable rows:
 
-1. In the **Local source code paths (per project)** card, find your projects listed.
-2. For each project, enter the full local filesystem path to its source code in
-   the text field.
-   - A placeholder example is provided (e.g., `/Users/username/projects/project-name`).
-3. Click **Update local paths** at the bottom of the card.
+1. Enter or update the full local filesystem path for a configured project.
+2. Click **Save path**.
+3. Use **Remove path** to remove a mapping explicitly.
 
-If you are not a member of any projects yet, a message "You are not a member of
-any projects yet." will be shown instead of the form.
+To configure another project, click **Add project path**, select an active
+project, enter its local source path, and save it. Projects that already have a
+mapping are not offered in the picker.
+
+## Appearance
+
+Use **Account Settings → Appearance** to choose the color scheme, text size,
+and related display preferences. See [Appearance](account-settings-01-appearance.md).
+
+## Accessibility
+
+Use **Account Settings → Accessibility** to configure keyboard access,
+shortcuts, and command palette preferences. See
+[Accessibility](account-settings-02-accessibility.md).
 
 ## Security Settings
 
-Go to the **Security** tab for email and password.
+Use **Account Settings → Security** for email, password, and device sign-in.
 
 ### Change Email Address
 
-Enter your new email and current password, then click **Change email**.
-
-Verify the new email via the confirmation link sent to it.
+Enter your new email address and current password, then click **Change email**.
 
 ### Change Password
 
-Enter your current password, new password, and confirmation.
-
-Click **Change password**.
+Enter your current password, new password, and confirmation, then click
+**Change password**.
 
 ## Log In on Another Device
 
-Generate a sign-in link for quick access on new devices.
+The **Log in on another device** card is on **Account Settings → Security**.
+Copy or share the private sign-in link to sign in on another device.
 
-Go to the **Sessions** tab, then copy the link from **Log in on another
-device**.
-
-The link expires after 4 hours. Do not share it.
+The link expires after 4 hours. Do not share it with anyone else.
 
 ## Notification Preferences
 
-Control which projects send you email notifications.
+Use **Account Settings → Notifications** to choose which projects send you
+notifications. Changes save automatically.
 
-Go to the **Notifications** tab, then toggle checkboxes for each project.
+<h2 id="api">API Access</h2>
 
-Changes save automatically.
+The **API access** page contains your personal API key and links to the REST API
+documentation.
 
-## Accessibility and Keyboard Shortcuts
+### Your API Key
 
-Go to the **Accessibility** tab to enable or disable character-key shortcuts,
-record safe custom assignments, and manage favorite palette commands for your
-account. You can also review global navigation sequences and the contextual
-command palette for navigating, searching, filtering, and acting on errors.
+Your API key authenticates requests to the Telebugs REST API. Treat it like a
+password and do not commit it to source control.
 
-Favorite commands sync with your account. Recently executed palette commands
-remain private to the current browser.
+### Regenerating Your API Key
 
-See [Accessibility](/account-settings-02-accessibility.md) for the complete
-shortcut reference and behavior.
-
-# API
-
-The **API access** section in Account Settings contains your personal API key.
-
-## Your API Key
-
-Your API key is used to authenticate requests to the Telebugs REST API.
-
-You can find your current API key on this page. Use this key when making
-authenticated requests to the API.
-
-## Regenerating Your API Key
-
-If your API key is compromised or you need to rotate it, click **Regenerate**.
+If your API key is compromised or needs rotation, click **Regenerate**.
 
 After regenerating:
 
 - Copy the new key immediately.
-- Update any integrations or scripts that use the old key.
-- The previous key will stop working.
+- Update integrations and scripts that use the old key.
+- The previous key stops working.
 
-## Using the API
+### Using the API
 
-For documentation on available endpoints and how to use the API, see the [REST
-API](/rest-api-00-getting-started.md) section.
+See the [REST API](/rest-api-00-getting-started.md) documentation for available
+endpoints and examples.
 
-## Connected MCP Apps
+<span id="connected-apps"></span>
+<h2 id="connected-mcp-apps">Connected Apps</h2>
 
-AI coding tools can connect to Telebugs via the
+AI coding tools can connect to Telebugs through the
 [Model Context Protocol (MCP)](/telebugs-mcp-00-getting-started.md). After
-authorizing a tool, you can review and revoke its access from **Account
-Settings → Connected MCP apps**.
+authorizing a tool, review or revoke its access from **Account Settings →
+Connected apps**.
+
+The page retains the `/settings/mcp` application URL for compatibility. MCP
+remains the protocol name used in setup instructions and technical references.

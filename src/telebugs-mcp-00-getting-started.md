@@ -91,7 +91,7 @@ For step-by-step setup in your editor, see
 ## Managing Connected Apps
 
 After authorizing an MCP client, you can review and revoke access from
-**Account Settings → Connected MCP apps**.
+**Account Settings → Connected apps**.
 
 ## Available Tools
 

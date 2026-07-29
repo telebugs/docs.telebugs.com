@@ -32,7 +32,7 @@ Supply a valid API key using the Bearer scheme:
 Authorization: Bearer tlbgs_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-Obtain or regenerate the key from **Account Settings → API** in the Telebugs interface.
+Obtain or regenerate the key from **Account Settings → API access** in the Telebugs interface.
 
 ## Example Problem Document
 

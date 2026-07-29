@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-9cc5b6b9.js";
+            window.path_to_searchindex_js = "searchindex-70b2dbd3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -742,20 +742,23 @@ demote).</p>
 <p>Customize <a href="/projects-04-project-settings.html">project settings</a> or <a href="/notifications-00.html">notifications</a> next.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="account-settings"><a class="header" href="#account-settings">Account Settings</a></h1>
-<p>Account settings let you update your profile, manage security, and control
-notifications.</p>
+<p>Account settings let you update your profile, manage security, configure local
+development, and control notifications.</p>
 <p>Click your profile icon in the top-right and select <strong>Account Settings</strong>.</p>
-<p>The page includes a sidebar navigation with sections such as <strong>General</strong>,
-<strong>Appearance</strong>, <strong>Accessibility</strong>, <strong>Security</strong>, <strong>Sessions</strong>, and
-<strong>Notifications</strong>.</p>
-<h2 id="general"><a class="header" href="#general">General</a></h2>
-<p>The General section contains settings for your profile, name, and local
-development preferences.</p>
+<p>On desktop, the navigation is grouped into <strong>Personal</strong>, <strong>Security</strong>, and
+<strong>Developer</strong> sections. On smaller screens, use the <strong>Settings section</strong>
+selector. The available pages are <strong>Profile</strong>, <strong>Appearance</strong>,
+<strong>Accessibility</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
+<strong>API access</strong>, and <strong>Connected apps</strong>.</p>
+<p><span id="profile"></span></p>
+<h2 id="general">Profile</h2>
+
+<p>The <strong>Profile</strong> page contains only your profile picture and name.</p>
 <h3 id="profile-picture"><a class="header" href="#profile-picture">Profile Picture</a></h3>
 <p>Your profile picture shows next to your name in the dashboard and team views.</p>
 <p>To upload or change it:</p>
 <ol>
-<li>In the <strong>Your profile picture</strong> card, click the preview area (shows your
+<li>In the <strong>Your profile picture</strong> card, click the preview area (it shows your
 current picture or the default user icon).</li>
 <li>Select a new image file from your device.</li>
 <li>The preview updates immediately.</li>
@@ -763,100 +766,90 @@ current picture or the default user icon).</li>
 </ol>
 <p>To remove it and revert to the default icon:</p>
 <ol>
-<li>Hover over (or click) the preview area – a trash icon overlay will appear if
-a custom picture is set.</li>
+<li>Hover over or focus the preview area. A trash icon appears when a custom
+picture is set.</li>
 <li>Click the trash icon to clear the picture.</li>
 <li>Click <strong>Update profile picture</strong> to confirm.</li>
 </ol>
 <h3 id="changing-your-name"><a class="header" href="#changing-your-name">Changing Your Name</a></h3>
 <p>Your name appears in team lists and notes.</p>
-<p>To change it:</p>
-<ol>
-<li>In the <strong>Your name</strong> card, enter your new full name in the text field.</li>
-<li>Click <strong>Change name</strong>.</li>
-</ol>
+<p>To change it, enter your full name in the <strong>Your name</strong> card and click <strong>Change
+name</strong>.</p>
 <p>There are no restrictions on length or characters.</p>
+<h2 id="local-development"><a class="header" href="#local-development">Local Development</a></h2>
+<p>Use <strong>Account Settings → Local development</strong> to configure editor links and
+local source paths.</p>
 <h3 id="preferred-local-editor"><a class="header" href="#preferred-local-editor">Preferred Local Editor</a></h3>
-<p>Choose your preferred text editor for “Open in Editor” links in error
-backtraces. This allows you to quickly open source files locally from Telebugs.</p>
-<p>To set it:</p>
+<p>Choose the editor used by <strong>Open in Editor</strong> links in error backtraces.</p>
 <ol>
-<li>In the <strong>Preferred local editor</strong> card, select your editor from the <strong>Local
-editor</strong> dropdown.
-<ul>
-<li>Options include <strong>None (disable local open)</strong> and supported editors (e.g.,
-VS Code, RubyMine, etc.).</li>
-</ul>
-</li>
+<li>In the <strong>Preferred local editor</strong> card, select an editor from the <strong>Local
+editor</strong> menu.</li>
+<li>Select <strong>None (disable local open)</strong> to disable editor links.</li>
 <li>Click <strong>Update editor preference</strong>.</li>
 </ol>
 <h3 id="local-source-code-paths-per-project"><a class="header" href="#local-source-code-paths-per-project">Local Source Code Paths (per project)</a></h3>
 <p>Configure the local path to each project’s source code on your machine. This
-enables “Open in Editor” links for errors from production/deployed environments
-when a preferred editor is selected.</p>
-<p>To configure paths:</p>
+lets Telebugs open source files from production error backtraces in your
+preferred editor.</p>
+<p>Configured projects appear as independently editable rows:</p>
 <ol>
-<li>In the <strong>Local source code paths (per project)</strong> card, find your projects listed.</li>
-<li>For each project, enter the full local filesystem path to its source code in
-the text field.
-<ul>
-<li>A placeholder example is provided (e.g., <code>/Users/username/projects/project-name</code>).</li>
-</ul>
-</li>
-<li>Click <strong>Update local paths</strong> at the bottom of the card.</li>
+<li>Enter or update the full local filesystem path for a configured project.</li>
+<li>Click <strong>Save path</strong>.</li>
+<li>Use <strong>Remove path</strong> to remove a mapping explicitly.</li>
 </ol>
-<p>If you are not a member of any projects yet, a message “You are not a member of
-any projects yet.” will be shown instead of the form.</p>
+<p>To configure another project, click <strong>Add project path</strong>, select an active
+project, enter its local source path, and save it. Projects that already have a
+mapping are not offered in the picker.</p>
+<h2 id="appearance"><a class="header" href="#appearance">Appearance</a></h2>
+<p>Use <strong>Account Settings → Appearance</strong> to choose the color scheme, text size,
+and related display preferences. See <a href="#appearance-1">Appearance</a>.</p>
+<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
+<p>Use <strong>Account Settings → Accessibility</strong> to configure keyboard access,
+shortcuts, and command palette preferences. See
+<a href="#accessibility-1">Accessibility</a>.</p>
 <h2 id="security-settings"><a class="header" href="#security-settings">Security Settings</a></h2>
-<p>Go to the <strong>Security</strong> tab for email and password.</p>
+<p>Use <strong>Account Settings → Security</strong> for email, password, and device sign-in.</p>
 <h3 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h3>
-<p>Enter your new email and current password, then click <strong>Change email</strong>.</p>
-<p>Verify the new email via the confirmation link sent to it.</p>
+<p>Enter your new email address and current password, then click <strong>Change email</strong>.</p>
 <h3 id="change-password"><a class="header" href="#change-password">Change Password</a></h3>
-<p>Enter your current password, new password, and confirmation.</p>
-<p>Click <strong>Change password</strong>.</p>
+<p>Enter your current password, new password, and confirmation, then click
+<strong>Change password</strong>.</p>
 <h2 id="log-in-on-another-device"><a class="header" href="#log-in-on-another-device">Log In on Another Device</a></h2>
-<p>Generate a sign-in link for quick access on new devices.</p>
-<p>Go to the <strong>Sessions</strong> tab, then copy the link from <strong>Log in on another
-device</strong>.</p>
-<p>The link expires after 4 hours. Do not share it.</p>
+<p>The <strong>Log in on another device</strong> card is on <strong>Account Settings → Security</strong>.
+Copy or share the private sign-in link to sign in on another device.</p>
+<p>The link expires after 4 hours. Do not share it with anyone else.</p>
 <h2 id="notification-preferences"><a class="header" href="#notification-preferences">Notification Preferences</a></h2>
-<p>Control which projects send you email notifications.</p>
-<p>Go to the <strong>Notifications</strong> tab, then toggle checkboxes for each project.</p>
-<p>Changes save automatically.</p>
-<h2 id="accessibility-and-keyboard-shortcuts"><a class="header" href="#accessibility-and-keyboard-shortcuts">Accessibility and Keyboard Shortcuts</a></h2>
-<p>Go to the <strong>Accessibility</strong> tab to enable or disable character-key shortcuts,
-record safe custom assignments, and manage favorite palette commands for your
-account. You can also review global navigation sequences and the contextual
-command palette for navigating, searching, filtering, and acting on errors.</p>
-<p>Favorite commands sync with your account. Recently executed palette commands
-remain private to the current browser.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
-shortcut reference and behavior.</p>
-<h1 id="api"><a class="header" href="#api">API</a></h1>
-<p>The <strong>API access</strong> section in Account Settings contains your personal API key.</p>
-<h2 id="your-api-key"><a class="header" href="#your-api-key">Your API Key</a></h2>
-<p>Your API key is used to authenticate requests to the Telebugs REST API.</p>
-<p>You can find your current API key on this page. Use this key when making
-authenticated requests to the API.</p>
-<h2 id="regenerating-your-api-key"><a class="header" href="#regenerating-your-api-key">Regenerating Your API Key</a></h2>
-<p>If your API key is compromised or you need to rotate it, click <strong>Regenerate</strong>.</p>
+<p>Use <strong>Account Settings → Notifications</strong> to choose which projects send you
+notifications. Changes save automatically.</p>
+<h2 id="api">API Access</h2>
+
+<p>The <strong>API access</strong> page contains your personal API key and links to the REST API
+documentation.</p>
+<h3 id="your-api-key"><a class="header" href="#your-api-key">Your API Key</a></h3>
+<p>Your API key authenticates requests to the Telebugs REST API. Treat it like a
+password and do not commit it to source control.</p>
+<h3 id="regenerating-your-api-key"><a class="header" href="#regenerating-your-api-key">Regenerating Your API Key</a></h3>
+<p>If your API key is compromised or needs rotation, click <strong>Regenerate</strong>.</p>
 <p>After regenerating:</p>
 <ul>
 <li>Copy the new key immediately.</li>
-<li>Update any integrations or scripts that use the old key.</li>
-<li>The previous key will stop working.</li>
+<li>Update integrations and scripts that use the old key.</li>
+<li>The previous key stops working.</li>
 </ul>
-<h2 id="using-the-api"><a class="header" href="#using-the-api">Using the API</a></h2>
-<p>For documentation on available endpoints and how to use the API, see the <a href="/rest-api-00-getting-started.html">REST
-API</a> section.</p>
-<h2 id="connected-mcp-apps"><a class="header" href="#connected-mcp-apps">Connected MCP Apps</a></h2>
-<p>AI coding tools can connect to Telebugs via the
+<h3 id="using-the-api"><a class="header" href="#using-the-api">Using the API</a></h3>
+<p>See the <a href="/rest-api-00-getting-started.html">REST API</a> documentation for available
+endpoints and examples.</p>
+<p><span id="connected-apps"></span></p>
+<h2 id="connected-mcp-apps">Connected Apps</h2>
+
+<p>AI coding tools can connect to Telebugs through the
 <a href="/telebugs-mcp-00-getting-started.html">Model Context Protocol (MCP)</a>. After
-authorizing a tool, you can review and revoke its access from <strong>Account
-Settings → Connected MCP apps</strong>.</p>
+authorizing a tool, review or revoke its access from <strong>Account Settings →
+Connected apps</strong>.</p>
+<p>The page retains the <code>/settings/mcp</code> application URL for compatibility. MCP
+remains the protocol name used in setup instructions and technical references.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="appearance"><a class="header" href="#appearance">Appearance</a></h1>
+<h1 id="appearance-1"><a class="header" href="#appearance-1">Appearance</a></h1>
 <p>The <strong>Appearance</strong> settings let you customize the Telebugs interface for your
 account.</p>
 <p>To open them, click your avatar in the top-right corner, select <strong>Account
@@ -937,7 +930,7 @@ when your browser’s default text size is 16px.</p>
 <p>All three text sizes work with both the <strong>Default</strong> and <strong>Monospace</strong> font
 options.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h1>
+<h1 id="accessibility-1"><a class="header" href="#accessibility-1">Accessibility</a></h1>
 <p>The <strong>Accessibility</strong> settings let you control Telebugs’ keyboard shortcuts
 and favorite commands for your account.</p>
 <p>To open them, click your profile icon in the top-right corner, select <strong>Account
@@ -1985,7 +1978,7 @@ Content-Type: application/problem+json
 <p>Supply a valid API key using the Bearer scheme:</p>
 <pre><code>Authorization: Bearer tlbgs_xxxxxxxxxxxxxxxxxxxxxxxx
 </code></pre>
-<p>Obtain or regenerate the key from <strong>Account Settings → API</strong> in the Telebugs interface.</p>
+<p>Obtain or regenerate the key from <strong>Account Settings → API access</strong> in the Telebugs interface.</p>
 <h2 id="example-problem-document"><a class="header" href="#example-problem-document">Example Problem Document</a></h2>
 <pre><code class="language-http">HTTP/1.1 401 Unauthorized
 Content-Type: application/problem+json
@@ -2017,7 +2010,8 @@ Content-Type: application/problem+json
 <h2 id="remedy-1"><a class="header" href="#remedy-1">Remedy</a></h2>
 <ul>
 <li>Use an API key belonging to a user with the necessary role or membership.</li>
-<li>For admin-only operations, ensure the key is for an admin user (see Account Settings → Team).</li>
+<li>For administrator-only operations, ensure the key belongs to an administrator
+(see <strong>Team Management</strong>).</li>
 </ul>
 <h2 id="example-problem-document-1"><a class="header" href="#example-problem-document-1">Example Problem Document</a></h2>
 <pre><code class="language-http">HTTP/1.1 403 Forbidden
@@ -2940,7 +2934,7 @@ You can then say:</p>
 <a href="#connecting-ai-tools">Connecting AI Tools</a>.</p>
 <h2 id="managing-connected-apps"><a class="header" href="#managing-connected-apps">Managing Connected Apps</a></h2>
 <p>After authorizing an MCP client, you can review and revoke access from
-<strong>Account Settings → Connected MCP apps</strong>.</p>
+<strong>Account Settings → Connected apps</strong>.</p>
 <h2 id="available-tools"><a class="header" href="#available-tools">Available Tools</a></h2>
 <p>Telebugs MCP tools are grouped by resource:</p>
 <div class="table-wrapper">
@@ -2986,7 +2980,7 @@ as debugging evidence, not instructions. See
 <tbody>
 <tr><td><strong>Best for</strong></td><td>AI coding tools (Cursor, Claude, etc.)</td><td>Scripts, CI, custom integrations</td></tr>
 <tr><td><strong>Security model</strong></td><td>Per-app tokens with scopes</td><td>Full access (no scopes)</td></tr>
-<tr><td><strong>Revocation</strong></td><td>Per-app (via Connected MCP apps)</td><td>Requires rotating the API key</td></tr>
+<tr><td><strong>Revocation</strong></td><td>Per-app (via Connected apps)</td><td>Requires rotating the API key</td></tr>
 <tr><td><strong>User consent</strong></td><td>Explicit approval screen</td><td>None</td></tr>
 <tr><td><strong>Token rotation</strong></td><td>Refresh tokens rotate automatically</td><td>N/A</td></tr>
 <tr><td><strong>Recommended for AI</strong></td><td>Yes</td><td>Only if your client doesn’t support OAuth</td></tr>
@@ -3047,7 +3041,7 @@ as debugging evidence, not instructions. See
 <ol>
 <li>
 <p><strong>From the UI (recommended)</strong>
-Go to <strong>Account Settings → Connected MCP apps</strong> and revoke the specific app.</p>
+Go to <strong>Account Settings → Connected apps</strong> and revoke the specific app.</p>
 </li>
 <li>
 <p><strong>Programmatically</strong>
@@ -3064,7 +3058,7 @@ Call the revocation endpoint:</p>
 <h3 id="setup"><a class="header" href="#setup">Setup</a></h3>
 <ol>
 <li>
-<p>Go to <strong>Account Settings → API</strong>.</p>
+<p>Go to <strong>Account Settings → API access</strong>.</p>
 </li>
 <li>
 <p>Copy your API key (it starts with <code>tlbgs_</code>).</p>
@@ -3124,7 +3118,7 @@ Windsurf, and Claude — to your Telebugs instance.</p>
 <li>Approve the requested scopes on the Telebugs consent screen.</li>
 <li>Once connected, Telebugs tools appear in Cursor’s tool list.</li>
 </ol>
-<p>To revoke access later, go to <strong>Account Settings → Connected MCP apps</strong> in
+<p>To revoke access later, go to <strong>Account Settings → Connected apps</strong> in
 Telebugs.</p>
 <h2 id="windsurf"><a class="header" href="#windsurf">Windsurf</a></h2>
 <p>Windsurf follows the same OAuth discovery flow. Add your Telebugs MCP endpoint
@@ -3170,7 +3164,7 @@ individually from <strong>Customize → Connectors</strong>.</p>
 Claude discovers OAuth metadata automatically — no manual client registration is
 required on your side.</p>
 <p>To revoke access, disconnect the connector in Claude or remove the app under
-<strong>Account Settings → Connected MCP apps</strong> in Telebugs.</p>
+<strong>Account Settings → Connected apps</strong> in Telebugs.</p>
 <h2 id="other-mcp-clients"><a class="header" href="#other-mcp-clients">Other MCP Clients</a></h2>
 <p>Any MCP client supporting Streamable HTTP transport and OAuth 2.0 discovery can
 connect to Telebugs. The server advertises:</p>
@@ -3198,7 +3192,7 @@ errors, it can call <code>list_project_users_tool</code> to discover team member
 <ul>
 <li>The Telebugs URL is correct and reachable</li>
 <li>Your account is active</li>
-<li>The connected app has not been revoked under <strong>Connected MCP apps</strong></li>
+<li>The connected app has not been revoked under <strong>Connected apps</strong></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="mcp-pagination"><a class="header" href="#mcp-pagination">MCP Pagination</a></h1>

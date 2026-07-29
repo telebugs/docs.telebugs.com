@@ -11,7 +11,7 @@ Telebugs supports two authentication methods for the MCP server:
 | ---------------------- | -------------------------------------- | ----------------------------------------- |
 | **Best for**           | AI coding tools (Cursor, Claude, etc.) | Scripts, CI, custom integrations          |
 | **Security model**     | Per-app tokens with scopes             | Full access (no scopes)                   |
-| **Revocation**         | Per-app (via Connected MCP apps)       | Requires rotating the API key             |
+| **Revocation**         | Per-app (via Connected apps)           | Requires rotating the API key             |
 | **User consent**       | Explicit approval screen               | None                                      |
 | **Token rotation**     | Refresh tokens rotate automatically    | N/A                                       |
 | **Recommended for AI** | Yes                                    | Only if your client doesn't support OAuth |
@@ -66,7 +66,7 @@ These lifetimes are fixed. To revoke access earlier, use one of the methods belo
 You have two ways to revoke a connected MCP client:
 
 1. **From the UI (recommended)**
-   Go to **Account Settings → Connected MCP apps** and revoke the specific app.
+   Go to **Account Settings → Connected apps** and revoke the specific app.
 
 2. **Programmatically**
    Call the revocation endpoint:
@@ -85,7 +85,7 @@ You can authenticate MCP requests using your existing REST API key. This is usef
 
 ### Setup
 
-1. Go to **Account Settings → API**.
+1. Go to **Account Settings → API access**.
 2. Copy your API key (it starts with `tlbgs_`).
 3. Send it as a Bearer token when calling `/mcp`:
 

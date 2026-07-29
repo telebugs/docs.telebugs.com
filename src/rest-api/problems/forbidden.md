@@ -26,7 +26,8 @@ This problem occurs when:
 ## Remedy
 
 - Use an API key belonging to a user with the necessary role or membership.
-- For admin-only operations, ensure the key is for an admin user (see Account Settings → Team).
+- For administrator-only operations, ensure the key belongs to an administrator
+  (see **Team Management**).
 
 ## Example Problem Document
 
