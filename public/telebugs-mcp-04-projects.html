@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-470d71e8.js";
+            window.path_to_searchindex_js = "searchindex-7891adac.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -209,7 +209,10 @@
       "platform": "Ruby",
       "timezone": "UTC",
       "groups_count": 42,
-      "reports_count": 1287
+      "reports_count": 1287,
+      "muted": false,
+      "muted_at": null,
+      "muted_until": null
     },
     {
       "id": 2,
@@ -223,6 +226,35 @@
 }
 </code></pre>
 <p>Use the project <code>id</code> as <code>project_id</code> when calling tools such as <code>list_error_groups_tool</code> or <code>list_project_users_tool</code>.</p>
+<h2 id="mute-project"><a class="header" href="#mute-project">Mute Project</a></h2>
+<p><strong>Tool:</strong> <code>mute_project_tool</code>
+<strong>Scope required:</strong> <code>telebugs.write</code>
+<strong>Admin required:</strong> Yes</p>
+<p>Mutes every current error group and automatically mutes new groups. Omit
+<code>snooze_until</code> to mute forever, or pass a future ISO8601 datetime for a
+temporary mute. Reports continue to be recorded.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>project_id</code></td><td>integer</td><td>Yes</td><td>Project to mute</td></tr>
+<tr><td><code>snooze_until</code></td><td>string</td><td>No</td><td>Future ISO8601 automatic-expiration time</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-json">{
+  "project_id": 1,
+  "snooze_until": "2026-08-01T18:00:00Z"
+}
+</code></pre>
+<h2 id="stop-automatically-muting-new-errors"><a class="header" href="#stop-automatically-muting-new-errors">Stop Automatically Muting New Errors</a></h2>
+<p><strong>Tool:</strong> <code>unmute_project_tool</code>
+<strong>Scope required:</strong> <code>telebugs.write</code>
+<strong>Admin required:</strong> Yes</p>
+<p>Pass <code>project_id</code> to stop future groups from inheriting the project mute.
+Existing groups remain muted until their deadline or until explicitly unmuted.</p>
 <h2 id="list-project-users"><a class="header" href="#list-project-users">List Project Users</a></h2>
 <p><strong>Tool:</strong> <code>list_project_users_tool</code>
 <strong>Scope required:</strong> <code>telebugs.read</code></p>

@@ -35,7 +35,9 @@ Segmented control to switch between:
 
 - **unresolved** – Active errors that have not been resolved (default view).
 - **resolved** – Errors that have been marked as resolved.
-- **all** – Both unresolved and resolved errors.
+
+Muted and snoozed errors remain in one of these two views according to their
+resolution state and display a mute-status badge.
 
 ### Sorting and Pagination
 

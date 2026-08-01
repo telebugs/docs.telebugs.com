@@ -47,8 +47,8 @@ Telebugs supports three mute types:
 ### How Muting Works
 
 - Muting applies to the **entire error group**.
-- Muting only affects **notifications**. New reports are still recorded,
-  grouped, and visible in dashboards.
+- New reports are still recorded and grouped. Muted groups stay in their normal
+  **unresolved** or **resolved** list and display a mute-status badge.
 - Muting does not resolve the error. Resolution and muting are separate triage
   states.
 - Any team member with access to the project can mute or unmute.
@@ -116,6 +116,9 @@ context-aware shortcut reference.
 
 Muting is also available through automation interfaces:
 
+- The [REST API Projects endpoint](/rest-api-04-projects.md) and
+  [Telebugs MCP Projects](/telebugs-mcp-04-projects.md) can mute every current
+  group in a project and automatically mute new groups.
 - The [REST API Groups endpoint](/rest-api-05-groups.md) can mute a single group
   forever or until a number of additional occurrences. REST bulk mute creates
   permanent mutes.

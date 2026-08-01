@@ -16,7 +16,8 @@ Key elements:
   Open **View data table** for exact values and release links, or download the
   displayed data as CSV.
 - Error list: Grouped unique errors with type, message, timestamp, and count. Click for details.
-- Filters: All, resolved, unresolved; sort by last seen or count.
+- Filters: unresolved and resolved; sort by last seen or count. Muted errors
+  remain in the appropriate list and display a mute-status badge.
 
 If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.
 

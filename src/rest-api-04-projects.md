@@ -54,6 +54,10 @@ Response (`201 Created`) — fields at the top level, including the project `tok
   "token": "tlbgs_...",
   "groups_count": 0,
   "reports_count": 0,
+  "muted": false,
+  "muted_at": null,
+  "muted_until": null,
+  "muter_id": null,
   "created_at": "2026-05-20T10:00:00Z",
   "updated_at": "2026-05-20T10:00:00Z"
 }
@@ -84,6 +88,43 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
 ```
 
 Returns the updated project object with fields at the top level.
+
+## Mute a Project
+
+Project muting requires an admin API key. It mutes all current error groups and
+automatically mutes new groups. Reports continue to be recorded.
+
+Omit `snooze_until` to mute forever:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+To mute temporarily, pass a future ISO8601 timestamp:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/mute \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"snooze_until": "2026-08-01T18:00:00Z"}'
+```
+
+A successful request returns `204 No Content`. Project responses expose
+`muted`, `muted_at`, `muted_until`, and `muter_id`.
+
+## Stop Automatically Muting New Errors
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/mute \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+This stops future groups from inheriting the project mute. Existing groups
+remain muted until their deadline or until explicitly unmuted.
 
 ## Delete a Project
 

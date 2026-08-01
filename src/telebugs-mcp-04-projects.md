@@ -22,7 +22,10 @@ Returns all active projects you have access to. No parameters are required.
       "platform": "Ruby",
       "timezone": "UTC",
       "groups_count": 42,
-      "reports_count": 1287
+      "reports_count": 1287,
+      "muted": false,
+      "muted_at": null,
+      "muted_until": null
     },
     {
       "id": 2,
@@ -37,6 +40,37 @@ Returns all active projects you have access to. No parameters are required.
 ```
 
 Use the project `id` as `project_id` when calling tools such as `list_error_groups_tool` or `list_project_users_tool`.
+
+## Mute Project
+
+**Tool:** `mute_project_tool`
+**Scope required:** `telebugs.write`
+**Admin required:** Yes
+
+Mutes every current error group and automatically mutes new groups. Omit
+`snooze_until` to mute forever, or pass a future ISO8601 datetime for a
+temporary mute. Reports continue to be recorded.
+
+| Parameter       | Type    | Required | Description                              |
+| --------------- | ------- | -------- | ---------------------------------------- |
+| `project_id`    | integer | Yes      | Project to mute                          |
+| `snooze_until`  | string  | No       | Future ISO8601 automatic-expiration time |
+
+```json
+{
+  "project_id": 1,
+  "snooze_until": "2026-08-01T18:00:00Z"
+}
+```
+
+## Stop Automatically Muting New Errors
+
+**Tool:** `unmute_project_tool`
+**Scope required:** `telebugs.write`
+**Admin required:** Yes
+
+Pass `project_id` to stop future groups from inheriting the project mute.
+Existing groups remain muted until their deadline or until explicitly unmuted.
 
 ## List Project Users
 

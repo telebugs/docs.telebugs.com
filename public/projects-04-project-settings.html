@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-470d71e8.js";
+            window.path_to_searchindex_js = "searchindex-7891adac.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -204,6 +204,27 @@ Search/select, <strong>Change timezone</strong>. Use UTC for global teams.</li>
 <li><strong>Platform</strong>: Choose for icon and tailored SDK guides. Save changes.</li>
 </ul>
 <p>These make the dashboard more intuitive without affecting data.</p>
+<h3 id="project-muting"><a class="header" href="#project-muting">Project Muting</a></h3>
+<p>Admins can mute every existing error in a project and automatically mute new
+error groups for 1 hour, 4 hours, 8 hours, 1 day, 3 days, or forever. Reports
+continue to be recorded, and muted groups remain in their normal <strong>unresolved</strong>
+or <strong>resolved</strong> list with a mute-status badge. They do not send email, push, or
+notification-webhook alerts.</p>
+<p>To start muting from a project page, open the project-name menu, select <strong>Mute
+project</strong>, and choose a duration.</p>
+<p>You can open the same duration menu from the Command Palette: press
+<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> and choose <strong>Mute project</strong>.
+This also works before the first error arrives. While muting is active, a
+colored bell-slash icon appears beside the project name. Select it to open the
+<strong>Project muting</strong> settings. The project menu shows <strong>Manage muting</strong>, and the
+palette command changes to <strong>Manage project muting</strong> and opens the same
+settings.</p>
+<p>Use project muting before URL scans, load tests, or other planned noisy work.
+The active duration and stop control appear in <strong>Project muting</strong> settings.</p>
+<p>Selecting <strong>Stop muting new errors</strong> stops future groups from inheriting the
+project mute. Errors already muted by the setting stay muted until their
+deadline or until you explicitly unmute them. This prevents scan-created errors
+from flooding the active queue as soon as the project resumes.</p>
 <h2 id="token-settings"><a class="header" href="#token-settings">Token Settings</a></h2>
 <p>Tokens allow your app to send reports securely.</p>
 <ul>

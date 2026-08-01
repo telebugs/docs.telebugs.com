@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-470d71e8.js";
+            window.path_to_searchindex_js = "searchindex-7891adac.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -274,6 +274,9 @@ severity:info assignee:me
       "muted": false,
       "muted_until": null,
       "muted_until_reports_count": null,
+      "project_muted_at": null,
+      "project_muted_until": null,
+      "mute_source": null,
       "reports_count": 17,
       "notes_count": 2,
       "first_occurred_at": "2026-05-20T10:12:34Z",
@@ -317,6 +320,9 @@ severity:info assignee:me
   "muted": false,
   "muted_until": null,
   "muted_until_reports_count": null,
+  "project_muted_at": null,
+  "project_muted_until": null,
+  "mute_source": null,
   "reports_count": 17,
   "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
@@ -414,8 +420,8 @@ sets <code>muted_until_reports_count</code> to <code>27</code>.</p>
 <h2 id="unmute-error-group"><a class="header" href="#unmute-error-group">Unmute Error Group</a></h2>
 <p><strong>Tool:</strong> <code>unmute_error_group_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code></p>
-<p>Remove a mute from a group. This clears permanent, time-based, and
-occurrence-based mute conditions.</p>
+<p>Remove a mute from a group. This clears permanent, time-based,
+occurrence-based, and project-inherited mute conditions for that group.</p>
 <h3 id="parameters-5"><a class="header" href="#parameters-5">Parameters</a></h3>
 <div class="table-wrapper">
 <table>

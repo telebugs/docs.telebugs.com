@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-470d71e8.js";
+            window.path_to_searchindex_js = "searchindex-7891adac.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -306,6 +306,9 @@ in a single parameter.</p>
       "muter_id": null,
       "muted_until": null,
       "muted_until_reports_count": null,
+      "project_muted_at": null,
+      "project_muted_until": null,
+      "mute_source": null,
       "resolved": false,
       "muted": false,
       "created_at": "2026-05-20T10:12:34Z",
@@ -325,6 +328,9 @@ in a single parameter.</p>
 <li><code>muted_until_reports_count</code> is set for occurrence-based mutes. It stores the
 total <code>reports_count</code> at which notifications resume, not the additional count
 originally requested.</li>
+<li><code>project_muted_at</code> and <code>project_muted_until</code> describe a mute inherited from
+project-level muting.</li>
+<li><code>mute_source</code> is <code>manual</code>, <code>project</code>, or <code>manual_and_project</code>.</li>
 </ul>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="rest-api-06-reports.html">Reports</a> endpoints under the group.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
@@ -355,7 +361,8 @@ originally requested.</li>
 <code>muted_until_reports_count</code> to <code>27</code>. Notifications resume when the group reaches
 that total report count. Actions that only change state return <code>204 No Content</code>.</p>
 <h2 id="unmute-a-group"><a class="header" href="#unmute-a-group">Unmute a Group</a></h2>
-<p>Unmuting clears permanent, time-based, and occurrence-based mute conditions.</p>
+<p>Unmuting clears permanent, time-based, occurrence-based, and project-inherited
+mute conditions for that group.</p>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \
   -X DELETE \
   -H "Authorization: Bearer YOUR_API_KEY"

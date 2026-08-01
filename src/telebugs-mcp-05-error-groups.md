@@ -83,6 +83,9 @@ severity:info assignee:me
       "muted": false,
       "muted_until": null,
       "muted_until_reports_count": null,
+      "project_muted_at": null,
+      "project_muted_until": null,
+      "mute_source": null,
       "reports_count": 17,
       "notes_count": 2,
       "first_occurred_at": "2026-05-20T10:12:34Z",
@@ -128,6 +131,9 @@ Fetch full details for a single error group, including assignee, mute status, an
   "muted": false,
   "muted_until": null,
   "muted_until_reports_count": null,
+  "project_muted_at": null,
+  "project_muted_until": null,
+  "mute_source": null,
   "reports_count": 17,
   "recent_report_ids": [123, 122, 121],
   "notes_count": 2,
@@ -235,8 +241,8 @@ sets `muted_until_reports_count` to `27`.
 **Tool:** `unmute_error_group_tool`
 **Scope required:** `telebugs.write`
 
-Remove a mute from a group. This clears permanent, time-based, and
-occurrence-based mute conditions.
+Remove a mute from a group. This clears permanent, time-based,
+occurrence-based, and project-inherited mute conditions for that group.
 
 ### Parameters
 

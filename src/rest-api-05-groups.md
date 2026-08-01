@@ -125,6 +125,9 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
       "muter_id": null,
       "muted_until": null,
       "muted_until_reports_count": null,
+      "project_muted_at": null,
+      "project_muted_until": null,
+      "mute_source": null,
       "resolved": false,
       "muted": false,
       "created_at": "2026-05-20T10:12:34Z",
@@ -147,6 +150,9 @@ The mute fields describe the group's current active mute:
 - `muted_until_reports_count` is set for occurrence-based mutes. It stores the
   total `reports_count` at which notifications resume, not the additional count
   originally requested.
+- `project_muted_at` and `project_muted_until` describe a mute inherited from
+  project-level muting.
+- `mute_source` is `manual`, `project`, or `manual_and_project`.
 
 To see per-occurrence details for a group (including `server_name`, `tags`, `environment`, user info, request context, etc.), use the [Reports](rest-api-06-reports.md) endpoints under the group.
 
@@ -193,7 +199,8 @@ that total report count. Actions that only change state return `204 No Content`.
 
 ## Unmute a Group
 
-Unmuting clears permanent, time-based, and occurrence-based mute conditions.
+Unmuting clears permanent, time-based, occurrence-based, and project-inherited
+mute conditions for that group.
 
 ```sh
 curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/mute \

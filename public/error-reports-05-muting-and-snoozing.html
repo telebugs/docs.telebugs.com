@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-470d71e8.js";
+            window.path_to_searchindex_js = "searchindex-7891adac.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-b7ebbca9.js"></script>
@@ -243,8 +243,8 @@ group is manually unmuted.</p>
 <h3 id="how-muting-works"><a class="header" href="#how-muting-works">How Muting Works</a></h3>
 <ul>
 <li>Muting applies to the <strong>entire error group</strong>.</li>
-<li>Muting only affects <strong>notifications</strong>. New reports are still recorded,
-grouped, and visible in dashboards.</li>
+<li>New reports are still recorded and grouped. Muted groups stay in their normal
+<strong>unresolved</strong> or <strong>resolved</strong> list and display a mute-status badge.</li>
 <li>Muting does not resolve the error. Resolution and muting are separate triage
 states.</li>
 <li>Any team member with access to the project can mute or unmute.</li>
@@ -308,6 +308,9 @@ context-aware shortcut reference.</p>
 <h3 id="api-and-mcp-support"><a class="header" href="#api-and-mcp-support">API and MCP Support</a></h3>
 <p>Muting is also available through automation interfaces:</p>
 <ul>
+<li>The <a href="/rest-api-04-projects.html">REST API Projects endpoint</a> and
+<a href="/telebugs-mcp-04-projects.html">Telebugs MCP Projects</a> can mute every current
+group in a project and automatically mute new groups.</li>
 <li>The <a href="/rest-api-05-groups.html">REST API Groups endpoint</a> can mute a single group
 forever or until a number of additional occurrences. REST bulk mute creates
 permanent mutes.</li>
