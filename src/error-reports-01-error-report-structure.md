@@ -120,6 +120,21 @@ Custom key-value data sent with the report.
 
 Use for anything not covered elsewhere.
 
+## Ingestion Warning
+
+If an incoming event contains more collection entries or longer strings than
+Telebugs can safely retain, the report shows an **Ingestion warning** above its
+details. The error was accepted and grouped normally; only some diagnostic
+detail was shortened or left out.
+
+The warning identifies affected sections and shows how many entries were
+omitted or strings were shortened. Repeated oversized events are normalized
+deterministically, so grouping remains stable.
+
+See [Ingestion and Upload
+Limits](/instance-05-ingestion-and-upload-limits.md#event-details-retained) for
+the exact collection limits and suggestions for reducing noisy SDK data.
+
 ## Viewing Raw Data (View as)
 
 On any individual error report page, you can access alternative representations
@@ -134,19 +149,22 @@ Available formats:
 
 - **JSON**
 
-  The complete raw event payload as pretty-printed JSON. Useful for copying
-  data, debugging SDK integration, or programmatic processing.
+  The stored event payload as pretty-printed JSON. Useful for copying data,
+  debugging SDK integration, or programmatic processing. When event details
+  were shortened, the summary is available at
+  `details.ingest_truncations`.
 
 - **XML**
 
   The event payload rendered in XML format (for compatibility with certain tools
-  or legacy systems).
+  or legacy systems). Ingestion changes appear in `<ingest_truncations>`.
 
 - **Markdown**
 
   A clean, human-readable Markdown summary of the report, including the error
   message, formatted stack trace (in code blocks), key contexts, tags, and other
-  details. Ideal for pasting into tickets, pull requests, or chat.
+  details. Ideal for pasting into tickets, pull requests, or chat. Ingestion
+  changes appear in an **Ingestion warning** section.
 
 Selecting a format instantly opens it **in the same tab** at a new URL, for example:
 

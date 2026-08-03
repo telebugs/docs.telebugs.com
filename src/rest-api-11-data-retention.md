@@ -95,12 +95,25 @@ Backlog and disk protection have their own separate switches. The
 protection. Telebugs pauses intake when the filesystem that contains the SQLite
 database falls below that value.
 
+The pending-byte and recent-activity fields are read-only status values:
+
+- `pending_ingest_bytes`: decoded bytes currently waiting for processing.
+- `max_pending_ingest_bytes`: fixed 512 MiB queued-byte ceiling.
+- `recent_rejections`: bounded-ingest rejections in the last hour.
+- `recent_truncations`: accepted events shortened in the last hour.
+
+They appear in the response and cannot be changed by `PATCH`.
+
 ```json
 {
   "enabled": true,
   "global_rate_limit_per_minute": 3000,
   "backlog_protection_enabled": true,
   "max_pending_ingest_payloads": 10000,
+  "pending_ingest_bytes": 245760,
+  "max_pending_ingest_bytes": 536870912,
+  "recent_rejections": 2,
+  "recent_truncations": 7,
   "disk_protection_enabled": true,
   "minimum_free_disk_space_mb": 2048
 }

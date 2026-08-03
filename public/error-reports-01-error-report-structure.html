@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7891adac.js";
+            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b7ebbca9.js"></script>
+        <script src="toc-1185be85.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -278,6 +278,17 @@ details.</p>
 <h2 id="additional-data"><a class="header" href="#additional-data">Additional Data</a></h2>
 <p>Custom key-value data sent with the report.</p>
 <p>Use for anything not covered elsewhere.</p>
+<h2 id="ingestion-warning"><a class="header" href="#ingestion-warning">Ingestion Warning</a></h2>
+<p>If an incoming event contains more collection entries or longer strings than
+Telebugs can safely retain, the report shows an <strong>Ingestion warning</strong> above its
+details. The error was accepted and grouped normally; only some diagnostic
+detail was shortened or left out.</p>
+<p>The warning identifies affected sections and shows how many entries were
+omitted or strings were shortened. Repeated oversized events are normalized
+deterministically, so grouping remains stable.</p>
+<p>See <a href="/instance-05-ingestion-and-upload-limits.html#event-details-retained">Ingestion and Upload
+Limits</a> for
+the exact collection limits and suggestions for reducing noisy SDK data.</p>
 <h2 id="viewing-raw-data-view-as"><a class="header" href="#viewing-raw-data-view-as">Viewing Raw Data (View as)</a></h2>
 <p>On any individual error report page, you can access alternative representations
 of the report data using the <strong>View as</strong> dropdown.</p>
@@ -290,19 +301,22 @@ Tags, etc.).</p>
 </li>
 <li>
 <p><strong>JSON</strong></p>
-<p>The complete raw event payload as pretty-printed JSON. Useful for copying
-data, debugging SDK integration, or programmatic processing.</p>
+<p>The stored event payload as pretty-printed JSON. Useful for copying data,
+debugging SDK integration, or programmatic processing. When event details
+were shortened, the summary is available at
+<code>details.ingest_truncations</code>.</p>
 </li>
 <li>
 <p><strong>XML</strong></p>
 <p>The event payload rendered in XML format (for compatibility with certain tools
-or legacy systems).</p>
+or legacy systems). Ingestion changes appear in <code>&lt;ingest_truncations&gt;</code>.</p>
 </li>
 <li>
 <p><strong>Markdown</strong></p>
 <p>A clean, human-readable Markdown summary of the report, including the error
 message, formatted stack trace (in code blocks), key contexts, tags, and other
-details. Ideal for pasting into tickets, pull requests, or chat.</p>
+details. Ideal for pasting into tickets, pull requests, or chat. Ingestion
+changes appear in an <strong>Ingestion warning</strong> section.</p>
 </li>
 </ul>
 <p>Selecting a format instantly opens it <strong>in the same tab</strong> at a new URL, for example:</p>

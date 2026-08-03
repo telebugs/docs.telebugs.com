@@ -31,7 +31,9 @@ Always create the release first (see [Releases][2]), then upload source maps to 
 
 ## Uploading Source Maps
 
-You can upload source maps manually in the UI or automatically with the Sentry CLI (fully compatible with Telebugs).
+You can upload source maps manually in the UI or automatically with the Sentry
+CLI. Telebugs supports legacy direct uploads and modern artifact bundles, with
+compatibility coverage for Sentry CLI 2.58.6 and 3.6.2.
 
 ### Manual Upload
 
@@ -68,6 +70,12 @@ You can upload source maps manually in the UI or automatically with the Sentry C
 After upload, new error reports from that version will automatically use the
 maps for unminification.
 
+Uploads are subject to Telebugs' fixed [Ingestion and Upload
+Limits][3]. Reuploading identical bytes to the same release and artifact name is
+safe and does not create a duplicate. Different bytes at an existing name
+return `409 Conflict`; use the correct release or delete the incorrect artifact
+deliberately.
+
 **Quick tip:** Test by triggering an error in production and checking if the
 stack trace shows original source files.
 
@@ -88,3 +96,4 @@ no longer needed for active debugging.
 
 [1]: /projects-02-individual-project-view.md
 [2]: /releases-00.md
+[3]: /instance-05-ingestion-and-upload-limits.md

@@ -32,7 +32,8 @@ Ingest protection has three checks:
 - **Accepted errors per minute**: Caps incoming error intake.
 - **Maximum queued errors**: Pauses intake when too many errors are waiting to be
   processed. The default is 10,000 queued errors, which gives a small VPS a few
-  minutes to catch up before the queue grows without bounds.
+  minutes to catch up before the queue grows without bounds. A separate fixed
+  ceiling pauses intake when pending decoded payloads reach 512 MiB.
 - **Minimum free disk space**: Pauses intake before disk space gets dangerously
   low. The default floor is 2,048 MB free.
 
@@ -52,11 +53,13 @@ The Ingest Protection page is organized into one status card and three
 guardrail cards:
 
 - **Status**: Shows whether Telebugs is accepting errors, rate limiting, paused
-  by queued errors, or paused by disk pressure.
+  by queued errors, or paused by disk pressure. It also shows recent
+  bounded-ingest rejections and truncated events.
 - **Rate limit**: Shows rate-limit counters, then lets you enable the accepted
   errors per minute limit and set the limit.
-- **Queue protection**: Shows queued-error counters, then lets you enable the
-  queued-errors limit and set the limit.
+- **Queue protection**: Shows queued-error counters, queued payload bytes, and
+  the fixed 512 MiB byte ceiling. It also lets you enable the queued-error count
+  limit and set that count.
 - **Disk protection**: Shows free disk space, the pause threshold, SQLite
   maintenance status, and disk-pressure counters. It also lets you enable the
   free disk space limit, set the limit, and recheck disk space immediately.
@@ -69,6 +72,7 @@ For incident-specific help, see:
 - [Rate Limit Active](instance-01-ingest-rate-limit-active.md)
 - [Queue Protection Active](instance-02-queue-protection-active.md)
 - [Disk Space Low](instance-03-disk-space-low.md)
+- [Ingestion and Upload Limits](instance-05-ingestion-and-upload-limits.md)
 
 ### How the Checks Work Together
 
@@ -101,12 +105,13 @@ reason is not hidden during an incident.
 
 The cards show:
 
-- **Status card**: Current status, accepted errors last hour, and rate-limited
-  errors last hour.
+- **Status card**: Current status, accepted errors last hour, rate-limited
+  errors last hour, bounded-ingest rejections, and truncated events.
 - **Rate limit card**: Accepted errors this minute, errors limited by the rate
   limit this minute, and errors limited by the rate limit last hour.
-- **Queue protection card**: Current queued errors, errors limited by queued
-  errors this minute, and errors limited by queued errors last hour.
+- **Queue protection card**: Current queued errors, queued payload bytes, the
+  fixed queued-byte ceiling, errors limited by queued errors this minute, and
+  errors limited by queued errors last hour.
 - **Disk protection card**: Free disk space, the current pause threshold,
   SQLite maintenance status, errors limited by low disk space this minute, and
   errors limited by low disk space last hour. Use **Recheck disk space** after
@@ -116,7 +121,8 @@ During an incident, the fastest read is:
 
 1. Check the **Status** card.
 2. Check which guardrail card has an increasing “Limited by...” counter.
-3. Check **Queued errors** and **Free disk space** in their guardrail cards.
+3. Check **Queued errors**, **Queued payload bytes**, and **Free disk space** in
+   their guardrail cards.
 
 ### Example Error Storm
 

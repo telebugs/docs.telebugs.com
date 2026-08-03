@@ -75,6 +75,7 @@
   - [Queue Protection Active](instance-02-queue-protection-active.md)
   - [Disk Space Low](instance-03-disk-space-low.md)
   - [Service Messages](instance-04-service-messages.md)
+  - [Ingestion and Upload Limits](instance-05-ingestion-and-upload-limits.md)
 
 - [Appendix](appendix-00.md)
   - [Software License Agreement](appendix-01-software-license-agreement.md)

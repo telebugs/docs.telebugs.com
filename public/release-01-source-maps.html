@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7891adac.js";
+            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b7ebbca9.js"></script>
+        <script src="toc-1185be85.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -214,7 +214,9 @@ only to errors from that version.</p>
 <p>Access releases from the project dashboard via the <strong>Releases (N)</strong> link in the top-right (see <a href="/projects-02-individual-project-view.html">Individual Project View</a>).</p>
 <p>Always create the release first (see <a href="/releases-00.html">Releases</a>), then upload source maps to it.</p>
 <h2 id="uploading-source-maps"><a class="header" href="#uploading-source-maps">Uploading Source Maps</a></h2>
-<p>You can upload source maps manually in the UI or automatically with the Sentry CLI (fully compatible with Telebugs).</p>
+<p>You can upload source maps manually in the UI or automatically with the Sentry
+CLI. Telebugs supports legacy direct uploads and modern artifact bundles, with
+compatibility coverage for Sentry CLI 2.58.6 and 3.6.2.</p>
 <h3 id="manual-upload"><a class="header" href="#manual-upload">Manual Upload</a></h3>
 <ol>
 <li>Open the desired release in the releases list.</li>
@@ -249,6 +251,11 @@ sentry-cli sourcemaps upload --release=v1.2.3 ./dist
 </ol>
 <p>After upload, new error reports from that version will automatically use the
 maps for unminification.</p>
+<p>Uploads are subject to Telebugs’ fixed <a href="/instance-05-ingestion-and-upload-limits.html">Ingestion and Upload
+Limits</a>. Reuploading identical bytes to the same release and artifact name is
+safe and does not create a duplicate. Different bytes at an existing name
+return <code>409 Conflict</code>; use the correct release or delete the incorrect artifact
+deliberately.</p>
 <p><strong>Quick tip:</strong> Test by triggering an error in production and checking if the
 stack trace shows original source files.</p>
 <h2 id="managing-source-maps"><a class="header" href="#managing-source-maps">Managing Source Maps</a></h2>

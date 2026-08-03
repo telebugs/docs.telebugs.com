@@ -15,6 +15,8 @@ Open the profile menu, then go to **Instance** > **Ingest Protection**.
 In the **Queue protection** card, check:
 
 - **Queued errors**
+- **Queued payload bytes**
+- **Fixed queued-byte ceiling**
 - **Limited by queued errors this minute**
 - **Limited by queued errors last hour**
 - **Reports processed during load**, if you are benchmarking with `bin/load`
@@ -45,8 +47,14 @@ are comfortable with a longer drain time. A large queue can be useful for short
 bursts, but it can also leave Telebugs working through old errors long after the
 incident has passed.
 
+The 512 MiB queued-byte ceiling is fixed and remains active even if you disable
+the configurable queued-error count check. If bytes reach that ceiling with a
+relatively small error count, unusually large events are filling the queue.
+Wait for the queue to drain and investigate slow or failing ingest jobs rather
+than trying to tune around the boundary.
+
 ## When It Clears
 
-Queue protection clears when pending ingest payloads fall below **Maximum queued
-errors**. If traffic has calmed down and workers are healthy, this should happen
-as the queue drains.
+Queue protection clears when pending ingest payloads are below **Maximum queued
+errors** and pending bytes are below the fixed queued-byte ceiling. If traffic
+has calmed down and workers are healthy, this should happen as the queue drains.

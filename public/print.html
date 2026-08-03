@@ -52,10 +52,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7891adac.js";
+            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b7ebbca9.js"></script>
+        <script src="toc-1185be85.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -2910,11 +2910,23 @@ Backlog and disk protection have their own separate switches. The
 <code>minimum_free_disk_space_mb</code> value is the hard free-space floor for disk
 protection. Telebugs pauses intake when the filesystem that contains the SQLite
 database falls below that value.</p>
+<p>The pending-byte and recent-activity fields are read-only status values:</p>
+<ul>
+<li><code>pending_ingest_bytes</code>: decoded bytes currently waiting for processing.</li>
+<li><code>max_pending_ingest_bytes</code>: fixed 512 MiB queued-byte ceiling.</li>
+<li><code>recent_rejections</code>: bounded-ingest rejections in the last hour.</li>
+<li><code>recent_truncations</code>: accepted events shortened in the last hour.</li>
+</ul>
+<p>They appear in the response and cannot be changed by <code>PATCH</code>.</p>
 <pre><code class="language-json">{
   "enabled": true,
   "global_rate_limit_per_minute": 3000,
   "backlog_protection_enabled": true,
   "max_pending_ingest_payloads": 10000,
+  "pending_ingest_bytes": 245760,
+  "max_pending_ingest_bytes": 536870912,
+  "recent_rejections": 2,
+  "recent_truncations": 7,
   "disk_protection_enabled": true,
   "minimum_free_disk_space_mb": 2048
 }
@@ -4392,7 +4404,9 @@ only to errors from that version.</p>
 <p>Access releases from the project dashboard via the <strong>Releases (N)</strong> link in the top-right (see <a href="/projects-02-individual-project-view.html">Individual Project View</a>).</p>
 <p>Always create the release first (see <a href="/releases-00.html">Releases</a>), then upload source maps to it.</p>
 <h2 id="uploading-source-maps"><a class="header" href="#uploading-source-maps">Uploading Source Maps</a></h2>
-<p>You can upload source maps manually in the UI or automatically with the Sentry CLI (fully compatible with Telebugs).</p>
+<p>You can upload source maps manually in the UI or automatically with the Sentry
+CLI. Telebugs supports legacy direct uploads and modern artifact bundles, with
+compatibility coverage for Sentry CLI 2.58.6 and 3.6.2.</p>
 <h3 id="manual-upload"><a class="header" href="#manual-upload">Manual Upload</a></h3>
 <ol>
 <li>Open the desired release in the releases list.</li>
@@ -4427,6 +4441,11 @@ sentry-cli sourcemaps upload --release=v1.2.3 ./dist
 </ol>
 <p>After upload, new error reports from that version will automatically use the
 maps for unminification.</p>
+<p>Uploads are subject to Telebugs’ fixed <a href="/instance-05-ingestion-and-upload-limits.html">Ingestion and Upload
+Limits</a>. Reuploading identical bytes to the same release and artifact name is
+safe and does not create a duplicate. Different bytes at an existing name
+return <code>409 Conflict</code>; use the correct release or delete the incorrect artifact
+deliberately.</p>
 <p><strong>Quick tip:</strong> Test by triggering an error in production and checking if the
 stack trace shows original source files.</p>
 <h2 id="managing-source-maps"><a class="header" href="#managing-source-maps">Managing Source Maps</a></h2>
@@ -4552,6 +4571,17 @@ details.</p>
 <h2 id="additional-data"><a class="header" href="#additional-data">Additional Data</a></h2>
 <p>Custom key-value data sent with the report.</p>
 <p>Use for anything not covered elsewhere.</p>
+<h2 id="ingestion-warning"><a class="header" href="#ingestion-warning">Ingestion Warning</a></h2>
+<p>If an incoming event contains more collection entries or longer strings than
+Telebugs can safely retain, the report shows an <strong>Ingestion warning</strong> above its
+details. The error was accepted and grouped normally; only some diagnostic
+detail was shortened or left out.</p>
+<p>The warning identifies affected sections and shows how many entries were
+omitted or strings were shortened. Repeated oversized events are normalized
+deterministically, so grouping remains stable.</p>
+<p>See <a href="/instance-05-ingestion-and-upload-limits.html#event-details-retained">Ingestion and Upload
+Limits</a> for
+the exact collection limits and suggestions for reducing noisy SDK data.</p>
 <h2 id="viewing-raw-data-view-as"><a class="header" href="#viewing-raw-data-view-as">Viewing Raw Data (View as)</a></h2>
 <p>On any individual error report page, you can access alternative representations
 of the report data using the <strong>View as</strong> dropdown.</p>
@@ -4564,19 +4594,22 @@ Tags, etc.).</p>
 </li>
 <li>
 <p><strong>JSON</strong></p>
-<p>The complete raw event payload as pretty-printed JSON. Useful for copying
-data, debugging SDK integration, or programmatic processing.</p>
+<p>The stored event payload as pretty-printed JSON. Useful for copying data,
+debugging SDK integration, or programmatic processing. When event details
+were shortened, the summary is available at
+<code>details.ingest_truncations</code>.</p>
 </li>
 <li>
 <p><strong>XML</strong></p>
 <p>The event payload rendered in XML format (for compatibility with certain tools
-or legacy systems).</p>
+or legacy systems). Ingestion changes appear in <code>&lt;ingest_truncations&gt;</code>.</p>
 </li>
 <li>
 <p><strong>Markdown</strong></p>
 <p>A clean, human-readable Markdown summary of the report, including the error
 message, formatted stack trace (in code blocks), key contexts, tags, and other
-details. Ideal for pasting into tickets, pull requests, or chat.</p>
+details. Ideal for pasting into tickets, pull requests, or chat. Ingestion
+changes appear in an <strong>Ingestion warning</strong> section.</p>
 </li>
 </ul>
 <p>Selecting a format instantly opens it <strong>in the same tab</strong> at a new URL, for example:</p>
@@ -4894,7 +4927,8 @@ limit.</p>
 <li><strong>Accepted errors per minute</strong>: Caps incoming error intake.</li>
 <li><strong>Maximum queued errors</strong>: Pauses intake when too many errors are waiting to be
 processed. The default is 10,000 queued errors, which gives a small VPS a few
-minutes to catch up before the queue grows without bounds.</li>
+minutes to catch up before the queue grows without bounds. A separate fixed
+ceiling pauses intake when pending decoded payloads reach 512 MiB.</li>
 <li><strong>Minimum free disk space</strong>: Pauses intake before disk space gets dangerously
 low. The default floor is 2,048 MB free.</li>
 </ul>
@@ -4912,11 +4946,13 @@ your configured <strong>Minimum free disk space</strong> value.</p>
 guardrail cards:</p>
 <ul>
 <li><strong>Status</strong>: Shows whether Telebugs is accepting errors, rate limiting, paused
-by queued errors, or paused by disk pressure.</li>
+by queued errors, or paused by disk pressure. It also shows recent
+bounded-ingest rejections and truncated events.</li>
 <li><strong>Rate limit</strong>: Shows rate-limit counters, then lets you enable the accepted
 errors per minute limit and set the limit.</li>
-<li><strong>Queue protection</strong>: Shows queued-error counters, then lets you enable the
-queued-errors limit and set the limit.</li>
+<li><strong>Queue protection</strong>: Shows queued-error counters, queued payload bytes, and
+the fixed 512 MiB byte ceiling. It also lets you enable the queued-error count
+limit and set that count.</li>
 <li><strong>Disk protection</strong>: Shows free disk space, the pause threshold, SQLite
 maintenance status, and disk-pressure counters. It also lets you enable the
 free disk space limit, set the limit, and recheck disk space immediately.</li>
@@ -4928,6 +4964,7 @@ card’s settings.</p>
 <li><a href="#rate-limit-active">Rate Limit Active</a></li>
 <li><a href="#queue-protection-active">Queue Protection Active</a></li>
 <li><a href="#disk-space-low">Disk Space Low</a></li>
+<li><a href="#ingestion-and-upload-limits">Ingestion and Upload Limits</a></li>
 </ul>
 <h3 id="how-the-checks-work-together"><a class="header" href="#how-the-checks-work-together">How the Checks Work Together</a></h3>
 <p>Telebugs checks ingest protection before it writes the incoming error to the
@@ -4953,12 +4990,13 @@ banner at the top of the app. The banner links back to Ingest Protection so the
 reason is not hidden during an incident.</p>
 <p>The cards show:</p>
 <ul>
-<li><strong>Status card</strong>: Current status, accepted errors last hour, and rate-limited
-errors last hour.</li>
+<li><strong>Status card</strong>: Current status, accepted errors last hour, rate-limited
+errors last hour, bounded-ingest rejections, and truncated events.</li>
 <li><strong>Rate limit card</strong>: Accepted errors this minute, errors limited by the rate
 limit this minute, and errors limited by the rate limit last hour.</li>
-<li><strong>Queue protection card</strong>: Current queued errors, errors limited by queued
-errors this minute, and errors limited by queued errors last hour.</li>
+<li><strong>Queue protection card</strong>: Current queued errors, queued payload bytes, the
+fixed queued-byte ceiling, errors limited by queued errors this minute, and
+errors limited by queued errors last hour.</li>
 <li><strong>Disk protection card</strong>: Free disk space, the current pause threshold,
 SQLite maintenance status, errors limited by low disk space this minute, and
 errors limited by low disk space last hour. Use <strong>Recheck disk space</strong> after
@@ -4968,7 +5006,8 @@ freeing disk if the page still shows an old value.</li>
 <ol>
 <li>Check the <strong>Status</strong> card.</li>
 <li>Check which guardrail card has an increasing “Limited by…” counter.</li>
-<li>Check <strong>Queued errors</strong> and <strong>Free disk space</strong> in their guardrail cards.</li>
+<li>Check <strong>Queued errors</strong>, <strong>Queued payload bytes</strong>, and <strong>Free disk space</strong> in
+their guardrail cards.</li>
 </ol>
 <h3 id="example-error-storm"><a class="header" href="#example-error-storm">Example Error Storm</a></h3>
 <p>Suppose Telebugs is running on a small 2 vCPU / 4 GB RAM VPS with the defaults:</p>
@@ -5167,6 +5206,8 @@ Queue from an unbounded backlog.</p>
 <p>In the <strong>Queue protection</strong> card, check:</p>
 <ul>
 <li><strong>Queued errors</strong></li>
+<li><strong>Queued payload bytes</strong></li>
+<li><strong>Fixed queued-byte ceiling</strong></li>
 <li><strong>Limited by queued errors this minute</strong></li>
 <li><strong>Limited by queued errors last hour</strong></li>
 <li><strong>Reports processed during load</strong>, if you are benchmarking with <code>bin/load</code></li>
@@ -5191,10 +5232,15 @@ CPU, faster disk, or a bigger server.</p>
 are comfortable with a longer drain time. A large queue can be useful for short
 bursts, but it can also leave Telebugs working through old errors long after the
 incident has passed.</p>
+<p>The 512 MiB queued-byte ceiling is fixed and remains active even if you disable
+the configurable queued-error count check. If bytes reach that ceiling with a
+relatively small error count, unusually large events are filling the queue.
+Wait for the queue to drain and investigate slow or failing ingest jobs rather
+than trying to tune around the boundary.</p>
 <h2 id="when-it-clears-1"><a class="header" href="#when-it-clears-1">When It Clears</a></h2>
-<p>Queue protection clears when pending ingest payloads fall below <strong>Maximum queued
-errors</strong>. If traffic has calmed down and workers are healthy, this should happen
-as the queue drains.</p>
+<p>Queue protection clears when pending ingest payloads are below <strong>Maximum queued
+errors</strong> and pending bytes are below the fixed queued-byte ceiling. If traffic
+has calmed down and workers are healthy, this should happen as the queue drains.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="disk-space-low"><a class="header" href="#disk-space-low">Disk Space Low</a></h1>
 <p>Telebugs shows this warning when free disk space is below the configured
@@ -5294,6 +5340,185 @@ badge (the badge is shared across all admins).</p>
 <p>Refresh the page to see updates. When finished, the status becomes <strong>Completed</strong>
 or <strong>Failed</strong>, with timestamps and any error details.</p>
 <p><strong>Quick tip:</strong> Address service messages promptly after upgrades to keep your instance running smoothly.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="ingestion-and-upload-limits"><a class="header" href="#ingestion-and-upload-limits">Ingestion and Upload Limits</a></h1>
+<p>Telebugs applies fixed safety limits to each new error report, envelope, artifact,
+and artifact bundle. These boundaries keep memory, CPU, disk, SQLite, and the job
+queue predictable on a small self-hosted server.</p>
+<p>The limits are per object, not account quotas. They do not restrict how many
+projects, releases, or error reports you can keep. They are intentionally not
+configurable: an operator cannot accidentally remove the safety boundary while
+trying to fix an unrelated capacity problem.</p>
+<h2 id="event-requests"><a class="header" href="#event-requests">Event Requests</a></h2>
+<p>Telebugs accepts uncompressed requests and requests using <code>gzip</code> or
+zlib-wrapped <code>deflate</code>. Encoding names are case-insensitive. Brotli, Zstandard,
+and requests with more than one content encoding are not supported.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Object</th><th style="text-align: right">Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>Request body before decompression</td><td style="text-align: right">16 MiB</td></tr>
+<tr><td>Request body after decompression</td><td style="text-align: right">16 MiB</td></tr>
+<tr><td>Envelope or item header line</td><td style="text-align: right">8 KiB</td></tr>
+<tr><td>Items in one envelope</td><td style="text-align: right">16</td></tr>
+<tr><td>Event items in one envelope</td><td style="text-align: right">1</td></tr>
+<tr><td>Event JSON</td><td style="text-align: right">1 MiB</td></tr>
+<tr><td>Minidump items in one envelope</td><td style="text-align: right">1</td></tr>
+<tr><td>Retained minidump</td><td style="text-align: right">12 MiB</td></tr>
+<tr><td>JSON nesting</td><td style="text-align: right">64 levels</td></tr>
+<tr><td>JSON key</td><td style="text-align: right">1 KiB</td></tr>
+<tr><td>General string value</td><td style="text-align: right">64 KiB</td></tr>
+<tr><td>Indexed or displayed string value</td><td style="text-align: right">8 KiB</td></tr>
+</tbody>
+</table>
+</div>
+<p>Telebugs rejects a request before durable acceptance when its wire or decoded
+body, framing, JSON, or binary item cannot be handled safely. A valid envelope
+with no supported event is acknowledged but is not added to the processing
+queue. An empty request body remains a successful no-op.</p>
+<h2 id="event-details-retained"><a class="header" href="#event-details-retained">Event Details Retained</a></h2>
+<p>Large but valid event collections are handled differently from an oversized
+request. Telebugs accepts the event and deterministically keeps the most useful
+subset:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Collection</th><th style="text-align: right">Retained</th></tr>
+</thead>
+<tbody>
+<tr><td>Exceptions</td><td style="text-align: right">32: first 16 and last 16</td></tr>
+<tr><td>Threads</td><td style="text-align: right">64, prioritizing crashed and current threads</td></tr>
+<tr><td>Frames in one stack trace</td><td style="text-align: right">200: first 100 and last 100</td></tr>
+<tr><td>Frames across the event</td><td style="text-align: right">1,000</td></tr>
+<tr><td>Breadcrumbs</td><td style="text-align: right">Most recent 100</td></tr>
+<tr><td>Tags</td><td style="text-align: right">First 100</td></tr>
+<tr><td>Contexts</td><td style="text-align: right">First 50</td></tr>
+<tr><td>Additional data entries</td><td style="text-align: right">First 100</td></tr>
+<tr><td>Modules or dependencies</td><td style="text-align: right">First 500</td></tr>
+<tr><td>Debug images</td><td style="text-align: right">First 500</td></tr>
+<tr><td>Persisted event-detail rows</td><td style="text-align: right">2,500</td></tr>
+</tbody>
+</table>
+</div>
+<p>Tag keys are limited to 200 bytes and tag values to 2 KiB. Telebugs preserves
+the input order of retained entries and shortens strings only at valid UTF-8
+boundaries. Grouping and persistence use the same normalized event, so sending
+the same oversized event repeatedly still produces stable grouping.</p>
+<h3 id="ingestion-warning-1"><a class="header" href="#ingestion-warning-1">Ingestion Warning</a></h3>
+<p>When Telebugs shortens strings or leaves collection entries out, the report
+page shows an <strong>Ingestion warning</strong> above the report details. The warning means
+the error was accepted, but some diagnostic detail exceeded a safety boundary.
+It names the affected sections and shows how many entries were omitted or
+strings were shortened.</p>
+<p>The same bounded summary is included when you use <strong>View as</strong>:</p>
+<ul>
+<li>JSON: <code>details.ingest_truncations</code></li>
+<li>XML: <code>&lt;ingest_truncations&gt;</code></li>
+<li>Markdown: an <strong>Ingestion warning</strong> section</li>
+</ul>
+<p>The warning does not indicate a broken SDK or failed report. If the omitted
+details are important, reduce noisy breadcrumbs, repeated frames, oversized
+custom context, or other high-volume event data at the SDK.</p>
+<h2 id="pending-event-queue"><a class="header" href="#pending-event-queue">Pending Event Queue</a></h2>
+<p>Telebugs pauses new event intake when pending decoded payloads reach <strong>512
+MiB</strong>, even if the configurable queued-error count check is disabled. The
+existing queued-error count limit remains configurable and defaults to 10,000.</p>
+<p>Open <strong>Instance</strong> &gt; <strong>Ingest Protection</strong> to see:</p>
+<ul>
+<li>queued errors;</li>
+<li>queued payload bytes;</li>
+<li>the fixed queued-byte ceiling;</li>
+<li>bounded-ingest rejections in the last hour;</li>
+<li>truncated events in the last hour.</li>
+</ul>
+<p>The queued-byte ceiling is read-only. It bounds memory, disk, and drain-time
+exposure without adding another setting that operators must tune.</p>
+<h2 id="artifact-and-source-map-uploads"><a class="header" href="#artifact-and-source-map-uploads">Artifact and Source Map Uploads</a></h2>
+<p>The following limits apply to new release artifacts, source maps, chunks, and
+ZIP bundles:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Object</th><th style="text-align: right">Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>Direct or UI multipart request</td><td style="text-align: right">64 MiB</td></tr>
+<tr><td>Files in one UI release upload</td><td style="text-align: right">32</td></tr>
+<tr><td>Artifact file or ZIP entry</td><td style="text-align: right">32 MiB</td></tr>
+<tr><td>Chunk</td><td style="text-align: right">8 MiB</td></tr>
+<tr><td>Chunk request</td><td style="text-align: right">10 MiB and one chunk</td></tr>
+<tr><td>Chunks in one bundle</td><td style="text-align: right">8</td></tr>
+<tr><td>Bundle assembly request</td><td style="text-align: right">1 MiB</td></tr>
+<tr><td>Compressed bundle</td><td style="text-align: right">64 MiB</td></tr>
+<tr><td>Expanded bundle</td><td style="text-align: right">128 MiB</td></tr>
+<tr><td>ZIP entries, including directories and ignored metadata</td><td style="text-align: right">2,000</td></tr>
+<tr><td>Bundle manifest</td><td style="text-align: right">1 MiB</td></tr>
+<tr><td>Compression ratio</td><td style="text-align: right">100:1</td></tr>
+<tr><td>Artifact logical name or path</td><td style="text-align: right">1,024 bytes</td></tr>
+<tr><td>Stored filename</td><td style="text-align: right">255 bytes</td></tr>
+<tr><td>Staged incomplete chunks across the instance</td><td style="text-align: right">1 GiB</td></tr>
+<tr><td>Incomplete chunk lifetime</td><td style="text-align: right">24 hours</td></tr>
+<tr><td>Bundle assembly scratch space</td><td style="text-align: right">384 MiB above the configured free-disk floor</td></tr>
+</tbody>
+</table>
+</div>
+<p>Telebugs counts ZIP entries and expanded bytes while reading them instead of
+trusting archive metadata. It rejects path traversal, absolute paths,
+backslashes, invalid UTF-8, NUL bytes, duplicate paths, ambiguous manifest
+matches, encrypted entries, links, devices, CRC errors, and inconsistent size
+metadata. A ZIP file stored inside a bundle is ordinary artifact content; it is
+not recursively expanded.</p>
+<p>Existing stored artifacts remain readable even when they are larger than a new
+upload limit.</p>
+<h3 id="reuploads-and-conflicts"><a class="header" href="#reuploads-and-conflicts">Reuploads and Conflicts</a></h3>
+<p>Uploading identical bytes to the same artifact name and release is idempotent.
+Telebugs returns the existing artifact instead of storing a duplicate.</p>
+<p>Uploading different bytes to an existing name in the same release returns
+<code>409 Conflict</code>. An artifact-bundle conflict aborts the entire bundle, so a
+release is never left half-updated. Delete the incorrect artifact deliberately
+or publish the new content under the correct release version.</p>
+<p>Modern Sentry CLI clients use artifact bundles. Legacy 2.x clients can use the
+direct release-file API. Telebugs has compatibility coverage for both Sentry CLI
+2.58.6 and 3.6.2. See <a href="#source-maps">Source Maps</a> for setup and
+upload commands.</p>
+<h2 id="http-responses-and-retries"><a class="header" href="#http-responses-and-retries">HTTP Responses and Retries</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Status</th><th>Meaning</th><th>What the sender should do</th></tr>
+</thead>
+<tbody>
+<tr><td><code>400 Bad Request</code></td><td>Malformed compression, envelope, JSON, checksum, archive, manifest, or path</td><td>Fix the payload; do not retry it unchanged</td></tr>
+<tr><td><code>409 Conflict</code></td><td>An artifact name already contains different bytes in that release</td><td>Correct the release or artifact; do not retry unchanged</td></tr>
+<tr><td><code>413 Content Too Large</code></td><td>A byte, depth, item, file, entry, or expansion boundary was exceeded</td><td>Reduce the object; do not retry it unchanged</td></tr>
+<tr><td><code>415 Unsupported Media Type</code></td><td>Unsupported or multiple content encodings</td><td>Send an uncompressed, gzip, or deflate request</td></tr>
+<tr><td><code>429 Too Many Requests</code></td><td>Temporary rate, queue, staged-byte, or disk pressure</td><td>Retry after the advertised delay</td></tr>
+<tr><td><code>5xx</code></td><td>Temporary server or storage failure</td><td>Retry with normal SDK backoff</td></tr>
+</tbody>
+</table>
+</div>
+<p>Permanent event-ingestion failures include an <code>X-Sentry-Error</code> reason and no
+retry header. A <code>429</code> response includes <code>Retry-After</code> and
+<code>X-Sentry-Rate-Limits</code>. Sentry SDKs should drop permanent <code>400</code>, <code>413</code>, and
+<code>415</code> responses, while retrying <code>429</code> and transient <code>5xx</code> responses.</p>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<ul>
+<li>For repeated <code>413</code> responses, reduce one event, attachment, minidump, source
+map, artifact, or archive. Retrying identical bytes cannot succeed.</li>
+<li>For <code>415</code>, remove multiple encodings or use identity, gzip, or deflate.</li>
+<li>For <code>429</code>, check <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>. Let the queue drain,
+restore free disk space, or wait for the rate window before retrying.</li>
+<li>For artifact <code>409</code>, verify the release version and artifact name. Do not
+overwrite a source map from an already-published release accidentally.</li>
+<li>If queued payload bytes remain high, inspect the Jobs dashboard and
+SQLite/Active Storage errors before increasing worker concurrency.</li>
+<li>If bundle assembly reports disk pressure, restore at least the configured
+free-disk floor plus 384 MiB of scratch space.</li>
+</ul>
+<p>These fixed limits are safety boundaries for individual objects. Use retention
+policies and ingest protection for long-term storage and traffic management.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="appendix"><a class="header" href="#appendix">Appendix</a></h1>
 <p>The following sections contain reference material you may find useful in your

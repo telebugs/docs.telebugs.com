@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7891adac.js";
+            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b7ebbca9.js"></script>
+        <script src="toc-1185be85.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -265,11 +265,23 @@ Backlog and disk protection have their own separate switches. The
 <code>minimum_free_disk_space_mb</code> value is the hard free-space floor for disk
 protection. Telebugs pauses intake when the filesystem that contains the SQLite
 database falls below that value.</p>
+<p>The pending-byte and recent-activity fields are read-only status values:</p>
+<ul>
+<li><code>pending_ingest_bytes</code>: decoded bytes currently waiting for processing.</li>
+<li><code>max_pending_ingest_bytes</code>: fixed 512 MiB queued-byte ceiling.</li>
+<li><code>recent_rejections</code>: bounded-ingest rejections in the last hour.</li>
+<li><code>recent_truncations</code>: accepted events shortened in the last hour.</li>
+</ul>
+<p>They appear in the response and cannot be changed by <code>PATCH</code>.</p>
 <pre><code class="language-json">{
   "enabled": true,
   "global_rate_limit_per_minute": 3000,
   "backlog_protection_enabled": true,
   "max_pending_ingest_payloads": 10000,
+  "pending_ingest_bytes": 245760,
+  "max_pending_ingest_bytes": 536870912,
+  "recent_rejections": 2,
+  "recent_truncations": 7,
   "disk_protection_enabled": true,
   "minimum_free_disk_space_mb": 2048
 }

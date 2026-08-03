@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-7891adac.js";
+            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-b7ebbca9.js"></script>
+        <script src="toc-1185be85.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -205,6 +205,8 @@ Queue from an unbounded backlog.</p>
 <p>In the <strong>Queue protection</strong> card, check:</p>
 <ul>
 <li><strong>Queued errors</strong></li>
+<li><strong>Queued payload bytes</strong></li>
+<li><strong>Fixed queued-byte ceiling</strong></li>
 <li><strong>Limited by queued errors this minute</strong></li>
 <li><strong>Limited by queued errors last hour</strong></li>
 <li><strong>Reports processed during load</strong>, if you are benchmarking with <code>bin/load</code></li>
@@ -229,10 +231,15 @@ CPU, faster disk, or a bigger server.</p>
 are comfortable with a longer drain time. A large queue can be useful for short
 bursts, but it can also leave Telebugs working through old errors long after the
 incident has passed.</p>
+<p>The 512 MiB queued-byte ceiling is fixed and remains active even if you disable
+the configurable queued-error count check. If bytes reach that ceiling with a
+relatively small error count, unusually large events are filling the queue.
+Wait for the queue to drain and investigate slow or failing ingest jobs rather
+than trying to tune around the boundary.</p>
 <h2 id="when-it-clears"><a class="header" href="#when-it-clears">When It Clears</a></h2>
-<p>Queue protection clears when pending ingest payloads fall below <strong>Maximum queued
-errors</strong>. If traffic has calmed down and workers are healthy, this should happen
-as the queue drains.</p>
+<p>Queue protection clears when pending ingest payloads are below <strong>Maximum queued
+errors</strong> and pending bytes are below the fixed queued-byte ceiling. If traffic
+has calmed down and workers are healthy, this should happen as the queue drains.</p>
 
                     </main>
 
