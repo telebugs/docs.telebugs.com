@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-2c5d0bdd.js";
+            window.path_to_searchindex_js = "searchindex-a459421f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-1185be85.js"></script>
@@ -194,20 +194,43 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="grouping-and-fingerprinting"><a class="header" href="#grouping-and-fingerprinting">Grouping and Fingerprinting</a></h1>
-<p>Telebugs automatically groups similar error reports into a single issue to
-reduce noise and help you focus on unique problems.</p>
-<p>Grouping uses a fingerprint hash derived from the error data.</p>
+<p>Telebugs automatically groups reports from the same underlying problem into a
+single issue. It uses one stable, internally versioned algorithm for every
+installation and project. There is no grouping-algorithm selector.</p>
 <h2 id="default-grouping-rules"><a class="header" href="#default-grouping-rules">Default Grouping Rules</a></h2>
-<p>By default, Telebugs prioritizes:</p>
+<p>Default grouping uses this evidence order:</p>
 <ol>
-<li>Stack trace (in-app frames: filename + function + line)</li>
-<li>Exception type and message</li>
-<li>Fallback to error message</li>
+<li>The oldest causal exception with a useful stack.</li>
+<li>A crashed thread, then the current thread, then the final thread with a
+useful stack.</li>
+<li>The causal exception type and normalized value.</li>
+<li>An SDK message template, then a normalized formatted message.</li>
+<li>A per-occurrence key when no trustworthy grouping evidence exists.</li>
 </ol>
-<p>This ensures errors from the same code path group together even if minor details
-(like user input) differ.</p>
+<p>For stack-based errors, Telebugs prefers <code>in_app: true</code> frames. If none exist,
+it prefers frames whose <code>in_app</code> value is unknown, then explicit framework
+frames. It preserves protocol frame order and uses at most the final 50
+selected frames from the chosen causal stack.</p>
+<p>Stable filenames, functions, modules, and source context are grouping evidence.
+Line and column changes do not split a group when a filename plus function or
+source context supplies stronger evidence. Otherwise anonymous frames,
+including generated frames without stable function or source-context evidence,
+keep their line, column, or address so that unrelated failures are not merged. URL
+origins, queries, fragments, deployment release directories, and filename
+content hashes are normalized.</p>
+<p>When no useful stack exists, Telebugs normalizes occurrence-specific values
+such as UUIDs, timestamps, IP addresses, email addresses, memory addresses,
+long hashes, request and trace IDs, URL query values, numeric path segments,
+and ordinary instance numbers. Semantic values such as HTTP status, SQLSTATE,
+errno, signal, port, exit code, and version numbers remain meaningful.</p>
+<p>Default grouping is platform-specific. Release, environment, server, request,
+user, tag, and source-map metadata do not change a stack-based grouping key.
+Source maps improve the displayed stack after ingestion; they never regroup or
+move an existing report.</p>
 <h2 id="custom-fingerprinting"><a class="header" href="#custom-fingerprinting">Custom Fingerprinting</a></h2>
-<p>Override default grouping by setting a fingerprint when reporting the error.</p>
+<p>Set a fingerprint in a Sentry-compatible SDK when the application has a better
+stable grouping boundary. Telebugs accepts an ordered array of strings and also
+accepts a scalar string as one component.</p>
 <p>Ruby example (group all payment failures together):</p>
 <pre><code class="language-ruby">rescue StandardError =&gt; e
   Sentry.capture_exception(e, fingerprint: ["payment-failure"])
@@ -217,7 +240,18 @@ end
 <pre><code class="language-ruby">action = current_action  # e.g., "checkout"
 Sentry.capture_exception(e, fingerprint: ["error", action])
 </code></pre>
-<p>All matching fingerprints land in the same issue.</p>
+<p>A non-empty custom fingerprint without an exact <code>{{ default }}</code> component
+replaces default grouping. Matching ordered components share an issue even when
+their stacks or platforms differ. Values, whitespace, boundaries, and order are
+literal: <code>["a|b"]</code> and <code>["a", "b"]</code> are different fingerprints.</p>
+<p>Use an exact <code>{{ default }}</code> component to refine the complete Telebugs default:</p>
+<pre><code class="language-ruby">Sentry.capture_exception(e, fingerprint: ["{{ default }}", provider_name])
+</code></pre>
+<p><code>["{{ default }}"]</code> is identical to ordinary default grouping. Embedded text
+such as <code>prefix-{{ default }}</code> remains literal. Fingerprints are limited to 32
+components, 1 KiB per component, and 8 KiB total, measured as UTF-8 bytes.
+An absent or null fingerprint, an empty string or array, and otherwise invalid
+fingerprints safely use default grouping.</p>
 <h2 id="manual-merging"><a class="header" href="#manual-merging">Manual Merging</a></h2>
 <p>If similar errors end up in separate groups:</p>
 <ol>
@@ -228,12 +262,21 @@ Sentry.capture_exception(e, fingerprint: ["error", action])
 </ol>
 <p>Future reports matching either original group go to the combined one. This
 action is irreversible.</p>
+<p>Manual merges retarget known grouping keys and retain legacy source aliases so
+future matches continue to reach the selected target.</p>
+<h2 id="grouping-through-upgrades"><a class="header" href="#grouping-through-upgrades">Grouping Through Upgrades</a></h2>
+<p>Grouping upgrades are forward-looking. Telebugs does not automatically regroup
+historical reports or rewrite their counts, ownership, mute, or resolution
+state. Existing issues acquire compatibility keys lazily when new reports match
+their previous fingerprint. If an old fingerprint had combined two distinct
+problems, a different current signature creates a new future-only issue.</p>
 <h2 id="grouping-details"><a class="header" href="#grouping-details">Grouping Details</a></h2>
 <p>On any error report, click the square-stack icon to view:</p>
 <ul>
-<li>Fingerprint hash</li>
-<li>Method used (backtrace, exception, message, custom)</li>
-<li>Specific frames or message that determined grouping</li>
+<li>Stored fingerprint hash (kept as a compatibility and display identifier)</li>
+<li>Algorithm label (<code>v1</code>, <code>v2</code>, or <code>v1 + v2 compatibility</code>)</li>
+<li>Method used (backtrace, exception, message, custom, or ungroupable)</li>
+<li>Fingerprint, frame, exception, or message evidence that determined grouping</li>
 <li>Any merged groups</li>
 </ul>
 <p>Useful for understanding or debugging unexpected grouping behavior.</p>
