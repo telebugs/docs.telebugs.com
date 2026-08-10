@@ -31,6 +31,10 @@
   <url><loc>https://docs.telebugs.com/instance-01-ingest-rate-limit-active.html</loc></url>
   <url><loc>https://docs.telebugs.com/instance-02-queue-protection-active.html</loc></url>
   <url><loc>https://docs.telebugs.com/instance-03-disk-space-low.html</loc></url>
+  <url><loc>https://docs.telebugs.com/operations-03-notification-delivery-failures.html</loc></url>
+  <url><loc>https://docs.telebugs.com/operations-00.html</loc></url>
+  <url><loc>https://docs.telebugs.com/operations-01-backup-and-restore.html</loc></url>
+  <url><loc>https://docs.telebugs.com/operations-02-health-and-status.html</loc></url>
   <url><loc>https://docs.telebugs.com/instance-04-service-messages.html</loc></url>
   <url><loc>https://docs.telebugs.com/instance-05-ingestion-and-upload-limits.html</loc></url>
   <url><loc>https://docs.telebugs.com/introduction-00.html</loc></url>

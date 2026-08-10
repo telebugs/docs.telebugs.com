@@ -77,6 +77,11 @@
   - [Service Messages](instance-04-service-messages.md)
   - [Ingestion and Upload Limits](instance-05-ingestion-and-upload-limits.md)
 
+- [Operations](operations-00.md)
+  - [Backup and Restore](operations-01-backup-and-restore.md)
+  - [Liveness, Readiness, and Status](operations-02-health-and-status.md)
+  - [Notification Delivery Failures](operations-03-notification-delivery-failures.md)
+
 - [Appendix](appendix-00.md)
   - [Software License Agreement](appendix-01-software-license-agreement.md)
   - [`telebugs` Command Reference](appendix-02-telebugs-command-reference.md)

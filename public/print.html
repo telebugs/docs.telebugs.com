@@ -52,10 +52,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a459421f.js";
+            window.path_to_searchindex_js = "searchindex-b8a50e95.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-1185be85.js"></script>
+        <script src="toc-d5033a90.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -455,6 +455,9 @@ user. After that, you can invite your team.</p>
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the <a href="/appendix-02-telebugs-command-reference.html">telebugs command</a>. Connect to your server and run <code>telebugs</code>
 to see all options.</p>
+<p>After first launch, run <code>telebugs status</code> on the server. Before sending
+production errors, create an off-server <a href="/operations-01-backup-and-restore.html">backup and restore plan</a> and decide
+whether your external monitoring should check <a href="/operations-02-health-and-status.html"><code>/ready</code></a>.</p>
 <blockquote>
 <p>💡 Want multiple Telebugs installations? You need a separate license for each domain.</p>
 </blockquote>
@@ -5008,7 +5011,10 @@ card’s settings.</p>
 <li><a href="#queue-protection-active">Queue Protection Active</a></li>
 <li><a href="#disk-space-low">Disk Space Low</a></li>
 <li><a href="#ingestion-and-upload-limits">Ingestion and Upload Limits</a></li>
+<li><a href="#notification-delivery-failures">Notification Delivery Failures</a></li>
 </ul>
+<p>For host-level checks, backups, and disaster recovery, see
+<a href="#operations">Operations</a>.</p>
 <h3 id="how-the-checks-work-together"><a class="header" href="#how-the-checks-work-together">How the Checks Work Together</a></h3>
 <p>Telebugs checks ingest protection before it writes the incoming error to the
 ingest queue or creates a background job.</p>
@@ -5563,6 +5569,342 @@ free-disk floor plus 384 MiB of scratch space.</li>
 <p>These fixed limits are safety boundaries for individual objects. Use retention
 policies and ingest protection for long-term storage and traffic management.</p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="operations"><a class="header" href="#operations">Operations</a></h1>
+<p>Telebugs is designed for one server and one operator-friendly command. Its
+operational contract is deliberately modest:</p>
+<ul>
+<li>a backup is complete, internally verified, and restorable with the captured
+application version;</li>
+<li><code>/up</code> answers whether the web application is alive;</li>
+<li><code>/ready</code> answers whether the instance can accept and process errors and run
+notification work;</li>
+<li><code>telebugs status</code> explains readiness locally without publishing diagnostic
+details on the internet; and</li>
+<li>admins see permanently failed notification deliveries in Telebugs and can use
+the existing jobs page to review them.</li>
+</ul>
+<p>This is not a monitoring platform. The host still needs normal server backups,
+disk and memory monitoring, certificate and DNS ownership, network monitoring,
+and a place outside the server to store Telebugs archives.</p>
+<p>Start with <a href="#backup-and-restore">Backup and Restore</a>, then add an
+external check for <a href="#liveness-readiness-and-status">liveness or readiness</a>.
+If an admin banner reports a delivery failure, follow the
+<a href="#notification-delivery-failures">notification failure guide</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="backup-and-restore"><a class="header" href="#backup-and-restore">Backup and Restore</a></h1>
+<p>The <code>telebugs</code> command creates a single verified archive for persistent
+Telebugs data and recovery configuration. The archive contains sensitive
+recovery secrets, so treat it like production credentials as well as production
+data.</p>
+<h2 id="create-a-backup"><a class="header" href="#create-a-backup">Create a Backup</a></h2>
+<p>Connect to the Telebugs server and run:</p>
+<pre><code class="language-bash">telebugs data backup
+</code></pre>
+<p>The default filename is timestamped in UTC, for example
+<code>telebugs-backup-20260809T120000Z.tar.gz</code>. To choose a path:</p>
+<pre><code class="language-bash">telebugs data backup /mnt/offsite/telebugs-production
+</code></pre>
+<p>The <code>.tar.gz</code> suffix is added when omitted. The destination must be outside the
+Telebugs storage directory, its parent directory must already exist, and it must
+have enough free space. An existing file is never overwritten. If the configured
+storage path contains a symbolic link, the CLI follows it when measuring,
+validating, and archiving data; the destination must also be outside the resolved
+storage tree.</p>
+<p>When Telebugs is running, the command stops it for the duration of validation,
+archiving, and archive verification so the three SQLite databases and stored
+files come from one quiet point in time. It restarts the captured application
+image afterward and waits for readiness. If Telebugs was already stopped, it
+remains stopped. Backup time grows with stored data, file count, disk speed, and
+the destination, so use a maintenance window for a large installation.</p>
+<p>If a backup is interrupted, do not rely on a partial archive. A normal interrupt
+cancels file inventory, archiving, or verification, removes the unpublished
+partial file, and attempts to restart a previously running instance. Confirm
+with <code>telebugs status</code>, and run <code>telebugs start</code> if the process or host was
+terminated before recovery completed. A published archive is still usable only
+after <code>telebugs data verify</code> succeeds.</p>
+<h2 id="what-a-successful-backup-means"><a class="header" href="#what-a-successful-backup-means">What a Successful Backup Means</a></h2>
+<p>The command reports success only after all of these steps finish:</p>
+<ol>
+<li>The primary, cache, and queue SQLite databases exist and pass
+<code>PRAGMA quick_check</code>.</li>
+<li>Every Active Storage database record has a stored file of the expected size
+and database checksum.</li>
+<li>All persistent storage is inventoried with its size, mode, and SHA-256 hash.</li>
+<li>The manifest records database schema versions and the exact immutable
+Telebugs image digest, and the recovery configuration must identify the same
+image.</li>
+<li>The recovery configuration, encryption keys, and application secret are in
+the archive, and the manifest records their configuration file’s SHA-256
+checksum.</li>
+<li>The compressed archive is closed, synced, verified against its manifest,
+and atomically published with mode <code>0600</code>.</li>
+<li>A previously running instance restarts and passes <code>/ready</code>. If the captured
+image predates the readiness endpoint, the CLI accepts <code>/up</code> instead and
+prints a legacy-compatibility warning.</li>
+</ol>
+<p>The persistent-storage portion covers the SQLite databases, attachments, source
+maps, and locally stored TLS state. The archive separately contains the CLI
+recovery configuration, including application encryption keys and secrets. It
+does not back up the host operating system, firewall, DNS, Docker installation,
+external mail service, external webhook destinations, the container image
+itself, or Docker logs. The manifest records the immutable image digest;
+restoration still needs that image locally or available from the Telebugs
+registry.</p>
+<p>Restoring on a replacement server also requires registry access when the exact
+image is not already present. If the credentials archived with an older backup
+no longer have access, provide current credentials to the restore process with
+<code>TELEBUGS_REGISTRY_USERNAME</code> and <code>TELEBUGS_REGISTRY_PASSWORD</code>; <code>TELEBUGS_TOKEN</code>
+can be used instead of the password override. These overrides are read from the
+environment and are not written into the restored Telebugs configuration.
+If the captured image cannot be retrieved, the CLI reports Docker’s reason and
+exits before staging data or changing the current installation. Keep the
+archive, correct registry access or make the captured digest available locally,
+and run restore again.</p>
+<p>Copy every successful archive to storage outside the Telebugs server. Preserve
+its restrictive permissions and encrypt the backup destination. A backup left
+on the same disk is not disaster recovery.</p>
+<h2 id="verify-an-archive"><a class="header" href="#verify-an-archive">Verify an Archive</a></h2>
+<p>Verification is read-only:</p>
+<pre><code class="language-bash">telebugs data verify /backups/telebugs-production.tar.gz
+</code></pre>
+<p>It checks the archive format and required creation timestamp, recovery
+configuration checksum, every file hash, file size and mode, and the complete
+inventory. Use it after copying an archive to remote storage and before every
+restore.</p>
+<p>Verification detects corruption and incomplete archives; it is not an external
+digital signature. Keep archives in access-controlled, tamper-resistant storage
+as well as encrypting them.</p>
+<p>Archives created by the old, pre-manifest backup command are rejected. They do
+not contain enough evidence for the CLI to promise a safe restore.
+Unsupported future archive formats are also rejected before the installation is
+changed. Use the current Telebugs CLI for restoration; it pairs the stored data
+with the captured application image so database migrations are not guessed.</p>
+<h2 id="restore"><a class="header" href="#restore">Restore</a></h2>
+<p>Make the current <code>telebugs</code> CLI available on the replacement server, transfer
+the archive, and run:</p>
+<pre><code class="language-bash">telebugs data restore /backups/telebugs-production.tar.gz
+</code></pre>
+<p>On an existing installation, the CLI asks before replacing data. Automation can
+use <code>--yes</code> only after independently confirming the target:</p>
+<pre><code class="language-bash">telebugs data restore /backups/telebugs-production.tar.gz --yes
+</code></pre>
+<p>The restore verifies the complete archive before changing the installation. It
+then retrieves the exact captured image by immutable digest, extracts into a
+staging directory, runs the database and file checks again, and only then stops
+the current instance and switches storage.</p>
+<p>The queue database is restored with the rest of the data. Pending or retrying
+jobs, including notification deliveries, can run as soon as the restored
+container starts. The CLI prints a warning before the switch. This preserves
+work during real disaster recovery, but it also means notification delivery is
+at least once across recovery and an old delivery may be repeated.</p>
+<p>For an existing installation, the product and domain must match. Current
+host-specific values such as the storage path, installation token, registry
+identity, and update schedule stay with the host; the archived application
+secrets and data are restored together. On a fresh host, Telebugs uses its
+standard <code>/var/telebugs</code> storage location. If the configured storage path is a
+symbolic link, restore stages and switches data on the target filesystem while
+leaving the configured link and Docker binding unchanged.</p>
+<p>Restore retains the previous storage by atomically renaming directories. The
+resolved Telebugs storage path must therefore be a directory <em>inside</em> its
+filesystem, not the filesystem’s mount point. For a dedicated data disk, mount
+the disk at a parent such as <code>/mnt/telebugs-data</code>, create
+<code>/mnt/telebugs-data/telebugs</code>, and point the configured storage path (normally
+<code>/var/telebugs</code>) at that child directory. A symbolic link is supported. The CLI
+tests this layout before downloading an image, staging data, or stopping
+Telebugs.</p>
+<h2 id="what-a-successful-restore-means"><a class="header" href="#what-a-successful-restore-means">What a Successful Restore Means</a></h2>
+<p>A restore is successful when:</p>
+<ul>
+<li>the manifest, recovery configuration, and every archived file verify;</li>
+<li>all three SQLite databases pass integrity checks;</li>
+<li>every Active Storage blob exists at the expected size and database checksum;</li>
+<li>the exact captured Telebugs image is available;</li>
+<li>restored storage has the ownership expected by the container;</li>
+<li>restored files and directories are synced to disk before the storage switch;</li>
+<li>the restored container starts and <code>/ready</code> returns <code>200</code>; for a captured image
+that predates <code>/ready</code>, <code>/up</code> returns <code>200</code> and the CLI prints a
+legacy-compatibility warning; and</li>
+<li>on an existing installation, the CLI reports where it retained the
+pre-restore storage and configuration.</li>
+</ul>
+<p>If any step after the switch fails on an existing installation, the CLI
+automatically puts back the previous storage and configuration and restarts the
+previous image when it was running. On a fresh host, it removes the partial
+installation and preserves the failed restored storage for diagnosis. Do not
+delete retained pre-restore or failed restore data until you understand the
+failure. If stopping or removing the current container fails before the file
+switch, the CLI makes a bounded attempt to return a previously running container
+to service and leaves storage unchanged.</p>
+<p>Image rollback and data restore are different. <code>telebugs rollback</code> switches to
+the image saved before the last update; it does not reverse migrations or
+restore data. <code>telebugs update</code> warns about this and does not create a backup
+automatically. Create an explicit restore point before an update when the change
+window requires one:</p>
+<pre><code class="language-bash">telebugs data backup /backups/pre-update
+telebugs update
+</code></pre>
+<h2 id="run-a-restore-drill"><a class="header" href="#run-a-restore-drill">Run a Restore Drill</a></h2>
+<p>Use a disposable server or isolated VM, never the production storage path.
+Before restoring, prevent the drill host from reaching production email, push,
+and webhook destinations. The restored queue can start delivery immediately;
+network isolation or outbound firewall rules provide the boundary before you
+can sign in and replace destinations with drill-safe configuration.</p>
+<ol>
+<li>Copy the newest off-server archive to the drill host.</li>
+<li>Run <code>telebugs data verify</code>.</li>
+<li>Restore it with the CLI.</li>
+<li>Run <code>telebugs status</code> and require liveness and readiness to pass.</li>
+<li>Sign in, open recent errors, and download or inspect representative
+attachments and source maps.</li>
+<li>Replace notification destinations with drill-safe endpoints and allow only
+the required test egress.</li>
+<li>Send a controlled test error, confirm it is processed, and test the
+notification channels you depend on.</li>
+<li>Record the archive date, restore duration, Telebugs version, and result, then
+destroy the drill host securely.</li>
+</ol>
+<p>If restore printed the legacy <code>/up</code> warning, update the drill instance to a
+Telebugs release with readiness diagnostics and require <code>telebugs status</code> to
+pass before declaring the drill complete.</p>
+<p>Run a drill before relying on the first backup, after a material storage or
+deployment change, and periodically according to your recovery objective.</p>
+<p>Telebugs’ automated tests cover archive corruption, unsafe archive paths,
+missing files, configuration integrity, legacy archive rejection, cancellation,
+staging, pre-switch container recovery, and filesystem rollback primitives. They
+do not replace a host-level drill that proves Docker switching and restart,
+registry access, remote backup retrieval, DNS, TLS, and operator access.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="liveness-readiness-and-status"><a class="header" href="#liveness-readiness-and-status">Liveness, Readiness, and Status</a></h1>
+<p>Telebugs exposes two small, unauthenticated HTTP checks and one detailed local
+command. The HTTP responses never include database names, paths, queue counts,
+error messages, or other diagnostic details.</p>
+<h2 id="liveness-up"><a class="header" href="#liveness-up">Liveness: <code>/up</code></a></h2>
+<p><code>GET /up</code> returns <code>200</code> when the Rails web application boots and can answer a
+request. Use it to decide whether the web process should be restarted.</p>
+<p>Liveness does not prove that Telebugs can write data, process queues, or send
+notifications.</p>
+<h2 id="readiness-ready"><a class="header" href="#readiness-ready">Readiness: <code>/ready</code></a></h2>
+<p><code>GET /ready</code> and <code>HEAD /ready</code> return:</p>
+<ul>
+<li><code>200</code> with <code>ready</code> when the installation is ready; or</li>
+<li><code>503</code> with <code>not ready</code> when an essential local dependency is unavailable.</li>
+</ul>
+<p>Responses use <code>text/plain</code> and <code>Cache-Control: no-store</code>. Results are cached in
+the web process for up to 10 seconds to keep the check cheap.</p>
+<p>Readiness checks:</p>
+<ul>
+<li>primary, cache, and queue database access;</li>
+<li>pending database migrations;</li>
+<li>application encryption keys that can read stored notification configuration;</li>
+<li>readability and writability of database and file storage;</li>
+<li>measurable free disk space above the configured intake floor;</li>
+<li>disk or queue protection that has paused intake;</li>
+<li>a fresh Solid Queue dispatcher and workers for error processing and notifications; and</li>
+<li>error or notification jobs that have remained ready or claimed for more than
+five minutes.</li>
+</ul>
+<p>Normal rate limiting does not make the instance unready. A single permanently
+failed notification delivery also does not make it unready: the app can still
+ingest and other destinations can still deliver.</p>
+<p>Do not put external email, push, or webhook requests inside a readiness probe.
+Those services can be slow or unavailable without making the local Telebugs
+installation unsafe to run.</p>
+<h2 id="detailed-local-status"><a class="header" href="#detailed-local-status">Detailed Local Status</a></h2>
+<p>Run this over SSH on the Telebugs host:</p>
+<pre><code class="language-bash">telebugs status
+</code></pre>
+<p>It distinguishes a running container, a responding web app, and an instance
+ready to ingest and notify. It prints fixed reason codes for database access,
+migrations, storage, disk, intake, worker heartbeats, and queue latency. It also
+shows an advisory warning when notification deliveries have permanently failed.</p>
+<p>For scripts:</p>
+<pre><code class="language-bash">telebugs status --json
+</code></pre>
+<p>The command exits nonzero when the container is stopped, <code>/up</code> fails, or
+readiness fails. A notification failure warning alone does not change readiness
+or the exit status.</p>
+<p>Keep this detailed output local to operators. The reason codes avoid report
+payloads, email addresses, webhook URLs, secrets, and exception messages, but a
+local diagnostic command should still not become a public endpoint.</p>
+<h2 id="external-monitoring"><a class="header" href="#external-monitoring">External Monitoring</a></h2>
+<p>For the simplest setup, monitor <code>/ready</code> from outside the server and alert after
+more than one failed check so a restart or update does not create noise. Monitor
+<code>/up</code> separately only if you need to distinguish a dead web process from an
+unready dependency.</p>
+<p>The host or an external tool remains responsible for:</p>
+<ul>
+<li>host reachability, CPU, memory, inode, and filesystem capacity;</li>
+<li>Docker and operating-system service health;</li>
+<li>DNS and TLS certificate expiry;</li>
+<li>backup recency and off-server replication;</li>
+<li>restore-drill records;</li>
+<li>network access from every application that sends errors; and</li>
+<li>end-to-end tests of the notification destinations your team relies on.</li>
+</ul>
+<p>Telebugs intentionally does not provide a configurable health dashboard,
+metrics store, paging system, or vendor-specific monitoring integration. Use
+the two stable HTTP checks with the monitoring system you already operate.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="notification-delivery-failures"><a class="header" href="#notification-delivery-failures">Notification Delivery Failures</a></h1>
+<p>Telebugs sends each email recipient, push subscription, and webhook subscription
+as an independent background job. One broken destination does not block the
+other recipients or make <code>/ready</code> fail.</p>
+<p>Temporary delivery failures are attempted up to 10 times with increasing delays.
+For HTTP delivery, <code>408</code>, <code>425</code>, <code>429</code>, and <code>5xx</code> responses are temporary.
+Telebugs respects <code>Retry-After</code> up to one hour. Network timeouts, temporary SMTP
+failures, and temporary push-service failures are retried too.</p>
+<p>Delivery is at least once. A destination can accept a request before its
+response is lost, so a retry can occasionally deliver the same notification
+twice. Destinations should tolerate duplicates.</p>
+<p>The queue database is included in Telebugs backups. Pending or retrying
+deliveries resume after a restore and can therefore repeat an older
+notification. Isolate outbound delivery on restore-drill hosts until their
+destinations have been replaced with safe test endpoints.</p>
+<p>Redirects, other HTTP <code>4xx</code> responses, TLS or invalid-URL errors, SMTP
+authentication or fatal responses, invalid configuration, and exhausted retries
+are permanent failures. Expired or invalid push subscriptions are removed
+instead of retried.</p>
+<h2 id="admin-warning"><a class="header" href="#admin-warning">Admin Warning</a></h2>
+<p>Admins see a warning banner when one or more jobs in the notification queue have
+permanently failed. The banner shows the count and age of the oldest failure and
+links to the existing jobs page. It does not include recipient addresses,
+webhook URLs, payloads, or remote response bodies.</p>
+<p><code>telebugs status</code> shows the same condition as an advisory warning. It does not
+turn the instance unready because ingestion and unrelated destinations can
+continue safely.</p>
+<p>Do not alert on an individual retry. Treat a permanent failure as operator work:
+create a normal-priority ticket by default, and page only when the failed channel
+is itself part of a critical incident path. External checks can inspect the
+<code>warnings</code> array from <code>telebugs status --json</code>; Telebugs does not send a second
+alert about the first alert failing.</p>
+<h2 id="what-to-do-3"><a class="header" href="#what-to-do-3">What to Do</a></h2>
+<ol>
+<li>Open <strong>Review failed jobs</strong> from the banner.</li>
+<li>Identify the channel and the normalized failure class.</li>
+<li>Check the corresponding configuration without copying secrets into tickets
+or chat:
+<ul>
+<li>email credentials, sender policy, DNS, and SMTP reachability;</li>
+<li>webhook authentication, URL allowlists, and the destination’s status;</li>
+<li>push VAPID configuration and outbound HTTPS access.</li>
+</ul>
+</li>
+<li>Fix the destination.</li>
+<li>Retry the failed job from the jobs page when repeating the notification is
+appropriate, or discard it when the destination or report is no longer
+relevant.</li>
+</ol>
+<p>Telebugs does not email an admin about failed email delivery because that can
+fail recursively. It also does not call a second external alerting provider.
+Operators who need paging should run their existing monitoring or scheduled
+checks alongside <code>telebugs status</code> and their own end-to-end notification test.</p>
+<p>At the default production <code>info</code> log level, Telebugs’ operational delivery logs
+use IDs, HTTP status codes, and normalized error classes rather than notification
+payloads, recipient addresses, webhook URLs, remote response bodies, or secrets.
+Do not enable framework debug logging routinely: debug output can include email
+content and other application data. Host administrators are still responsible
+for restricting and rotating Docker logs.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="appendix"><a class="header" href="#appendix">Appendix</a></h1>
 <p>The following sections contain reference material you may find useful in your
 Telebugs journey.</p>
@@ -5602,17 +5944,40 @@ provider’s web-based terminal.</p>
 </ul>
 <h2 id="manage-application-data"><a class="header" href="#manage-application-data">Manage application data</a></h2>
 <ul>
-<li><code>data</code> — Manage application data.</li>
+<li><code>data backup [filename]</code> — Stop a running instance, validate all persistent
+data, and create a complete verified backup. The default filename is a UTC
+timestamp. Existing files are never overwritten; plan a maintenance window
+when the stored data is large.</li>
+<li><code>data verify &lt;filename&gt;</code> — Verify a backup manifest and creation timestamp,
+configuration checksum, and every archived file without changing Telebugs.</li>
+<li><code>data restore &lt;filename&gt;</code> — Verify and stage a backup, then restore it with the
+captured immutable application image. Existing storage and configuration are
+retained; a failed switch is rolled back automatically.
+<ul>
+<li>A captured image that predates <code>/ready</code> may fall back to <code>/up</code>; the CLI
+prints a warning instead of silently weakening the check.</li>
+<li><code>--yes</code> skips the replacement prompt. Use it only when automation has
+independently confirmed the target installation.</li>
 </ul>
+</li>
+</ul>
+<p>See <a href="#backup-and-restore">Backup and Restore</a> before relying on
+an archive.</p>
 <h2 id="manage-versions-previews-pins-and-rollbacks"><a class="header" href="#manage-versions-previews-pins-and-rollbacks">Manage versions (previews, pins, and rollbacks)</a></h2>
 <ul>
 <li><code>update</code> — Update Telebugs to the latest version (or a specific tag with <code>--tag</code> / <code>-t</code>).
 <ul>
 <li>Use <code>telebugs update --tag rest-api-preview-20250610-abc1234</code> to try a private preview build on your instance.</li>
 <li>The previous running image is tagged locally as <code>:previous</code> for safety.</li>
+<li>Updates do not automatically create a data backup. The command warns before
+changing the application image.</li>
 </ul>
 </li>
-<li><code>rollback</code> — Roll back to the image that was running before the last update (uses the local <code>:previous</code> tag).</li>
+<li><code>rollback</code> — Roll back to the image that was running before the last update (uses the local <code>:previous</code> tag).
+<ul>
+<li>Image rollback does not reverse database migrations or restore data.</li>
+</ul>
+</li>
 </ul>
 <h2 id="additional-commands"><a class="header" href="#additional-commands">Additional commands</a></h2>
 <ul>
@@ -5620,8 +5985,12 @@ provider’s web-based terminal.</p>
 <li><code>setup</code> — Runs the initial setup process for Telebugs.</li>
 <li><code>start</code> — Start Telebugs.</li>
 <li><code>stop</code> — Stop Telebugs.</li>
-<li><code>status</code> — Displays the current status of the Telebugs instance.</li>
-<li><code>update</code> — Update Telebugs to the latest version.</li>
+<li><code>status</code> — Checks the container, <code>/up</code>, <code>/ready</code>, local databases, storage,
+migrations, critical workers, queue latency, and notification failure warning.
+<ul>
+<li><code>--json</code> prints the detailed local result for scripts.</li>
+</ul>
+</li>
 </ul>
 <h2 id="flags"><a class="header" href="#flags">Flags</a></h2>
 <ul>

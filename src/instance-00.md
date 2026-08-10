@@ -73,6 +73,10 @@ For incident-specific help, see:
 - [Queue Protection Active](instance-02-queue-protection-active.md)
 - [Disk Space Low](instance-03-disk-space-low.md)
 - [Ingestion and Upload Limits](instance-05-ingestion-and-upload-limits.md)
+- [Notification Delivery Failures](operations-03-notification-delivery-failures.md)
+
+For host-level checks, backups, and disaster recovery, see
+[Operations](operations-00.md).
 
 ### How the Checks Work Together
 

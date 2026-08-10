@@ -42,6 +42,10 @@ You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the [telebugs command][5]. Connect to your server and run `telebugs`
 to see all options.
 
+After first launch, run `telebugs status` on the server. Before sending
+production errors, create an off-server [backup and restore plan][6] and decide
+whether your external monitoring should check [`/ready`][7].
+
 > 💡 Want multiple Telebugs installations? You need a separate license for each domain.
 
 [1]: assets/images/installation-03-installation-steps/01.webp
@@ -49,3 +53,5 @@ to see all options.
 [3]: /appendix-04-installing-on-digital-ocean.md
 [4]: /appendix-05-installing-on-hetzner.md
 [5]: /appendix-02-telebugs-command-reference.md
+[6]: /operations-01-backup-and-restore.md
+[7]: /operations-02-health-and-status.md

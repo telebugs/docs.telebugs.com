@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a459421f.js";
+            window.path_to_searchindex_js = "searchindex-b8a50e95.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-1185be85.js"></script>
+        <script src="toc-d5033a90.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -211,17 +211,40 @@ provider’s web-based terminal.</p>
 </ul>
 <h2 id="manage-application-data"><a class="header" href="#manage-application-data">Manage application data</a></h2>
 <ul>
-<li><code>data</code> — Manage application data.</li>
+<li><code>data backup [filename]</code> — Stop a running instance, validate all persistent
+data, and create a complete verified backup. The default filename is a UTC
+timestamp. Existing files are never overwritten; plan a maintenance window
+when the stored data is large.</li>
+<li><code>data verify &lt;filename&gt;</code> — Verify a backup manifest and creation timestamp,
+configuration checksum, and every archived file without changing Telebugs.</li>
+<li><code>data restore &lt;filename&gt;</code> — Verify and stage a backup, then restore it with the
+captured immutable application image. Existing storage and configuration are
+retained; a failed switch is rolled back automatically.
+<ul>
+<li>A captured image that predates <code>/ready</code> may fall back to <code>/up</code>; the CLI
+prints a warning instead of silently weakening the check.</li>
+<li><code>--yes</code> skips the replacement prompt. Use it only when automation has
+independently confirmed the target installation.</li>
 </ul>
+</li>
+</ul>
+<p>See <a href="operations-01-backup-and-restore.html">Backup and Restore</a> before relying on
+an archive.</p>
 <h2 id="manage-versions-previews-pins-and-rollbacks"><a class="header" href="#manage-versions-previews-pins-and-rollbacks">Manage versions (previews, pins, and rollbacks)</a></h2>
 <ul>
 <li><code>update</code> — Update Telebugs to the latest version (or a specific tag with <code>--tag</code> / <code>-t</code>).
 <ul>
 <li>Use <code>telebugs update --tag rest-api-preview-20250610-abc1234</code> to try a private preview build on your instance.</li>
 <li>The previous running image is tagged locally as <code>:previous</code> for safety.</li>
+<li>Updates do not automatically create a data backup. The command warns before
+changing the application image.</li>
 </ul>
 </li>
-<li><code>rollback</code> — Roll back to the image that was running before the last update (uses the local <code>:previous</code> tag).</li>
+<li><code>rollback</code> — Roll back to the image that was running before the last update (uses the local <code>:previous</code> tag).
+<ul>
+<li>Image rollback does not reverse database migrations or restore data.</li>
+</ul>
+</li>
 </ul>
 <h2 id="additional-commands"><a class="header" href="#additional-commands">Additional commands</a></h2>
 <ul>
@@ -229,8 +252,12 @@ provider’s web-based terminal.</p>
 <li><code>setup</code> — Runs the initial setup process for Telebugs.</li>
 <li><code>start</code> — Start Telebugs.</li>
 <li><code>stop</code> — Stop Telebugs.</li>
-<li><code>status</code> — Displays the current status of the Telebugs instance.</li>
-<li><code>update</code> — Update Telebugs to the latest version.</li>
+<li><code>status</code> — Checks the container, <code>/up</code>, <code>/ready</code>, local databases, storage,
+migrations, critical workers, queue latency, and notification failure warning.
+<ul>
+<li><code>--json</code> prints the detailed local result for scripts.</li>
+</ul>
+</li>
 </ul>
 <h2 id="flags"><a class="header" href="#flags">Flags</a></h2>
 <ul>

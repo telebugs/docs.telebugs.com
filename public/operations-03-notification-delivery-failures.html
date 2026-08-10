@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Rate Limit Active - The Telebugs Manual</title>
+        <title>Notification Delivery Failures - The Telebugs Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-        
+
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -193,53 +193,75 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="rate-limit-active"><a class="header" href="#rate-limit-active">Rate Limit Active</a></h1>
-<p>Telebugs shows this warning when the accepted-errors-per-minute limit has been
-reached.</p>
-<p>This usually means Telebugs is doing exactly what you asked it to do: accepting
-up to the configured limit, then returning <code>429 Too Many Requests</code> with a
-<code>Retry-After</code> header for the rest. Rejected errors are not written to the ingest
-queue and do not create background jobs.</p>
-<h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>In the <strong>Rate limit</strong> card, check:</p>
+                        <h1 id="notification-delivery-failures"><a class="header" href="#notification-delivery-failures">Notification Delivery Failures</a></h1>
+<p>Telebugs sends each email recipient, push subscription, and webhook subscription
+as an independent background job. One broken destination does not block the
+other recipients or make <code>/ready</code> fail.</p>
+<p>Temporary delivery failures are attempted up to 10 times with increasing delays.
+For HTTP delivery, <code>408</code>, <code>425</code>, <code>429</code>, and <code>5xx</code> responses are temporary.
+Telebugs respects <code>Retry-After</code> up to one hour. Network timeouts, temporary SMTP
+failures, and temporary push-service failures are retried too.</p>
+<p>Delivery is at least once. A destination can accept a request before its
+response is lost, so a retry can occasionally deliver the same notification
+twice. Destinations should tolerate duplicates.</p>
+<p>The queue database is included in Telebugs backups. Pending or retrying
+deliveries resume after a restore and can therefore repeat an older
+notification. Isolate outbound delivery on restore-drill hosts until their
+destinations have been replaced with safe test endpoints.</p>
+<p>Redirects, other HTTP <code>4xx</code> responses, TLS or invalid-URL errors, SMTP
+authentication or fatal responses, invalid configuration, and exhausted retries
+are permanent failures. Expired or invalid push subscriptions are removed
+instead of retried.</p>
+<h2 id="admin-warning"><a class="header" href="#admin-warning">Admin Warning</a></h2>
+<p>Admins see a warning banner when one or more jobs in the notification queue have
+permanently failed. The banner shows the count and age of the oldest failure and
+links to the existing jobs page. It does not include recipient addresses,
+webhook URLs, payloads, or remote response bodies.</p>
+<p><code>telebugs status</code> shows the same condition as an advisory warning. It does not
+turn the instance unready because ingestion and unrelated destinations can
+continue safely.</p>
+<p>Do not alert on an individual retry. Treat a permanent failure as operator work:
+create a normal-priority ticket by default, and page only when the failed channel
+is itself part of a critical incident path. External checks can inspect the
+<code>warnings</code> array from <code>telebugs status --json</code>; Telebugs does not send a second
+alert about the first alert failing.</p>
+<h2 id="what-to-do"><a class="header" href="#what-to-do">What to Do</a></h2>
+<ol>
+<li>Open <strong>Review failed jobs</strong> from the banner.</li>
+<li>Identify the channel and the normalized failure class.</li>
+<li>Check the corresponding configuration without copying secrets into tickets
+or chat:
 <ul>
-<li><strong>Accepted errors this minute</strong></li>
-<li><strong>Limited by rate limit this minute</strong></li>
-<li><strong>Limited by rate limit last hour</strong></li>
+<li>email credentials, sender policy, DNS, and SMTP reachability;</li>
+<li>webhook authentication, URL allowlists, and the destination’s status;</li>
+<li>push VAPID configuration and outbound HTTPS access.</li>
 </ul>
-<p>In the <strong>Queue protection</strong> card, also check:</p>
-<ul>
-<li><strong>Queued errors</strong></li>
-</ul>
-<p>If queued errors stay low, the instance is healthy and the rate limit is simply
-protecting Telebugs during a noisy burst.</p>
-<h2 id="what-to-do"><a class="header" href="#what-to-do">What To Do</a></h2>
-<p>First, find the app or deploy that is sending the burst. A rate limit protects
-Telebugs, but it does not fix the underlying error storm.</p>
-<p>If the burst is expected and the server has headroom, raise <strong>Accepted errors
-per minute</strong> in the <strong>Rate limit</strong> card and click <strong>Update rate limit</strong>. Do this
-carefully. A higher front-door limit lets more work enter SQLite and the
-background queue.</p>
-<p>If queued errors also start climbing, do not keep raising the rate limit. Lower
-the accepted-errors-per-minute setting, give the server more CPU or faster disk,
-or reduce the noisy source.</p>
-<p>For low-end VPSes, the default <code>3,000</code> accepted errors per minute is a good
-starting point. For larger servers, benchmark your own instance and set the
-limit near the sustained processing rate you are comfortable with.</p>
-<h2 id="when-it-clears"><a class="header" href="#when-it-clears">When It Clears</a></h2>
-<p>Rate limiting clears automatically when incoming traffic drops below the
-configured limit in a later minute bucket.</p>
+</li>
+<li>Fix the destination.</li>
+<li>Retry the failed job from the jobs page when repeating the notification is
+appropriate, or discard it when the destination or report is no longer
+relevant.</li>
+</ol>
+<p>Telebugs does not email an admin about failed email delivery because that can
+fail recursively. It also does not call a second external alerting provider.
+Operators who need paging should run their existing monitoring or scheduled
+checks alongside <code>telebugs status</code> and their own end-to-end notification test.</p>
+<p>At the default production <code>info</code> log level, Telebugs’ operational delivery logs
+use IDs, HTTP status codes, and normalized error classes rather than notification
+payloads, recipient addresses, webhook URLs, remote response bodies, or secrets.
+Do not enable framework debug logging routinely: debug output can include email
+content and other application data. Host administrators are still responsible
+for restricting and rotating Docker logs.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="instance-00.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="operations-02-health-and-status.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="instance-02-queue-protection-active.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="appendix-00.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -249,11 +271,11 @@ configured limit in a later minute bucket.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="instance-00.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="operations-02-health-and-status.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="instance-02-queue-protection-active.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="appendix-00.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

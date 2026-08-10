@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Rate Limit Active - The Telebugs Manual</title>
+        <title>Backup and Restore - The Telebugs Manual</title>
 
 
         <!-- Custom HTML head -->
@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-        
+
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -193,53 +193,198 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="rate-limit-active"><a class="header" href="#rate-limit-active">Rate Limit Active</a></h1>
-<p>Telebugs shows this warning when the accepted-errors-per-minute limit has been
-reached.</p>
-<p>This usually means Telebugs is doing exactly what you asked it to do: accepting
-up to the configured limit, then returning <code>429 Too Many Requests</code> with a
-<code>Retry-After</code> header for the rest. Rejected errors are not written to the ingest
-queue and do not create background jobs.</p>
-<h2 id="what-to-check"><a class="header" href="#what-to-check">What To Check</a></h2>
-<p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Ingest Protection</strong>.</p>
-<p>In the <strong>Rate limit</strong> card, check:</p>
+                        <h1 id="backup-and-restore"><a class="header" href="#backup-and-restore">Backup and Restore</a></h1>
+<p>The <code>telebugs</code> command creates a single verified archive for persistent
+Telebugs data and recovery configuration. The archive contains sensitive
+recovery secrets, so treat it like production credentials as well as production
+data.</p>
+<h2 id="create-a-backup"><a class="header" href="#create-a-backup">Create a Backup</a></h2>
+<p>Connect to the Telebugs server and run:</p>
+<pre><code class="language-bash">telebugs data backup
+</code></pre>
+<p>The default filename is timestamped in UTC, for example
+<code>telebugs-backup-20260809T120000Z.tar.gz</code>. To choose a path:</p>
+<pre><code class="language-bash">telebugs data backup /mnt/offsite/telebugs-production
+</code></pre>
+<p>The <code>.tar.gz</code> suffix is added when omitted. The destination must be outside the
+Telebugs storage directory, its parent directory must already exist, and it must
+have enough free space. An existing file is never overwritten. If the configured
+storage path contains a symbolic link, the CLI follows it when measuring,
+validating, and archiving data; the destination must also be outside the resolved
+storage tree.</p>
+<p>When Telebugs is running, the command stops it for the duration of validation,
+archiving, and archive verification so the three SQLite databases and stored
+files come from one quiet point in time. It restarts the captured application
+image afterward and waits for readiness. If Telebugs was already stopped, it
+remains stopped. Backup time grows with stored data, file count, disk speed, and
+the destination, so use a maintenance window for a large installation.</p>
+<p>If a backup is interrupted, do not rely on a partial archive. A normal interrupt
+cancels file inventory, archiving, or verification, removes the unpublished
+partial file, and attempts to restart a previously running instance. Confirm
+with <code>telebugs status</code>, and run <code>telebugs start</code> if the process or host was
+terminated before recovery completed. A published archive is still usable only
+after <code>telebugs data verify</code> succeeds.</p>
+<h2 id="what-a-successful-backup-means"><a class="header" href="#what-a-successful-backup-means">What a Successful Backup Means</a></h2>
+<p>The command reports success only after all of these steps finish:</p>
+<ol>
+<li>The primary, cache, and queue SQLite databases exist and pass
+<code>PRAGMA quick_check</code>.</li>
+<li>Every Active Storage database record has a stored file of the expected size
+and database checksum.</li>
+<li>All persistent storage is inventoried with its size, mode, and SHA-256 hash.</li>
+<li>The manifest records database schema versions and the exact immutable
+Telebugs image digest, and the recovery configuration must identify the same
+image.</li>
+<li>The recovery configuration, encryption keys, and application secret are in
+the archive, and the manifest records their configuration file’s SHA-256
+checksum.</li>
+<li>The compressed archive is closed, synced, verified against its manifest,
+and atomically published with mode <code>0600</code>.</li>
+<li>A previously running instance restarts and passes <code>/ready</code>. If the captured
+image predates the readiness endpoint, the CLI accepts <code>/up</code> instead and
+prints a legacy-compatibility warning.</li>
+</ol>
+<p>The persistent-storage portion covers the SQLite databases, attachments, source
+maps, and locally stored TLS state. The archive separately contains the CLI
+recovery configuration, including application encryption keys and secrets. It
+does not back up the host operating system, firewall, DNS, Docker installation,
+external mail service, external webhook destinations, the container image
+itself, or Docker logs. The manifest records the immutable image digest;
+restoration still needs that image locally or available from the Telebugs
+registry.</p>
+<p>Restoring on a replacement server also requires registry access when the exact
+image is not already present. If the credentials archived with an older backup
+no longer have access, provide current credentials to the restore process with
+<code>TELEBUGS_REGISTRY_USERNAME</code> and <code>TELEBUGS_REGISTRY_PASSWORD</code>; <code>TELEBUGS_TOKEN</code>
+can be used instead of the password override. These overrides are read from the
+environment and are not written into the restored Telebugs configuration.
+If the captured image cannot be retrieved, the CLI reports Docker’s reason and
+exits before staging data or changing the current installation. Keep the
+archive, correct registry access or make the captured digest available locally,
+and run restore again.</p>
+<p>Copy every successful archive to storage outside the Telebugs server. Preserve
+its restrictive permissions and encrypt the backup destination. A backup left
+on the same disk is not disaster recovery.</p>
+<h2 id="verify-an-archive"><a class="header" href="#verify-an-archive">Verify an Archive</a></h2>
+<p>Verification is read-only:</p>
+<pre><code class="language-bash">telebugs data verify /backups/telebugs-production.tar.gz
+</code></pre>
+<p>It checks the archive format and required creation timestamp, recovery
+configuration checksum, every file hash, file size and mode, and the complete
+inventory. Use it after copying an archive to remote storage and before every
+restore.</p>
+<p>Verification detects corruption and incomplete archives; it is not an external
+digital signature. Keep archives in access-controlled, tamper-resistant storage
+as well as encrypting them.</p>
+<p>Archives created by the old, pre-manifest backup command are rejected. They do
+not contain enough evidence for the CLI to promise a safe restore.
+Unsupported future archive formats are also rejected before the installation is
+changed. Use the current Telebugs CLI for restoration; it pairs the stored data
+with the captured application image so database migrations are not guessed.</p>
+<h2 id="restore"><a class="header" href="#restore">Restore</a></h2>
+<p>Make the current <code>telebugs</code> CLI available on the replacement server, transfer
+the archive, and run:</p>
+<pre><code class="language-bash">telebugs data restore /backups/telebugs-production.tar.gz
+</code></pre>
+<p>On an existing installation, the CLI asks before replacing data. Automation can
+use <code>--yes</code> only after independently confirming the target:</p>
+<pre><code class="language-bash">telebugs data restore /backups/telebugs-production.tar.gz --yes
+</code></pre>
+<p>The restore verifies the complete archive before changing the installation. It
+then retrieves the exact captured image by immutable digest, extracts into a
+staging directory, runs the database and file checks again, and only then stops
+the current instance and switches storage.</p>
+<p>The queue database is restored with the rest of the data. Pending or retrying
+jobs, including notification deliveries, can run as soon as the restored
+container starts. The CLI prints a warning before the switch. This preserves
+work during real disaster recovery, but it also means notification delivery is
+at least once across recovery and an old delivery may be repeated.</p>
+<p>For an existing installation, the product and domain must match. Current
+host-specific values such as the storage path, installation token, registry
+identity, and update schedule stay with the host; the archived application
+secrets and data are restored together. On a fresh host, Telebugs uses its
+standard <code>/var/telebugs</code> storage location. If the configured storage path is a
+symbolic link, restore stages and switches data on the target filesystem while
+leaving the configured link and Docker binding unchanged.</p>
+<p>Restore retains the previous storage by atomically renaming directories. The
+resolved Telebugs storage path must therefore be a directory <em>inside</em> its
+filesystem, not the filesystem’s mount point. For a dedicated data disk, mount
+the disk at a parent such as <code>/mnt/telebugs-data</code>, create
+<code>/mnt/telebugs-data/telebugs</code>, and point the configured storage path (normally
+<code>/var/telebugs</code>) at that child directory. A symbolic link is supported. The CLI
+tests this layout before downloading an image, staging data, or stopping
+Telebugs.</p>
+<h2 id="what-a-successful-restore-means"><a class="header" href="#what-a-successful-restore-means">What a Successful Restore Means</a></h2>
+<p>A restore is successful when:</p>
 <ul>
-<li><strong>Accepted errors this minute</strong></li>
-<li><strong>Limited by rate limit this minute</strong></li>
-<li><strong>Limited by rate limit last hour</strong></li>
+<li>the manifest, recovery configuration, and every archived file verify;</li>
+<li>all three SQLite databases pass integrity checks;</li>
+<li>every Active Storage blob exists at the expected size and database checksum;</li>
+<li>the exact captured Telebugs image is available;</li>
+<li>restored storage has the ownership expected by the container;</li>
+<li>restored files and directories are synced to disk before the storage switch;</li>
+<li>the restored container starts and <code>/ready</code> returns <code>200</code>; for a captured image
+that predates <code>/ready</code>, <code>/up</code> returns <code>200</code> and the CLI prints a
+legacy-compatibility warning; and</li>
+<li>on an existing installation, the CLI reports where it retained the
+pre-restore storage and configuration.</li>
 </ul>
-<p>In the <strong>Queue protection</strong> card, also check:</p>
-<ul>
-<li><strong>Queued errors</strong></li>
-</ul>
-<p>If queued errors stay low, the instance is healthy and the rate limit is simply
-protecting Telebugs during a noisy burst.</p>
-<h2 id="what-to-do"><a class="header" href="#what-to-do">What To Do</a></h2>
-<p>First, find the app or deploy that is sending the burst. A rate limit protects
-Telebugs, but it does not fix the underlying error storm.</p>
-<p>If the burst is expected and the server has headroom, raise <strong>Accepted errors
-per minute</strong> in the <strong>Rate limit</strong> card and click <strong>Update rate limit</strong>. Do this
-carefully. A higher front-door limit lets more work enter SQLite and the
-background queue.</p>
-<p>If queued errors also start climbing, do not keep raising the rate limit. Lower
-the accepted-errors-per-minute setting, give the server more CPU or faster disk,
-or reduce the noisy source.</p>
-<p>For low-end VPSes, the default <code>3,000</code> accepted errors per minute is a good
-starting point. For larger servers, benchmark your own instance and set the
-limit near the sustained processing rate you are comfortable with.</p>
-<h2 id="when-it-clears"><a class="header" href="#when-it-clears">When It Clears</a></h2>
-<p>Rate limiting clears automatically when incoming traffic drops below the
-configured limit in a later minute bucket.</p>
+<p>If any step after the switch fails on an existing installation, the CLI
+automatically puts back the previous storage and configuration and restarts the
+previous image when it was running. On a fresh host, it removes the partial
+installation and preserves the failed restored storage for diagnosis. Do not
+delete retained pre-restore or failed restore data until you understand the
+failure. If stopping or removing the current container fails before the file
+switch, the CLI makes a bounded attempt to return a previously running container
+to service and leaves storage unchanged.</p>
+<p>Image rollback and data restore are different. <code>telebugs rollback</code> switches to
+the image saved before the last update; it does not reverse migrations or
+restore data. <code>telebugs update</code> warns about this and does not create a backup
+automatically. Create an explicit restore point before an update when the change
+window requires one:</p>
+<pre><code class="language-bash">telebugs data backup /backups/pre-update
+telebugs update
+</code></pre>
+<h2 id="run-a-restore-drill"><a class="header" href="#run-a-restore-drill">Run a Restore Drill</a></h2>
+<p>Use a disposable server or isolated VM, never the production storage path.
+Before restoring, prevent the drill host from reaching production email, push,
+and webhook destinations. The restored queue can start delivery immediately;
+network isolation or outbound firewall rules provide the boundary before you
+can sign in and replace destinations with drill-safe configuration.</p>
+<ol>
+<li>Copy the newest off-server archive to the drill host.</li>
+<li>Run <code>telebugs data verify</code>.</li>
+<li>Restore it with the CLI.</li>
+<li>Run <code>telebugs status</code> and require liveness and readiness to pass.</li>
+<li>Sign in, open recent errors, and download or inspect representative
+attachments and source maps.</li>
+<li>Replace notification destinations with drill-safe endpoints and allow only
+the required test egress.</li>
+<li>Send a controlled test error, confirm it is processed, and test the
+notification channels you depend on.</li>
+<li>Record the archive date, restore duration, Telebugs version, and result, then
+destroy the drill host securely.</li>
+</ol>
+<p>If restore printed the legacy <code>/up</code> warning, update the drill instance to a
+Telebugs release with readiness diagnostics and require <code>telebugs status</code> to
+pass before declaring the drill complete.</p>
+<p>Run a drill before relying on the first backup, after a material storage or
+deployment change, and periodically according to your recovery objective.</p>
+<p>Telebugs’ automated tests cover archive corruption, unsafe archive paths,
+missing files, configuration integrity, legacy archive rejection, cancellation,
+staging, pre-switch container recovery, and filesystem rollback primitives. They
+do not replace a host-level drill that proves Docker switching and restart,
+registry access, remote backup retrieval, DNS, TLS, and operator access.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="instance-00.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="operations-00.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="instance-02-queue-protection-active.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="operations-02-health-and-status.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -249,11 +394,11 @@ configured limit in a later minute bucket.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="instance-00.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="operations-00.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="instance-02-queue-protection-active.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="operations-02-health-and-status.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
