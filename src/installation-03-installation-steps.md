@@ -48,6 +48,21 @@ whether your external monitoring should check [`/ready`][7].
 
 > 💡 Want multiple Telebugs installations? You need a separate license for each domain.
 
+## Replacing or Recovering an Existing Server
+
+Do not follow the normal installation steps or run `telebugs setup` on a
+replacement server. Install only the recovery CLI:
+
+```bash
+bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+```
+
+Then copy your backup, run `telebugs data verify`, and follow the
+[backup and restore runbook][6]. Restore uses the exact licensed domain captured
+in the archive. The runbook covers format-1 authorization, format-2 offline
+receipts, Docker and registry requirements, local checks, direct DNS cutover,
+ports 80/443, TLS, and rollback.
+
 [1]: assets/images/installation-03-installation-steps/01.webp
 [2]: assets/images/installation-03-installation-steps/02.webp
 [3]: /appendix-04-installing-on-digital-ocean.md

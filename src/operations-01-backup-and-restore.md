@@ -63,13 +63,14 @@ The command reports success only after all of these steps finish:
    prints a legacy-compatibility warning.
 
 The persistent-storage portion covers the SQLite databases, attachments, source
-maps, and locally stored TLS state. The archive separately contains the CLI
-recovery configuration, including application encryption keys and secrets. It
-does not back up the host operating system, firewall, DNS, Docker installation,
-external mail service, external webhook destinations, the container image
-itself, or Docker logs. The manifest records the immutable image digest;
-restoration still needs that image locally or available from the Telebugs
-registry.
+maps, locally stored TLS state, and notification configuration stored by
+Telebugs, including destination URLs and encrypted credentials. The archive
+separately contains the CLI recovery configuration, including application
+encryption keys and secrets. It does not back up the host operating system,
+firewall, DNS, Docker installation, external mail, push, or webhook services,
+the container image itself, or Docker logs. The manifest records the immutable
+image digest; restoration still needs that image locally or available from the
+Telebugs registry.
 
 Restoring on a replacement server also requires registry access when the exact
 image is not already present. If the credentials archived with an older backup
@@ -103,26 +104,68 @@ Verification detects corruption and incomplete archives; it is not an external
 digital signature. Keep archives in access-controlled, tamper-resistant storage
 as well as encrypting them.
 
-Archives created by the old, pre-manifest backup command are rejected. They do
-not contain enough evidence for the CLI to promise a safe restore.
+Current backups use format 2 and contain a version-2 license receipt bound to the
+exact installation token and licensed domain. The CLI verifies that receipt
+locally, so archive verification and restore authorization work without
+`auth.telebugs.com`. Retrieving the captured container image can still require
+registry access.
+
+Format-1 manifest backups use the retired receipt format. The current CLI
+contacts `auth.telebugs.com` during `data verify` or `data restore`.
+Authorization succeeds only when the archived token is activated for the exact
+archived domain. Auth returns a replacement receipt without changing the
+licensed domain. Verification remains read-only: it does not rewrite the archive
+or save the replacement receipt, so another verification or restore must
+authorize again. A successful format-1 restore saves the replacement receipt in
+the restored local configuration; the next backup is format 2 and can validate
+it offline. If auth is unavailable, the command exits with an actionable error
+before it installs Docker, creates restore directories, pulls an image, stops a
+container, or changes storage. An invalid format-2 receipt is treated as
+tampering and is never reissued.
+
+Archives created by the old, pre-manifest backup command are rejected because
+they do not contain enough evidence for the CLI to promise a safe restore.
 Unsupported future archive formats are also rejected before the installation is
 changed. Use the current Telebugs CLI for restoration; it pairs the stored data
 with the captured application image so database migrations are not guessed.
 
 ## Restore
 
-Make the current `telebugs` CLI available on the replacement server, transfer
-the archive, and run:
+On a fresh replacement server, install the current recovery CLI:
 
 ```bash
-telebugs data restore /backups/telebugs-production.tar.gz
+bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+```
+
+This public bootstrap detects Linux or macOS on x86_64 or arm64, downloads the
+matching CLI through a short-lived URL, verifies its SHA-256 sidecar, and
+atomically installs `/usr/local/bin/telebugs`. It does **not** receive or upload
+your backup, install Docker, run setup, create Telebugs configuration, start a
+container, or begin restoration. Possession of the CLI does not provide
+registry access or authorize another domain. On Linux, restore installs Docker
+when it is missing. On macOS, install and start Docker before running restore.
+
+> **Do not run normal `telebugs setup` on a replacement server.** Setup is for
+> a new installation. Restore derives the domain, registry identity, secrets,
+> image digest, and recovery configuration from the archive.
+
+Transfer the archive to the server. Before changing anything, verify it:
+
+```bash
+telebugs data verify /backups/telebugs-production.tar.gz
+```
+
+Then restore:
+
+```bash
+sudo telebugs data restore /backups/telebugs-production.tar.gz
 ```
 
 On an existing installation, the CLI asks before replacing data. Automation can
 use `--yes` only after independently confirming the target:
 
 ```bash
-telebugs data restore /backups/telebugs-production.tar.gz --yes
+sudo telebugs data restore /backups/telebugs-production.tar.gz --yes
 ```
 
 The restore verifies the complete archive before changing the installation. It
@@ -136,9 +179,14 @@ container starts. The CLI prints a warning before the switch. This preserves
 work during real disaster recovery, but it also means notification delivery is
 at least once across recovery and an old delivery may be repeated.
 
-For an existing installation, the product and domain must match. Current
-host-specific values such as the storage path, installation token, registry
-identity, and update schedule stay with the host; the archived application
+There is no restore domain argument or domain-change flag. The archive manifest,
+recovery configuration, and signed receipt must agree on the exact licensed
+domain and installation token before any host mutation. For an existing
+installation, its product, token, and domain must agree too. Auth never changes
+the licensed domain during legacy authorization.
+
+Current host-specific values such as the storage path, registry identity, and
+update schedule stay with an existing matching host; the archived application
 secrets and data are restored together. On a fresh host, Telebugs uses its
 standard `/var/telebugs` storage location. If the configured storage path is a
 symbolic link, restore stages and switches data on the target filesystem while
@@ -178,6 +226,161 @@ failure. If stopping or removing the current container fails before the file
 switch, the CLI makes a bounded attempt to return a previously running container
 to service and leaves storage unchanged.
 
+Fetching the public recovery CLI sends best-effort download telemetry through
+Telebugs auth to Telesink. A bootstrap request contains the request IP observed
+by auth. A binary request also contains the selected operating system and
+architecture. These public download events contain no license token, backup
+identity, archive name, or path.
+
+Restore sends best-effort lifecycle events to Telebugs auth: `started`,
+`completed`, or `failed`; fresh or replacement target; backup format; a random
+correlation ID; and, on failure, a fixed stage and rollback outcome. The request
+uses the archived token and domain for authorization, but auth constructs the
+customer email, licensed domain, and observed request IP from server-side state
+before forwarding the event to Telesink. Paths, archive names, error messages,
+secrets, tokens, database details, and notification destinations are not
+included. Telemetry has a short timeout and no retries. An auth or Telesink
+outage never changes verification, restoration, rollback, or the command exit
+status.
+
+## Bring a Replacement Server Online
+
+A successful restore proves the container and local dependencies are ready when
+the captured image provides `/ready`. For an older image, the documented `/up`
+fallback proves only that the web process responds. Neither result proves that
+public DNS reaches this server or that public TLS works. Before changing DNS,
+test inside the container:
+
+```bash
+docker exec telebugs curl -fsS http://127.0.0.1:3000/up
+docker exec telebugs curl -fsS http://127.0.0.1:3000/ready
+```
+
+Captured images from before `/ready` will return `404` for the second command;
+the CLI reports its documented `/up` compatibility warning during restore.
+
+Prepare the network cutover:
+
+1. Allow inbound TCP ports `80` and `443` in the host firewall and cloud
+   firewall.
+2. Create a direct DNS `A` record for the archived licensed domain pointing to
+   the replacement IPv4 address. Update or remove `AAAA` records as appropriate.
+   Do not enable a CDN or DNS proxy; Telebugs terminates TLS itself.
+3. Before waiting on resolver caches, test direct HTTP routing from another
+   machine:
+
+   ```bash
+   curl -I --resolve errors.example.com:80:REPLACEMENT_IP \
+     http://errors.example.com/up
+   ```
+
+   A redirect to `https://errors.example.com/up` proves port 80 reaches the
+   replacement server's HTTP listener. Substitute the actual archived domain.
+4. Change DNS, then compare a public resolver with the replacement server:
+
+   ```bash
+   dig +short A errors.example.com @1.1.1.1
+   curl -4 https://api.ipify.org
+   ```
+
+5. After DNS resolves to the replacement IP, verify public TLS and both health
+   endpoints:
+
+   ```bash
+   curl -fsS https://errors.example.com/up
+   curl -fsS https://errors.example.com/ready
+   ```
+
+TLS issuance or renewal can time out while DNS still points elsewhere, a proxy
+intercepts the challenge, or ports 80/443 are blocked. Keep direct DNS and both
+ports available for automatic renewal. A `200` from the container alone does
+not disprove a DNS, firewall, routing, or TLS problem—the completed field drill
+demonstrated this distinction.
+
+Keep the old same-domain server isolated during the documented rollback window.
+Only one instance may serve production traffic. If cutover fails, point DNS back
+to the old IP. For an in-place restore, use the retained pre-restore paths shown
+by the CLI and investigate before deleting either copy.
+
+## Fail Back to the Previous Server
+
+Once a replacement restore has completed, it cannot be cancelled. Returning to
+the previous server is a **failback**. If you retained both servers, first decide
+whether the replacement accepted any errors, account changes, attachments, or
+background work that you need to keep. Telebugs does not merge two SQLite data
+sets.
+
+If the replacement has no important new activity, do not restore the old backup
+again. The previous server already contains its pre-cutover state:
+
+1. Keep the previous server out of public DNS. Start it and verify it directly:
+
+   ```bash
+   telebugs start
+   telebugs status
+   curl -fsS --resolve errors.example.com:443:PREVIOUS_IP \
+     https://errors.example.com/up
+   ```
+
+   Substitute the licensed domain and previous server IP. A captured image that
+   predates `/ready` may only provide `/up`.
+2. Stop Telebugs on the replacement server. This creates a brief maintenance
+   window but prevents two copies from accepting different production data or
+   delivering the same queued notifications:
+
+   ```bash
+   telebugs stop
+   ```
+
+3. Change the direct DNS `A` record back to `PREVIOUS_IP`. Update or remove
+   `AAAA` records as appropriate and keep CDN or DNS proxying disabled.
+4. Confirm that public DNS and TLS now reach the previous server:
+
+   ```bash
+   dig +short A errors.example.com @1.1.1.1
+   curl -fsS https://errors.example.com/up
+   curl -fsS https://errors.example.com/ready
+   ```
+
+   Omit `/ready` only for an older image that has the documented `/up`
+   compatibility behavior.
+
+If the replacement accepted activity that must survive failback, carry its
+latest state back instead of restarting the stale copy:
+
+1. On the replacement, create a fresh backup and stop Telebugs as soon as the
+   command finishes. Backup restarts an instance that was running, so the
+   explicit stop closes the snapshot window:
+
+   ```bash
+   telebugs data backup /root/telebugs-failback.tar.gz
+   telebugs stop
+   ```
+
+   Activity accepted after the backup snapshot is not in the archive. Use a
+   maintenance window or host-level ingress controls when that gap matters.
+2. Transfer the archive to the previous server, then verify and restore it there:
+
+   ```bash
+   telebugs data verify /root/telebugs-failback.tar.gz
+   telebugs data restore /root/telebugs-failback.tar.gz
+   telebugs status
+   ```
+
+   The token and licensed domain must match before the previous installation is
+   changed. Restore retains the previous server's pre-restore storage and
+   configuration and uses the normal automatic rollback if readiness fails.
+3. Test the previous server with `curl --resolve`, change DNS back, and run the
+   public DNS and TLS checks above.
+
+The queue database is part of every backup. Pending or retrying jobs can run
+after failback, so email, push, and webhook delivery remains at least once. Never
+leave both servers serving production traffic to hide DNS propagation: their
+databases will diverge. Resolver caches may continue sending some clients to the
+stopped replacement until the DNS TTL expires. For a planned migration, lower
+the TTL in advance. Retain the replacement and both backup generations until
+the rollback window closes, then remove the retired copy securely.
+
 Image rollback and data restore are different. `telebugs rollback` switches to
 the image saved before the last update; it does not reverse migrations or
 restore data. `telebugs update` warns about this and does not create a backup
@@ -197,18 +400,29 @@ and webhook destinations. The restored queue can start delivery immediately;
 network isolation or outbound firewall rules provide the boundary before you
 can sign in and replace destinations with drill-safe configuration.
 
-1. Copy the newest off-server archive to the drill host.
-2. Run `telebugs data verify`.
-3. Restore it with the CLI.
-4. Run `telebugs status` and require liveness and readiness to pass.
-5. Sign in, open recent errors, and download or inspect representative
+1. Start with a fresh host containing neither the CLI nor Docker.
+2. Install the CLI with `bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"`.
+   Confirm that it created no Telebugs configuration or container.
+3. Copy the newest off-server archive to the drill host.
+4. Run `telebugs data verify`.
+5. Restore it with the CLI without entering or overriding a domain.
+6. Run `telebugs status` and require liveness and readiness to pass.
+7. Prove that changing the archived domain or restoring over a differently
+   licensed installation is rejected before mutation.
+8. Keep public DNS on production during an isolated drill. For a real migration,
+   follow the direct-DNS, ports 80/443, TLS, and public endpoint checks above.
+9. Sign in, open recent errors, and download or inspect representative
    attachments and source maps.
-6. Replace notification destinations with drill-safe endpoints and allow only
+10. Replace notification destinations with drill-safe endpoints and allow only
    the required test egress.
-7. Send a controlled test error, confirm it is processed, and test the
+11. Send a controlled test error, confirm it is processed, and test the
    notification channels you depend on.
-8. Record the archive date, restore duration, Telebugs version, and result, then
+12. Record the archive date, restore duration, Telebugs version, and result, then
    destroy the drill host securely.
+
+The license permits temporary same-domain overlap solely for an isolated restore
+drill, migration, and rollback. The temporary copy must not become an additional
+production instance, and only one endpoint may serve production traffic.
 
 If restore printed the legacy `/up` warning, update the drill instance to a
 Telebugs release with readiness diagnostics and require `telebugs status` to

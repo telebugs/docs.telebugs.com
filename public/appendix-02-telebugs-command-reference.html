@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b8a50e95.js";
+            window.path_to_searchindex_js = "searchindex-12c25114.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -197,6 +197,16 @@
 <p>Install and manage your Telebugs instance.</p>
 <p>To run the <code>telebugs</code> command, connect to your server using SSH or your cloud
 provider’s web-based terminal.</p>
+<h2 id="fresh-server-recovery-bootstrap"><a class="header" href="#fresh-server-recovery-bootstrap">Fresh-server recovery bootstrap</a></h2>
+<p>Install only the CLI on a fresh replacement server:</p>
+<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+</code></pre>
+<p>The public bootstrap verifies a platform-specific SHA-256 checksum and installs
+<code>/usr/local/bin/telebugs</code>. It does not run setup, create configuration, install
+Docker, start Telebugs, receive a backup, or restore data.</p>
+<p>Do <strong>not</strong> run <code>telebugs setup</code> on a replacement server. Copy the archive over,
+run <code>telebugs data verify</code>, and then <code>sudo telebugs data restore</code>. Restore always
+uses the licensed domain stored in the archive; it has no domain override.</p>
 <h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
 <ul>
 <li><code>telebugs</code> — Displays the main menu with available commands.</li>
@@ -216,11 +226,31 @@ data, and create a complete verified backup. The default filename is a UTC
 timestamp. Existing files are never overwritten; plan a maintenance window
 when the stored data is large.</li>
 <li><code>data verify &lt;filename&gt;</code> — Verify a backup manifest and creation timestamp,
-configuration checksum, and every archived file without changing Telebugs.</li>
+configuration checksum, and every archived file without changing Telebugs.
+<ul>
+<li>Format-2 backups verify their signed domain receipt offline.</li>
+<li>Format-1 backups require online exact-domain authorization from
+<code>auth.telebugs.com</code>. Verification does not rewrite the archive or persist the
+replacement receipt; a successful restore does. Invalid format-2 receipts
+are never reissued.</li>
+</ul>
+</li>
 <li><code>data restore &lt;filename&gt;</code> — Verify and stage a backup, then restore it with the
 captured immutable application image. Existing storage and configuration are
 retained; a failed switch is rolled back automatically.
 <ul>
+<li>The manifest, recovery configuration, receipt, and any existing installation
+must agree on product, installation token, and exact licensed domain before
+Docker or storage is changed.</li>
+<li>Fresh-host restore uses <code>/var/telebugs</code>, archived recovery secrets, archived
+registry identity, and the captured image digest. Registry access is still
+required if that exact image is not available locally.</li>
+<li>A completed replacement restore is failed back by returning DNS to the
+retained previous server. If the replacement accepted activity that must be
+kept, create a fresh backup there and restore it onto the previous server
+before moving DNS. Telebugs does not merge two installations.</li>
+<li>Restore sends only sanitized, best-effort lifecycle status with a fixed
+failure stage and rollback outcome. Telemetry failure never changes restore.</li>
 <li>A captured image that predates <code>/ready</code> may fall back to <code>/up</code>; the CLI
 prints a warning instead of silently weakening the check.</li>
 <li><code>--yes</code> skips the replacement prompt. Use it only when automation has
@@ -249,7 +279,8 @@ changing the application image.</li>
 <h2 id="additional-commands"><a class="header" href="#additional-commands">Additional commands</a></h2>
 <ul>
 <li><code>help</code> — Displays help information for the <code>telebugs</code> command.</li>
-<li><code>setup</code> — Runs the initial setup process for Telebugs.</li>
+<li><code>setup</code> — Runs the initial setup process for a new Telebugs installation. Do
+not use it to prepare a replacement server for <code>data restore</code>.</li>
 <li><code>start</code> — Start Telebugs.</li>
 <li><code>stop</code> — Stop Telebugs.</li>
 <li><code>status</code> — Checks the container, <code>/up</code>, <code>/ready</code>, local databases, storage,

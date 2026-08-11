@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b8a50e95.js";
+            window.path_to_searchindex_js = "searchindex-12c25114.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -238,6 +238,16 @@ whether your external monitoring should check <a href="/operations-02-health-and
 <blockquote>
 <p>💡 Want multiple Telebugs installations? You need a separate license for each domain.</p>
 </blockquote>
+<h2 id="replacing-or-recovering-an-existing-server"><a class="header" href="#replacing-or-recovering-an-existing-server">Replacing or Recovering an Existing Server</a></h2>
+<p>Do not follow the normal installation steps or run <code>telebugs setup</code> on a
+replacement server. Install only the recovery CLI:</p>
+<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+</code></pre>
+<p>Then copy your backup, run <code>telebugs data verify</code>, and follow the
+<a href="/operations-01-backup-and-restore.html">backup and restore runbook</a>. Restore uses the exact licensed domain captured
+in the archive. The runbook covers format-1 authorization, format-2 offline
+receipts, Docker and registry requirements, local checks, direct DNS cutover,
+ports 80/443, TLS, and rollback.</p>
 
                     </main>
 
