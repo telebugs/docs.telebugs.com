@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-acba8a52.js";
+            window.path_to_searchindex_js = "searchindex-15445896.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -253,6 +253,10 @@ from flooding the active queue as soon as the project resumes.</p>
 <p>Enable alerts via preferred channels without overload.</p>
 <ul>
 <li><strong>Channels</strong>: Toggle Email, Push, Webhooks. Configure/test each.</li>
+<li><strong>Severity</strong>: Enable <strong>Only notify for fatal and error events</strong> to keep
+lower-severity reports without sending alerts for them. The setting is off by
+default and applies to every notification channel in the project. Frequency
+thresholds count only fatal, error, and missing-level reports when enabled.</li>
 <li><strong>Rules</strong>: Set for new errors, reoccurrences, frequency thresholds.</li>
 <li><strong>Recipients</strong>: Toggle per user for targeted alerts, e.g., on-call.</li>
 </ul>

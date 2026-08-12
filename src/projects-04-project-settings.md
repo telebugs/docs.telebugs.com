@@ -80,6 +80,10 @@ Use for segmented teams, e.g., backend devs on backend projects.
 Enable alerts via preferred channels without overload.
 
 - **Channels**: Toggle Email, Push, Webhooks. Configure/test each.
+- **Severity**: Enable **Only notify for fatal and error events** to keep
+  lower-severity reports without sending alerts for them. The setting is off by
+  default and applies to every notification channel in the project. Frequency
+  thresholds count only fatal, error, and missing-level reports when enabled.
 - **Rules**: Set for new errors, reoccurrences, frequency thresholds.
 - **Recipients**: Toggle per user for targeted alerts, e.g., on-call.
 

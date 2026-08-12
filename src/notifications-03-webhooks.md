@@ -37,6 +37,10 @@ In Slack: **Channel** > **Integrations** > **Incoming Webhooks** > **Add to Slac
 
 In Telebugs: Use **Slack** template, paste URL.
 
+Slack and other notification webhooks respect the project's severity setting.
+Enable **Only notify for fatal and error events** under the project's
+**Notifications** settings to keep lower-severity reports out of the channel.
+
 Example payload:
 
 ```json

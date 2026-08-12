@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-acba8a52.js";
+            window.path_to_searchindex_js = "searchindex-15445896.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -1182,10 +1182,17 @@ on errors.</p>
 <p>Configure global settings in your profile &gt; <strong>Notification Configuration</strong>.</p>
 <p>Conditions for alerts (apply to all channels):</p>
 <ul>
+<li>Severity is allowed by the project’s notification settings.</li>
 <li>New error occurs.</li>
 <li>Error reoccurs after resolution.</li>
 <li>Frequency exceeds threshold (e.g., &gt;10 in 5 minutes).</li>
 </ul>
+<p>By default, projects send notifications for every event level. Admins can enable
+<strong>Only notify for fatal and error events</strong> in a project’s notification settings.
+Warning, info, debug, and sample-level events are still stored and searchable,
+but they do not send email, push, or notification-webhook alerts. Reports
+without a level are treated as errors. Lower-severity events also do not count
+toward frequency thresholds while this setting is enabled.</p>
 <p>Projects can disable channels individually (see <a href="/projects-04-project-settings.html">Project Settings</a>). Users
 can opt out per project in their profile.</p>
 <p>See sub-sections for setup.</p>
@@ -1313,6 +1320,9 @@ and allow notifications when prompted.</p>
 <h2 id="slack-setup"><a class="header" href="#slack-setup">Slack Setup</a></h2>
 <p>In Slack: <strong>Channel</strong> &gt; <strong>Integrations</strong> &gt; <strong>Incoming Webhooks</strong> &gt; <strong>Add to Slack</strong> &gt; <strong>Copy URL</strong>.</p>
 <p>In Telebugs: Use <strong>Slack</strong> template, paste URL.</p>
+<p>Slack and other notification webhooks respect the project’s severity setting.
+Enable <strong>Only notify for fatal and error events</strong> under the project’s
+<strong>Notifications</strong> settings to keep lower-severity reports out of the channel.</p>
 <p>Example payload:</p>
 <pre><code class="language-json">{
   "username": "Telebugs",
@@ -1606,6 +1616,10 @@ from flooding the active queue as soon as the project resumes.</p>
 <p>Enable alerts via preferred channels without overload.</p>
 <ul>
 <li><strong>Channels</strong>: Toggle Email, Push, Webhooks. Configure/test each.</li>
+<li><strong>Severity</strong>: Enable <strong>Only notify for fatal and error events</strong> to keep
+lower-severity reports without sending alerts for them. The setting is off by
+default and applies to every notification channel in the project. Frequency
+thresholds count only fatal, error, and missing-level reports when enabled.</li>
 <li><strong>Rules</strong>: Set for new errors, reoccurrences, frequency thresholds.</li>
 <li><strong>Recipients</strong>: Toggle per user for targeted alerts, e.g., on-call.</li>
 </ul>

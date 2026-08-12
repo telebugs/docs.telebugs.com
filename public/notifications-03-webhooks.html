@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-acba8a52.js";
+            window.path_to_searchindex_js = "searchindex-15445896.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -232,6 +232,9 @@
 <h2 id="slack-setup"><a class="header" href="#slack-setup">Slack Setup</a></h2>
 <p>In Slack: <strong>Channel</strong> &gt; <strong>Integrations</strong> &gt; <strong>Incoming Webhooks</strong> &gt; <strong>Add to Slack</strong> &gt; <strong>Copy URL</strong>.</p>
 <p>In Telebugs: Use <strong>Slack</strong> template, paste URL.</p>
+<p>Slack and other notification webhooks respect the project’s severity setting.
+Enable <strong>Only notify for fatal and error events</strong> under the project’s
+<strong>Notifications</strong> settings to keep lower-severity reports out of the channel.</p>
 <p>Example payload:</p>
 <pre><code class="language-json">{
   "username": "Telebugs",
