@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-        
+
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
+            window.path_to_searchindex_js = "searchindex-acba8a52.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -291,8 +291,9 @@ non-standard port. These are valid examples:</p>
 https://assets.example.com:8443
 </code></pre>
 <p>Wildcards, IP addresses, paths, queries, fragments, usernames, passwords, and
-plain HTTP are rejected. For example, <code>https://*.example.com</code>,
-<code>https://assets.example.com/maps</code>, and <code>https://127.0.0.1</code> are not accepted.</p>
+plain HTTP are rejected. Ports must be in the TCP range from 1 through 65535.
+For example, <code>https://*.example.com</code>, <code>https://assets.example.com/maps</code>,
+<code>https://assets.example.com:65536</code>, and <code>https://127.0.0.1</code> are not accepted.</p>
 <p>Authorize every origin that Telebugs must contact. If the generated bundle is
 on <code>https://assets.example.com</code> but its map points to
 <code>https://maps.example.net/app.js.map</code>, add both exact origins.</p>
@@ -365,6 +366,14 @@ artifacts when a deployment does not meet these rules.</p>
 <tr><td>URL length</td><td style="text-align: right">2 KiB</td></tr>
 <tr><td>Generated JavaScript response</td><td style="text-align: right">8 MiB</td></tr>
 <tr><td>Source map response</td><td style="text-align: right">32 MiB</td></tr>
+<tr><td>Encoded <code>mappings</code> field</td><td style="text-align: right">8 MiB</td></tr>
+<tr><td>One encoded mapping segment</td><td style="text-align: right">64 bytes</td></tr>
+<tr><td>Decoded mapping segments</td><td style="text-align: right">100,000</td></tr>
+<tr><td>One embedded <code>sourcesContent</code> file</td><td style="text-align: right">8 MiB</td></tr>
+<tr><td>Source paths, source root, names, and stored context lines</td><td style="text-align: right">8 KiB each</td></tr>
+<tr><td><code>sources</code> entries</td><td style="text-align: right">50,000</td></tr>
+<tr><td><code>names</code> entries</td><td style="text-align: right">100,000</td></tr>
+<tr><td>Map debug ID</td><td style="text-align: right">128 bytes</td></tr>
 <tr><td>DNS timeout</td><td style="text-align: right">1 second</td></tr>
 <tr><td>Connection timeout</td><td style="text-align: right">2 seconds</td></tr>
 <tr><td>Read timeout</td><td style="text-align: right">3 seconds</td></tr>
@@ -375,10 +384,13 @@ artifacts when a deployment does not meet these rules.</p>
 </tbody>
 </table>
 </div>
-<p>Transient network failures are retried once within the same 10-second report
+<p>The shared 10-second budget covers fetching, parsing, cache application, and
+frame remapping. Transient network failures are retried once within that same
 budget. Permanent validation and security failures are not retried
-automatically. Hosted network work runs on a separate single-worker queue, so a
-slow asset server does not delay error ingestion or uploaded source maps.</p>
+automatically. Fresh cache work stays on the local source-map queue; only cache
+misses enter the separate single-worker network queue. A slow asset server
+therefore does not delay error ingestion, uploaded source maps, or warm cache
+hits.</p>
 <h3 id="hosted-discovery-statuses-and-troubleshooting"><a class="header" href="#hosted-discovery-statuses-and-troubleshooting">Hosted Discovery Statuses and Troubleshooting</a></h3>
 <p>The report page shows one of these statuses:</p>
 <div class="table-wrapper">
@@ -420,6 +432,10 @@ correct the public DNS/server problem or wait for the temporary condition to
 clear, then retry.</li>
 <li><code>response_too_large</code>: reduce the generated bundle or map below the documented
 boundary, or use uploaded artifacts.</li>
+<li><code>source_content_too_large</code>: reduce or omit the oversized embedded source,
+split the bundle, or use uploaded artifacts.</li>
+<li><code>map_too_complex</code>: rebuild the map with no more than 100,000 decoded mapping
+segments, split the bundle, or use uploaded artifacts.</li>
 <li><code>http_error</code>, <code>invalid_map</code>, <code>artifact_processing_failed</code>,
 <code>unexpected_error</code>: verify that the response is a supported version-3 source
 map. If a valid uploaded map still fails, inspect the Jobs dashboard and

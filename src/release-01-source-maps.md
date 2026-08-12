@@ -118,8 +118,9 @@ https://assets.example.com:8443
 ```
 
 Wildcards, IP addresses, paths, queries, fragments, usernames, passwords, and
-plain HTTP are rejected. For example, `https://*.example.com`,
-`https://assets.example.com/maps`, and `https://127.0.0.1` are not accepted.
+plain HTTP are rejected. Ports must be in the TCP range from 1 through 65535.
+For example, `https://*.example.com`, `https://assets.example.com/maps`,
+`https://assets.example.com:65536`, and `https://127.0.0.1` are not accepted.
 
 Authorize every origin that Telebugs must contact. If the generated bundle is
 on `https://assets.example.com` but its map points to
@@ -199,6 +200,14 @@ artifacts when a deployment does not meet these rules.
 | URL length | 2 KiB |
 | Generated JavaScript response | 8 MiB |
 | Source map response | 32 MiB |
+| Encoded `mappings` field | 8 MiB |
+| One encoded mapping segment | 64 bytes |
+| Decoded mapping segments | 100,000 |
+| One embedded `sourcesContent` file | 8 MiB |
+| Source paths, source root, names, and stored context lines | 8 KiB each |
+| `sources` entries | 50,000 |
+| `names` entries | 100,000 |
+| Map debug ID | 128 bytes |
 | DNS timeout | 1 second |
 | Connection timeout | 2 seconds |
 | Read timeout | 3 seconds |
@@ -207,10 +216,13 @@ artifacts when a deployment does not meet these rules.
 | Network fetches per project | 10/minute and 100/hour |
 | Network fetches per instance | 60/minute |
 
-Transient network failures are retried once within the same 10-second report
+The shared 10-second budget covers fetching, parsing, cache application, and
+frame remapping. Transient network failures are retried once within that same
 budget. Permanent validation and security failures are not retried
-automatically. Hosted network work runs on a separate single-worker queue, so a
-slow asset server does not delay error ingestion or uploaded source maps.
+automatically. Fresh cache work stays on the local source-map queue; only cache
+misses enter the separate single-worker network queue. A slow asset server
+therefore does not delay error ingestion, uploaded source maps, or warm cache
+hits.
 
 ### Hosted Discovery Statuses and Troubleshooting
 
@@ -249,6 +261,10 @@ The codes are grouped below with the action to take:
   clear, then retry.
 - `response_too_large`: reduce the generated bundle or map below the documented
   boundary, or use uploaded artifacts.
+- `source_content_too_large`: reduce or omit the oversized embedded source,
+  split the bundle, or use uploaded artifacts.
+- `map_too_complex`: rebuild the map with no more than 100,000 decoded mapping
+  segments, split the bundle, or use uploaded artifacts.
 - `http_error`, `invalid_map`, `artifact_processing_failed`,
   `unexpected_error`: verify that the response is a supported version-3 source
   map. If a valid uploaded map still fails, inspect the Jobs dashboard and

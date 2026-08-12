@@ -48,6 +48,16 @@ REDIRECT_RE = re.compile(
 RETURN_RE = re.compile(
     r"return\s+(?P<status>30[1278])\s+(?P<target>[^;]+);"
 )
+STALE_SOURCE_MAP_CLAIMS = {
+    "source maps must be attached to a release": re.compile(
+        r"source maps?\s+must\s+be\s+attached\s+to\s+(?:a\s+)?release",
+        re.IGNORECASE,
+    ),
+    "releases are essential": re.compile(
+        r"releases?\s+(?:are|is)\s+essential",
+        re.IGNORECASE,
+    ),
+}
 HEADING_TAGS = {f"h{level}" for level in range(1, 7)}
 RESOURCE_ATTRIBUTES = {
     "audio": ("src",),
@@ -802,6 +812,18 @@ def load_baseline(path: Path) -> dict[str, Any]:
     return baseline
 
 
+def stale_source_map_claim_errors(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in (root / "src").rglob("*.md"):
+        text = path.read_text(encoding="utf-8", errors="replace")
+        for label, pattern in STALE_SOURCE_MAP_CLAIMS.items():
+            if pattern.search(text):
+                errors.append(
+                    f"Stale source-map claim ({label}): {path.relative_to(root)}"
+                )
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -838,6 +860,7 @@ def main() -> int:
         + redirect_errors(inventory)
         + canonical_errors(inventory)
         + seo_errors(inventory)
+        + stale_source_map_claim_errors(root)
     )
 
     if args.command == "capture":

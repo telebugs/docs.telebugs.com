@@ -181,6 +181,14 @@ Hosted discovery uses separate, fixed boundaries from uploads:
 | URL | 2 KiB |
 | Generated JavaScript response | 8 MiB |
 | Source map response | 32 MiB |
+| Encoded `mappings` field | 8 MiB |
+| One encoded mapping segment | 64 bytes |
+| Decoded mapping segments | 100,000 |
+| One embedded `sourcesContent` file | 8 MiB |
+| Source paths, source root, names, and stored context lines | 8 KiB each |
+| `sources` entries | 50,000 |
+| `names` entries | 100,000 |
+| Map debug ID | 128 bytes |
 | DNS lookup | 1 second |
 | Connection | 2 seconds |
 | Response read | 3 seconds |
@@ -189,7 +197,8 @@ Hosted discovery uses separate, fixed boundaries from uploads:
 | Fetches per project | 10/minute and 100/hour |
 | Fetches across the instance | 60/minute |
 
-Transient requests are retried once only while the shared 10-second budget
+The shared budget includes fetching, parsing, cache application, and frame
+remapping. Transient requests are retried once only while that 10-second budget
 remains. Redirects, compressed responses, inline maps, non-public network
 addresses, and unauthorized origins are rejected rather than consuming a
 different or configurable limit. Hosted maps count toward artifact disk usage
