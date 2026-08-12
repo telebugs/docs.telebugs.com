@@ -8,7 +8,8 @@ Key elements:
   project, or open the current project's settings. Press `Enter` when the
   search leaves one match.
 - Releases link: View release history.
-- Search bar: Find errors by message, type, or details (live updates).
+- Search bar: Find errors by message, type, or details, or find one exact
+  occurrence by its occurrence ID (live updates).
 - Date range selector: Filter by time (e.g., today, last week) with pager, and
   compare supported ranges with the immediately preceding period.
 - Stats overview: Total reports, new vs. reoccurred.
@@ -22,6 +23,18 @@ Key elements:
 If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.
 
 Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.
+
+## Find an Exact Occurrence
+
+Paste an occurrence ID into the project search to find that exact occurrence.
+Telebugs accepts the 32-character form returned when a report is accepted and
+the standard hyphenated UUID form, regardless of letter case. Exact occurrence-ID
+search is limited to the current project and is not restricted by the selected
+date range.
+
+Open the result to inspect the occurrence. This is useful when an application
+log, support report, or SDK callback includes an occurrence ID but not a
+Telebugs URL.
 
 ## Previous-Period Comparisons
 

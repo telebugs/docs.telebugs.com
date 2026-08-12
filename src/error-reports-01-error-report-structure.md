@@ -35,6 +35,16 @@ High-level overview:
 - **Severity**: Level such as error, warning, or info.
 - **Server name**: Host where the error occurred.
 - **Environment**: Production, staging, etc.
+- **Occurrence ID**: The stable identifier for this exact report occurrence.
+
+Use the copy button beside the occurrence ID when correlating a report with an
+application log, support request, or SDK callback. The same ID can be pasted
+into the project search to return to this occurrence.
+
+Compatible SDKs normally generate the ID before sending a report. If a report
+arrives without one, Telebugs generates an ID when it accepts the report.
+Historical reports created before occurrence identity was retained do not
+display this field.
 
 ## Backtrace
 

@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-12c25114.js";
+            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -230,6 +230,25 @@ and requests with more than one content encoding are not supported.</p>
 body, framing, JSON, or binary item cannot be handled safely. A valid envelope
 with no supported event is acknowledged but is not added to the processing
 queue. An empty request body remains a successful no-op.</p>
+<h3 id="occurrence-identity-and-duplicate-deliveries"><a class="header" href="#occurrence-identity-and-duplicate-deliveries">Occurrence Identity and Duplicate Deliveries</a></h3>
+<p>Telebugs calls this value the occurrence ID. In Sentry-compatible ingestion it
+is the <code>event_id</code> from the envelope header, falling back to the event payload
+when the header does not provide one. Telebugs accepts a 32-character
+hexadecimal ID or a standard hyphenated UUID and stores the value as 32
+lowercase hexadecimal characters. If neither location provides an ID,
+Telebugs generates a UUIDv4 when it accepts the report. A present but malformed
+<code>event_id</code> is rejected with <code>400 Bad Request</code> and
+<code>X-Sentry-Error: invalid_event_id</code> before the request enters the durable ingest
+queue.</p>
+<p>A successfully accepted report returns <code>200 OK</code> with its canonical occurrence
+ID:</p>
+<pre><code class="language-json">{"id":"69b345eb156342a496e5880afee01452"}
+</code></pre>
+<p>Occurrence IDs are unique within one project. Delivering the same ID again to that
+project does not create another report, increment occurrence totals, send
+another notification, or retain another minidump. If duplicate deliveries
+contain different data, the first payload successfully persisted by Telebugs
+wins. The same ID may be used independently by different projects.</p>
 <h2 id="event-details-retained"><a class="header" href="#event-details-retained">Event Details Retained</a></h2>
 <p>Large but valid event collections are handled differently from an oversized
 request. Telebugs accepts the event and deterministically keeps the most useful
@@ -342,7 +361,8 @@ upload commands.</p>
 <tr><th>Status</th><th>Meaning</th><th>What the sender should do</th></tr>
 </thead>
 <tbody>
-<tr><td><code>400 Bad Request</code></td><td>Malformed compression, envelope, JSON, checksum, archive, manifest, or path</td><td>Fix the payload; do not retry it unchanged</td></tr>
+<tr><td><code>200 OK</code></td><td>Report accepted into the durable ingest queue; response JSON contains its occurrence ID</td><td>No retry needed</td></tr>
+<tr><td><code>400 Bad Request</code></td><td>Malformed occurrence ID (<code>event_id</code>), compression, envelope, JSON, checksum, archive, manifest, or path</td><td>Fix the payload; do not retry it unchanged</td></tr>
 <tr><td><code>409 Conflict</code></td><td>An artifact name already contains different bytes in that release</td><td>Correct the release or artifact; do not retry unchanged</td></tr>
 <tr><td><code>413 Content Too Large</code></td><td>A byte, depth, item, file, entry, or expansion boundary was exceeded</td><td>Reduce the object; do not retry it unchanged</td></tr>
 <tr><td><code>415 Unsupported Media Type</code></td><td>Unsupported or multiple content encodings</td><td>Send an uncompressed, gzip, or deflate request</td></tr>

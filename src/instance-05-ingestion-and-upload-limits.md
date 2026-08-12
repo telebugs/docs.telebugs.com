@@ -35,6 +35,31 @@ body, framing, JSON, or binary item cannot be handled safely. A valid envelope
 with no supported event is acknowledged but is not added to the processing
 queue. An empty request body remains a successful no-op.
 
+### Occurrence Identity and Duplicate Deliveries
+
+Telebugs calls this value the occurrence ID. In Sentry-compatible ingestion it
+is the `event_id` from the envelope header, falling back to the event payload
+when the header does not provide one. Telebugs accepts a 32-character
+hexadecimal ID or a standard hyphenated UUID and stores the value as 32
+lowercase hexadecimal characters. If neither location provides an ID,
+Telebugs generates a UUIDv4 when it accepts the report. A present but malformed
+`event_id` is rejected with `400 Bad Request` and
+`X-Sentry-Error: invalid_event_id` before the request enters the durable ingest
+queue.
+
+A successfully accepted report returns `200 OK` with its canonical occurrence
+ID:
+
+```json
+{"id":"69b345eb156342a496e5880afee01452"}
+```
+
+Occurrence IDs are unique within one project. Delivering the same ID again to that
+project does not create another report, increment occurrence totals, send
+another notification, or retain another minidump. If duplicate deliveries
+contain different data, the first payload successfully persisted by Telebugs
+wins. The same ID may be used independently by different projects.
+
 ## Event Details Retained
 
 Large but valid event collections are handled differently from an oversized
@@ -149,7 +174,8 @@ upload commands.
 
 | Status | Meaning | What the sender should do |
 | --- | --- | --- |
-| `400 Bad Request` | Malformed compression, envelope, JSON, checksum, archive, manifest, or path | Fix the payload; do not retry it unchanged |
+| `200 OK` | Report accepted into the durable ingest queue; response JSON contains its occurrence ID | No retry needed |
+| `400 Bad Request` | Malformed occurrence ID (`event_id`), compression, envelope, JSON, checksum, archive, manifest, or path | Fix the payload; do not retry it unchanged |
 | `409 Conflict` | An artifact name already contains different bytes in that release | Correct the release or artifact; do not retry unchanged |
 | `413 Content Too Large` | A byte, depth, item, file, entry, or expansion boundary was exceeded | Reduce the object; do not retry it unchanged |
 | `415 Unsupported Media Type` | Unsupported or multiple content encodings | Send an uncompressed, gzip, or deflate request |

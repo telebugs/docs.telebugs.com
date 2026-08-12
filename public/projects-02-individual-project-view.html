@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-12c25114.js";
+            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -201,7 +201,8 @@
 project, or open the current project’s settings. Press <code>Enter</code> when the
 search leaves one match.</li>
 <li>Releases link: View release history.</li>
-<li>Search bar: Find errors by message, type, or details (live updates).</li>
+<li>Search bar: Find errors by message, type, or details, or find one exact
+occurrence by its occurrence ID (live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager, and
 compare supported ranges with the immediately preceding period.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
@@ -214,6 +215,15 @@ remain in the appropriate list and display a mute-status badge.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="find-an-exact-occurrence"><a class="header" href="#find-an-exact-occurrence">Find an Exact Occurrence</a></h2>
+<p>Paste an occurrence ID into the project search to find that exact occurrence.
+Telebugs accepts the 32-character form returned when a report is accepted and
+the standard hyphenated UUID form, regardless of letter case. Exact occurrence-ID
+search is limited to the current project and is not restricted by the selected
+date range.</p>
+<p>Open the result to inspect the occurrence. This is useful when an application
+log, support report, or SDK callback includes an occurrence ID but not a
+Telebugs URL.</p>
 <h2 id="previous-period-comparisons"><a class="header" href="#previous-period-comparisons">Previous-Period Comparisons</a></h2>
 <p>Open the date menu and select <strong>Compare with previous period</strong> to add the
 immediately preceding range to the dashboard. For example, <strong>Last 28 days</strong>

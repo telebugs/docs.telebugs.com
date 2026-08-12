@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-12c25114.js";
+            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -1474,7 +1474,8 @@ reports, settings, and access controls.</p>
 project, or open the current project’s settings. Press <code>Enter</code> when the
 search leaves one match.</li>
 <li>Releases link: View release history.</li>
-<li>Search bar: Find errors by message, type, or details (live updates).</li>
+<li>Search bar: Find errors by message, type, or details, or find one exact
+occurrence by its occurrence ID (live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager, and
 compare supported ranges with the immediately preceding period.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
@@ -1487,6 +1488,15 @@ remain in the appropriate list and display a mute-status badge.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="find-an-exact-occurrence"><a class="header" href="#find-an-exact-occurrence">Find an Exact Occurrence</a></h2>
+<p>Paste an occurrence ID into the project search to find that exact occurrence.
+Telebugs accepts the 32-character form returned when a report is accepted and
+the standard hyphenated UUID form, regardless of letter case. Exact occurrence-ID
+search is limited to the current project and is not restricted by the selected
+date range.</p>
+<p>Open the result to inspect the occurrence. This is useful when an application
+log, support report, or SDK callback includes an occurrence ID but not a
+Telebugs URL.</p>
 <h2 id="previous-period-comparisons"><a class="header" href="#previous-period-comparisons">Previous-Period Comparisons</a></h2>
 <p>Open the date menu and select <strong>Compare with previous period</strong> to add the
 immediately preceding range to the dashboard. For example, <strong>Last 28 days</strong>
@@ -4527,7 +4537,15 @@ context-aware shortcut reference and safety behavior.</p>
 <li><strong>Severity</strong>: Level such as error, warning, or info.</li>
 <li><strong>Server name</strong>: Host where the error occurred.</li>
 <li><strong>Environment</strong>: Production, staging, etc.</li>
+<li><strong>Occurrence ID</strong>: The stable identifier for this exact report occurrence.</li>
 </ul>
+<p>Use the copy button beside the occurrence ID when correlating a report with an
+application log, support request, or SDK callback. The same ID can be pasted
+into the project search to return to this occurrence.</p>
+<p>Compatible SDKs normally generate the ID before sending a report. If a report
+arrives without one, Telebugs generates an ID when it accepts the report.
+Historical reports created before occurrence identity was retained do not
+display this field.</p>
 <h2 id="backtrace"><a class="header" href="#backtrace">Backtrace</a></h2>
 <p>The stack trace showing where the error originated.</p>
 <p>Each frame lists:</p>
@@ -5437,6 +5455,25 @@ and requests with more than one content encoding are not supported.</p>
 body, framing, JSON, or binary item cannot be handled safely. A valid envelope
 with no supported event is acknowledged but is not added to the processing
 queue. An empty request body remains a successful no-op.</p>
+<h3 id="occurrence-identity-and-duplicate-deliveries"><a class="header" href="#occurrence-identity-and-duplicate-deliveries">Occurrence Identity and Duplicate Deliveries</a></h3>
+<p>Telebugs calls this value the occurrence ID. In Sentry-compatible ingestion it
+is the <code>event_id</code> from the envelope header, falling back to the event payload
+when the header does not provide one. Telebugs accepts a 32-character
+hexadecimal ID or a standard hyphenated UUID and stores the value as 32
+lowercase hexadecimal characters. If neither location provides an ID,
+Telebugs generates a UUIDv4 when it accepts the report. A present but malformed
+<code>event_id</code> is rejected with <code>400 Bad Request</code> and
+<code>X-Sentry-Error: invalid_event_id</code> before the request enters the durable ingest
+queue.</p>
+<p>A successfully accepted report returns <code>200 OK</code> with its canonical occurrence
+ID:</p>
+<pre><code class="language-json">{"id":"69b345eb156342a496e5880afee01452"}
+</code></pre>
+<p>Occurrence IDs are unique within one project. Delivering the same ID again to that
+project does not create another report, increment occurrence totals, send
+another notification, or retain another minidump. If duplicate deliveries
+contain different data, the first payload successfully persisted by Telebugs
+wins. The same ID may be used independently by different projects.</p>
 <h2 id="event-details-retained"><a class="header" href="#event-details-retained">Event Details Retained</a></h2>
 <p>Large but valid event collections are handled differently from an oversized
 request. Telebugs accepts the event and deterministically keeps the most useful
@@ -5549,7 +5586,8 @@ upload commands.</p>
 <tr><th>Status</th><th>Meaning</th><th>What the sender should do</th></tr>
 </thead>
 <tbody>
-<tr><td><code>400 Bad Request</code></td><td>Malformed compression, envelope, JSON, checksum, archive, manifest, or path</td><td>Fix the payload; do not retry it unchanged</td></tr>
+<tr><td><code>200 OK</code></td><td>Report accepted into the durable ingest queue; response JSON contains its occurrence ID</td><td>No retry needed</td></tr>
+<tr><td><code>400 Bad Request</code></td><td>Malformed occurrence ID (<code>event_id</code>), compression, envelope, JSON, checksum, archive, manifest, or path</td><td>Fix the payload; do not retry it unchanged</td></tr>
 <tr><td><code>409 Conflict</code></td><td>An artifact name already contains different bytes in that release</td><td>Correct the release or artifact; do not retry unchanged</td></tr>
 <tr><td><code>413 Content Too Large</code></td><td>A byte, depth, item, file, entry, or expansion boundary was exceeded</td><td>Reduce the object; do not retry it unchanged</td></tr>
 <tr><td><code>415 Unsupported Media Type</code></td><td>Unsupported or multiple content encodings</td><td>Send an uncompressed, gzip, or deflate request</td></tr>

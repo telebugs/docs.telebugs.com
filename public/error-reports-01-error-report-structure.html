@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-12c25114.js";
+            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -221,7 +221,15 @@ context-aware shortcut reference and safety behavior.</p>
 <li><strong>Severity</strong>: Level such as error, warning, or info.</li>
 <li><strong>Server name</strong>: Host where the error occurred.</li>
 <li><strong>Environment</strong>: Production, staging, etc.</li>
+<li><strong>Occurrence ID</strong>: The stable identifier for this exact report occurrence.</li>
 </ul>
+<p>Use the copy button beside the occurrence ID when correlating a report with an
+application log, support request, or SDK callback. The same ID can be pasted
+into the project search to return to this occurrence.</p>
+<p>Compatible SDKs normally generate the ID before sending a report. If a report
+arrives without one, Telebugs generates an ID when it accepts the report.
+Historical reports created before occurrence identity was retained do not
+display this field.</p>
 <h2 id="backtrace"><a class="header" href="#backtrace">Backtrace</a></h2>
 <p>The stack trace showing where the error originated.</p>
 <p>Each frame lists:</p>
