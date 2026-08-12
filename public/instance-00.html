@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -199,7 +199,7 @@ They are global to the whole installation, not per-project.</p>
 <p>Telebugs keeps these controls in the admin UI instead of hiding them behind
 environment variables. Open the profile menu, then go to <strong>Instance</strong>.</p>
 <p>This chapter covers ingest protection, error retention, artifact retention,
-purge types, and disk usage monitoring.</p>
+hosted source map discovery, purge types, and disk usage monitoring.</p>
 <h2 id="ingest-protection"><a class="header" href="#ingest-protection">Ingest Protection</a></h2>
 <p>Ingest protection controls how many incoming errors Telebugs accepts and when it
 should temporarily pause intake to protect the instance.</p>
@@ -394,22 +394,32 @@ first).</p>
 </ul>
 <p>Runs alongside time-based rules if both are enabled.</p>
 <h2 id="artifact-retention-policy"><a class="header" href="#artifact-retention-policy">Artifact Retention Policy</a></h2>
-<p>Artifacts (mainly source maps attached to releases) have separate retention
-rules.</p>
+<p>Artifacts include files attached to releases and private hosted source map
+cache entries. They have separate retention rules.</p>
 <h3 id="enabling-artifact-retention"><a class="header" href="#enabling-artifact-retention">Enabling Artifact Retention</a></h3>
 <p>Open the profile menu, then go to <strong>Instance</strong> &gt; <strong>Artifact Retention</strong>.</p>
 <p>Toggle <strong>Enable automatic artifact cleanup</strong>.</p>
 <h3 id="time-based-artifact-cleanup"><a class="header" href="#time-based-artifact-cleanup">Time-Based Artifact Cleanup</a></h3>
-<p>Deletes artifacts from releases older than the set period, but only if no recent
-error reports reference them.</p>
+<p>Deletes artifacts from releases older than the set period when no recent error
+reports reference them. Hosted maps use their last-use time.</p>
 <h3 id="disk-based-artifact-cleanup"><a class="header" href="#disk-based-artifact-cleanup">Disk-Based Artifact Cleanup</a></h3>
 <p>Triggers when total artifact storage exceeds the limit (absolute GB or
 percentage).</p>
-<p>Deletes from oldest inactive releases first.</p>
+<p>Deletes least-recently-used hosted maps first, then artifacts from the oldest
+inactive releases.</p>
 <h3 id="purge-on-new-release"><a class="header" href="#purge-on-new-release">Purge on New Release</a></h3>
 <p>Optional: When uploading a new release, automatically delete artifacts from
 excess old releases (keep only the newest N, e.g., 20).</p>
 <p>Oldest inactive releases are removed first.</p>
+<h2 id="hosted-source-map-discovery"><a class="header" href="#hosted-source-map-discovery">Hosted Source Map Discovery</a></h2>
+<p>Open <strong>Instance</strong> &gt; <strong>Hosted source maps</strong> to use the instance-wide emergency
+switch. It is enabled by default, but it cannot cause a network request until an
+admin authorizes an exact origin for a project.</p>
+<p>Turning the switch off disables new hosted requests and use of hosted-map cache
+entries for every project. Uploaded release artifacts remain available. Queued
+hosted work checks the switch before processing, applying, and storing a map.</p>
+<p>See <a href="/release-01-source-maps.html#hosted-source-map-discovery">Source Maps</a> for project setup, the network security boundary, fixed
+limits, report statuses, and troubleshooting.</p>
 <h2 id="monitoring-and-maintenance"><a class="header" href="#monitoring-and-maintenance">Monitoring and Maintenance</a></h2>
 <p>The Instance section shows live stats:</p>
 <ul>

@@ -12,6 +12,21 @@ dropdown > **Project Settings**.
 
 These make the dashboard more intuitive without affecting data.
 
+### Hosted Source Maps
+
+Instance admins can open **Hosted source maps** in the project settings menu to
+authorize exact public HTTPS asset origins. Telebugs makes no hosted-map
+requests until an origin is listed.
+
+Enter an origin such as `https://assets.example.com`, without a path, query,
+fragment, wildcard, IP address, or credentials. If a bundle points to a map on
+a different CDN origin, authorize that exact origin separately.
+
+Removing an origin prevents future use and purges its hosted-map cache. Existing
+reports retain frames that were already remapped. See [Source Maps][3] for
+setup, supported discovery methods, security behavior, limits, statuses, and
+troubleshooting.
+
 ### Project Muting
 
 Admins can mute every existing error in a project and automatically mute new
@@ -84,3 +99,4 @@ Use for cleanup, but export data if needed for audits (see [Instance Settings][2
 
 [1]: /team-management-00.md
 [2]: /instance-00.md
+[3]: /release-01-source-maps.md#hosted-source-map-discovery

@@ -7,7 +7,7 @@ Telebugs keeps these controls in the admin UI instead of hiding them behind
 environment variables. Open the profile menu, then go to **Instance**.
 
 This chapter covers ingest protection, error retention, artifact retention,
-purge types, and disk usage monitoring.
+hosted source map discovery, purge types, and disk usage monitoring.
 
 ## Ingest Protection
 
@@ -244,8 +244,8 @@ Runs alongside time-based rules if both are enabled.
 
 ## Artifact Retention Policy
 
-Artifacts (mainly source maps attached to releases) have separate retention
-rules.
+Artifacts include files attached to releases and private hosted source map
+cache entries. They have separate retention rules.
 
 ### Enabling Artifact Retention
 
@@ -255,15 +255,16 @@ Toggle **Enable automatic artifact cleanup**.
 
 ### Time-Based Artifact Cleanup
 
-Deletes artifacts from releases older than the set period, but only if no recent
-error reports reference them.
+Deletes artifacts from releases older than the set period when no recent error
+reports reference them. Hosted maps use their last-use time.
 
 ### Disk-Based Artifact Cleanup
 
 Triggers when total artifact storage exceeds the limit (absolute GB or
 percentage).
 
-Deletes from oldest inactive releases first.
+Deletes least-recently-used hosted maps first, then artifacts from the oldest
+inactive releases.
 
 ### Purge on New Release
 
@@ -271,6 +272,19 @@ Optional: When uploading a new release, automatically delete artifacts from
 excess old releases (keep only the newest N, e.g., 20).
 
 Oldest inactive releases are removed first.
+
+## Hosted Source Map Discovery
+
+Open **Instance** > **Hosted source maps** to use the instance-wide emergency
+switch. It is enabled by default, but it cannot cause a network request until an
+admin authorizes an exact origin for a project.
+
+Turning the switch off disables new hosted requests and use of hosted-map cache
+entries for every project. Uploaded release artifacts remain available. Queued
+hosted work checks the switch before processing, applying, and storing a map.
+
+See [Source Maps][4] for project setup, the network security boundary, fixed
+limits, report statuses, and troubleshooting.
 
 ## Monitoring and Maintenance
 
@@ -325,3 +339,4 @@ Retention policies can also be managed programmatically via the
 [REST API](rest-api-11-data-retention.md).
 
 [3]: /projects-04-project-settings.md
+[4]: /release-01-source-maps.md#hosted-source-map-discovery

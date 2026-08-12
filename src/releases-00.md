@@ -1,8 +1,8 @@
 # Releases
 
-Releases in Telebugs let you tag versions of your app, primarily to attach
-source maps. This enables unminifying stack traces in error reports and makes
-debugging easier by mapping minified code back to original sources.
+Releases in Telebugs let you tag versions of your app and attach source maps.
+This is the recommended workflow for unminifying stack traces, especially when
+maps are private or deploys need deterministic version matching.
 
 Currently, releases focus solely on source map support. There are no additional
 features yet.
@@ -16,8 +16,10 @@ In the project dashboard (see [Individual Project View][1]), look for the
 **Releases (N)** link in the top-right corner. The number shows how many
 releases exist. Clicking it takes you to the full list.
 
-Releases are directly tied to source maps. If you minify your code, accurate
-releases are essential for readable stack traces in errors.
+Releases are directly tied to uploaded source maps. Telebugs can alternatively
+discover maps already available on an authorized public HTTPS origin, but
+uploaded release artifacts take precedence and do not depend on the production
+asset server. See [Source Maps][2] for the two workflows.
 
 **Pro tip:** Create releases as part of your deploy pipeline to ensure source
 maps align perfectly with each version.

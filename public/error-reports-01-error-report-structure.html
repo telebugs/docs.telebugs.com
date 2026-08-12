@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -240,8 +240,18 @@ display this field.</p>
 </ul>
 <p>Code context is shown around the error line (highlighted). Frames can be
 expanded for more lines.</p>
-<p>If source maps are attached to the release, minified traces resolve to original
-source files.</p>
+<p>If Telebugs finds a matching uploaded or authorized hosted source map, minified
+traces resolve to original source files.</p>
+<h3 id="source-map-status"><a class="header" href="#source-map-status">Source Map Status</a></h3>
+<p>JavaScript reports show a compact <strong>Source map</strong> status: <strong>Unprocessed</strong>,
+<strong>Queued</strong>, <strong>Fetching</strong>, <strong>Resolved</strong>, <strong>Not found</strong>, <strong>Failed</strong>, or <strong>Blocked</strong>.
+The status links to the <a href="/release-01-source-maps.html#hosted-discovery-statuses-and-troubleshooting">source map troubleshooting guide</a>.</p>
+<p>Admins can select <strong>Retry source map</strong> from one report’s actions menu after
+fixing an upload, deployment, or origin configuration. The retry applies only
+to that report and cannot bypass security or resource limits. Adding a hosted
+origin does not automatically scan historical reports.</p>
+<p><strong>View as Markdown</strong> includes <code>Source Map Status</code> and, when available, the safe
+<code>Source Map Failure Code</code> described by the troubleshooting guide.</p>
 <p><strong>Quick tip:</strong> Focus on “in-app” frames (your code) and ignore library frames
 when investigating.</p>
 <h2 id="http-request"><a class="header" href="#http-request">HTTP Request</a></h2>

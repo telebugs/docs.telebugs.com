@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -194,9 +194,9 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="releases"><a class="header" href="#releases">Releases</a></h1>
-<p>Releases in Telebugs let you tag versions of your app, primarily to attach
-source maps. This enables unminifying stack traces in error reports and makes
-debugging easier by mapping minified code back to original sources.</p>
+<p>Releases in Telebugs let you tag versions of your app and attach source maps.
+This is the recommended workflow for unminifying stack traces, especially when
+maps are private or deploys need deterministic version matching.</p>
 <p>Currently, releases focus solely on source map support. There are no additional
 features yet.</p>
 <p>This chapter covers the essentials. You will learn how to view releases, create
@@ -205,8 +205,10 @@ them, and manage details such as artifacts and deletion.</p>
 <p>In the project dashboard (see <a href="/projects-02-individual-project-view.html">Individual Project View</a>), look for the
 <strong>Releases (N)</strong> link in the top-right corner. The number shows how many
 releases exist. Clicking it takes you to the full list.</p>
-<p>Releases are directly tied to source maps. If you minify your code, accurate
-releases are essential for readable stack traces in errors.</p>
+<p>Releases are directly tied to uploaded source maps. Telebugs can alternatively
+discover maps already available on an authorized public HTTPS origin, but
+uploaded release artifacts take precedence and do not depend on the production
+asset server. See <a href="/release-01-source-maps.html">Source Maps</a> for the two workflows.</p>
 <p><strong>Pro tip:</strong> Create releases as part of your deploy pipeline to ensure source
 maps align perfectly with each version.</p>
 <h2 id="viewing-releases"><a class="header" href="#viewing-releases">Viewing Releases</a></h2>

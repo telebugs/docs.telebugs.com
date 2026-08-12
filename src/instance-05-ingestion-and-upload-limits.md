@@ -170,6 +170,35 @@ direct release-file API. Telebugs has compatibility coverage for both Sentry CLI
 2.58.6 and 3.6.2. See [Source Maps](release-01-source-maps.md) for setup and
 upload commands.
 
+## Hosted Source Map Discovery
+
+Hosted discovery uses separate, fixed boundaries from uploads:
+
+| Object or window | Limit |
+| --- | ---: |
+| Authorized origins per project | 10 |
+| Bundle candidates per report | 2 |
+| URL | 2 KiB |
+| Generated JavaScript response | 8 MiB |
+| Source map response | 32 MiB |
+| DNS lookup | 1 second |
+| Connection | 2 seconds |
+| Response read | 3 seconds |
+| Shared discovery budget per report | 10 seconds |
+| Hosted cache entries per project | 500 |
+| Fetches per project | 10/minute and 100/hour |
+| Fetches across the instance | 60/minute |
+
+Transient requests are retried once only while the shared 10-second budget
+remains. Redirects, compressed responses, inline maps, non-public network
+addresses, and unauthorized origins are rejected rather than consuming a
+different or configurable limit. Hosted maps count toward artifact disk usage
+and are purged before uploaded artifacts under disk pressure.
+
+See [Hosted Source Map Discovery](release-01-source-maps.md#hosted-source-map-discovery)
+for setup, cache behavior, security rules, status meanings, and corrective
+actions.
+
 ## HTTP Responses and Retries
 
 | Status | Meaning | What the sender should do |

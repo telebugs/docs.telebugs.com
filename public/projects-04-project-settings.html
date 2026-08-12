@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -204,6 +204,17 @@ Search/select, <strong>Change timezone</strong>. Use UTC for global teams.</li>
 <li><strong>Platform</strong>: Choose for icon and tailored SDK guides. Save changes.</li>
 </ul>
 <p>These make the dashboard more intuitive without affecting data.</p>
+<h3 id="hosted-source-maps"><a class="header" href="#hosted-source-maps">Hosted Source Maps</a></h3>
+<p>Instance admins can open <strong>Hosted source maps</strong> in the project settings menu to
+authorize exact public HTTPS asset origins. Telebugs makes no hosted-map
+requests until an origin is listed.</p>
+<p>Enter an origin such as <code>https://assets.example.com</code>, without a path, query,
+fragment, wildcard, IP address, or credentials. If a bundle points to a map on
+a different CDN origin, authorize that exact origin separately.</p>
+<p>Removing an origin prevents future use and purges its hosted-map cache. Existing
+reports retain frames that were already remapped. See <a href="/release-01-source-maps.html#hosted-source-map-discovery">Source Maps</a> for
+setup, supported discovery methods, security behavior, limits, statuses, and
+troubleshooting.</p>
 <h3 id="project-muting"><a class="header" href="#project-muting">Project Muting</a></h3>
 <p>Admins can mute every existing error in a project and automatically mute new
 error groups for 1 hour, 4 hours, 8 hours, 1 day, 3 days, or forever. Reports

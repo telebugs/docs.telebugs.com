@@ -59,8 +59,22 @@ Each frame lists:
 Code context is shown around the error line (highlighted). Frames can be
 expanded for more lines.
 
-If source maps are attached to the release, minified traces resolve to original
-source files.
+If Telebugs finds a matching uploaded or authorized hosted source map, minified
+traces resolve to original source files.
+
+### Source Map Status
+
+JavaScript reports show a compact **Source map** status: **Unprocessed**,
+**Queued**, **Fetching**, **Resolved**, **Not found**, **Failed**, or **Blocked**.
+The status links to the [source map troubleshooting guide][2].
+
+Admins can select **Retry source map** from one report's actions menu after
+fixing an upload, deployment, or origin configuration. The retry applies only
+to that report and cannot bypass security or resource limits. Adding a hosted
+origin does not automatically scan historical reports.
+
+**View as Markdown** includes `Source Map Status` and, when available, the safe
+`Source Map Failure Code` described by the troubleshooting guide.
 
 **Quick tip:** Focus on "in-app" frames (your code) and ignore library frames
 when investigating.
@@ -187,3 +201,5 @@ the report in the chosen format.
 
 **Tip:** Bookmark or share the direct `.json`, `.xml`, or `.markdown` URL when
 you need to reference the raw or formatted version outside of Telebugs.
+
+[2]: /release-01-source-maps.md#hosted-discovery-statuses-and-troubleshooting

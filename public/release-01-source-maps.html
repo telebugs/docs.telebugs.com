@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -197,43 +197,57 @@
 <p>Source maps allow Telebugs to resolve minified JavaScript and TypeScript stack
 traces back to the original source code. This makes errors from production
 builds readable, showing the real files, line numbers, and context instead of
-the bundled/minified versions.</p>
-<p>This chapter covers generating source maps, uploading them to Telebugs, and
-associating them with releases.</p>
+the bundled or minified versions.</p>
+<p>Telebugs supports two source map workflows:</p>
+<ul>
+<li><strong>Uploaded source maps</strong> are attached to a release. This is the recommended
+workflow for private maps, deterministic deploys, and the most reliable
+debugging experience.</li>
+<li><strong>Hosted source map discovery</strong> retrieves maps that your asset server already
+makes anonymously available over public HTTPS. This workflow is optional and
+must be authorized for each exact origin by an instance admin.</li>
+</ul>
 <h2 id="understanding-source-maps"><a class="header" href="#understanding-source-maps">Understanding Source Maps</a></h2>
-<p>Source maps are files created by bundlers (Webpack, Vite, Rollup, etc.) that map
-minified or transpiled code back to the original source files.</p>
-<p>Without source maps, stack traces point to the minified bundle, making debugging
-difficult. When properly uploaded and linked to a release in Telebugs, errors
-automatically show the original code.</p>
-<p>To generate them, enable source map output in your bundler configuration (e.g.,
-<code>devtool: 'source-map'</code> in Webpack or <code>sourcemap: true</code> in Vite).</p>
+<p>Source maps are files created by bundlers such as Webpack, Vite, and Rollup.
+They map minified or transpiled code back to the original source files.</p>
+<p>Without source maps, stack traces point to generated bundles. With a matching
+map, Telebugs can show original filenames, line and column numbers, function
+names, and code from <code>sourcesContent</code> when the map contains it.</p>
+<p>Enable source map output in your bundler configuration, for example
+<code>devtool: 'source-map'</code> in Webpack or <code>sourcemap: true</code> in Vite.</p>
 <h2 id="integrating-source-maps-with-releases"><a class="header" href="#integrating-source-maps-with-releases">Integrating Source Maps with Releases</a></h2>
-<p>Source maps in Telebugs must be attached to a specific release so they apply
-only to errors from that version.</p>
-<p>Access releases from the project dashboard via the <strong>Releases (N)</strong> link in the top-right (see <a href="/projects-02-individual-project-view.html">Individual Project View</a>).</p>
-<p>Always create the release first (see <a href="/releases-00.html">Releases</a>), then upload source maps to it.</p>
+<p>Uploaded source maps are attached to a specific release so they apply only to
+errors from that version. Releases remain the recommended choice when maps are
+private, when asset URLs are reused between deploys, or when your production
+asset server should not publish <code>.map</code> files.</p>
+<p>Access releases from the project dashboard through the <strong>Releases (N)</strong> link
+in the top-right (see <a href="/projects-02-individual-project-view.html">Individual Project View</a>). Create the release first
+(see <a href="/releases-00.html">Releases</a>), then upload the generated files and maps to it.</p>
+<p>An uploaded artifact always takes precedence over hosted discovery. Telebugs
+does not make a hosted request when an uploaded map resolves the report.</p>
 <h2 id="uploading-source-maps"><a class="header" href="#uploading-source-maps">Uploading Source Maps</a></h2>
-<p>You can upload source maps manually in the UI or automatically with the Sentry
-CLI. Telebugs supports legacy direct uploads and modern artifact bundles, with
+<p>You can upload source maps manually in the UI or automatically with Sentry CLI.
+Telebugs supports legacy direct uploads and modern artifact bundles, with
 compatibility coverage for Sentry CLI 2.58.6 and 3.6.2.</p>
 <h3 id="manual-upload"><a class="header" href="#manual-upload">Manual Upload</a></h3>
 <ol>
 <li>Open the desired release in the releases list.</li>
-<li>Click <strong>Attach artifacts</strong> (or drag and drop files).</li>
-<li>Select your <code>.map</code> files and upload. Multiple files are supported.</li>
+<li>Click <strong>Attach artifacts</strong> or drag and drop files.</li>
+<li>Select the generated files and <code>.map</code> files, then upload them. Multiple files
+are supported.</li>
 </ol>
 <h3 id="automated-upload-recommended"><a class="header" href="#automated-upload-recommended">Automated Upload (Recommended)</a></h3>
 <ol>
 <li>
-<p>Get your personal API key from <strong>Account Settings → API access</strong>. It starts with <code>tlbgs_</code>.</p>
+<p>Get your personal API key from <strong>Account Settings → API access</strong>. It starts
+with <code>tlbgs_</code>.</p>
 </li>
 <li>
 <p>Set these environment variables:</p>
 <pre><code class="language-bash">export SENTRY_URL=https://your-telebugs-instance.com
 export SENTRY_AUTH_TOKEN=tlbgs_your-api-key-here
 export SENTRY_PROJECT=your-project-id
-export SENTRY_ORG=unused # Required for compatibility, value doesn't matter
+export SENTRY_ORG=unused # Required for compatibility; the value is ignored
 </code></pre>
 </li>
 <li>
@@ -242,34 +256,185 @@ export SENTRY_ORG=unused # Required for compatibility, value doesn't matter
 </code></pre>
 </li>
 <li>
-<p>If your build doesn’t already reference the source maps, inject the
+<p>If your build does not already reference the source maps, inject the
 references first:</p>
 <pre><code class="language-sh">sentry-cli sourcemaps inject ./dist
 sentry-cli sourcemaps upload --release=v1.2.3 ./dist
 </code></pre>
 </li>
 </ol>
-<p>After upload, new error reports from that version will automatically use the
-maps for unminification.</p>
-<p>Uploads are subject to Telebugs’ fixed <a href="/instance-05-ingestion-and-upload-limits.html">Ingestion and Upload
-Limits</a>. Reuploading identical bytes to the same release and artifact name is
-safe and does not create a duplicate. Different bytes at an existing name
-return <code>409 Conflict</code>; use the correct release or delete the incorrect artifact
-deliberately.</p>
-<p><strong>Quick tip:</strong> Test by triggering an error in production and checking if the
-stack trace shows original source files.</p>
-<h2 id="managing-source-maps"><a class="header" href="#managing-source-maps">Managing Source Maps</a></h2>
-<p>Uploaded source maps appear as artifacts on the release details page (see
-Release Details).</p>
-<p>From there you can:</p>
+<p>New reports from that release use the uploaded maps automatically. Uploading
+artifacts to an existing release also retries unresolved historical reports
+that identify that release.</p>
+<p>Uploads are subject to Telebugs’ fixed <a href="/instance-05-ingestion-and-upload-limits.html">Ingestion and Upload Limits</a>.
+Reuploading identical bytes to the same release and artifact name is safe and
+does not create a duplicate. Different bytes at an existing name return <code>409 Conflict</code>; use the correct release or deliberately delete the incorrect
+artifact.</p>
+<h2 id="hosted-source-map-discovery"><a class="header" href="#hosted-source-map-discovery">Hosted Source Map Discovery</a></h2>
+<p>Hosted discovery is useful when your generated JavaScript and <code>.map</code> files are
+already public. It does not publish, proxy, or expose a source map. It only lets
+your Telebugs server retrieve an asset that an unauthenticated internet client
+could already retrieve.</p>
+<p>Do not make a private map public just to use this feature. Keep private or
+protected maps private and use the upload workflow instead.</p>
+<h3 id="configure-hosted-discovery"><a class="header" href="#configure-hosted-discovery">Configure Hosted Discovery</a></h3>
+<p>Only an instance admin can authorize an origin:</p>
+<ol>
+<li>Open the project, then select <strong>Project Settings → Hosted source maps</strong>.</li>
+<li>Enter an exact origin such as <code>https://assets.example.com</code>.</li>
+<li>Select <strong>Authorize origin</strong>.</li>
+<li>Trigger a new production error and check its <strong>Source map</strong> status.</li>
+</ol>
+<p>An origin consists only of <code>https://</code>, an ASCII hostname, and an optional
+non-standard port. These are valid examples:</p>
+<pre><code class="language-text">https://assets.example.com
+https://assets.example.com:8443
+</code></pre>
+<p>Wildcards, IP addresses, paths, queries, fragments, usernames, passwords, and
+plain HTTP are rejected. For example, <code>https://*.example.com</code>,
+<code>https://assets.example.com/maps</code>, and <code>https://127.0.0.1</code> are not accepted.</p>
+<p>Authorize every origin that Telebugs must contact. If the generated bundle is
+on <code>https://assets.example.com</code> but its map points to
+<code>https://maps.example.net/app.js.map</code>, add both exact origins.</p>
+<p>Removing an origin immediately prevents new hosted resolutions and removes
+cached maps associated with it. Work already queued rechecks authorization
+before applying or storing a map. Reports that were resolved earlier retain
+their stored remapped frames.</p>
+<p>The instance-wide emergency switch is under <strong>Instance → Hosted source maps</strong>.
+Turning it off disables network discovery and use of hosted-map caches across
+all projects. Uploaded release artifacts continue to work.</p>
+<h3 id="discovery-order-and-behavior"><a class="header" href="#discovery-order-and-behavior">Discovery Order and Behavior</a></h3>
+<p>For a new JavaScript report, Telebugs uses this order:</p>
+<ol>
+<li>A matching uploaded release or debug-ID artifact.</li>
+<li>A fresh authorized hosted-map cache entry.</li>
+<li>Cold hosted discovery.</li>
+</ol>
+<p>Cold discovery considers at most two distinct top in-app JavaScript bundle
+URLs. Telebugs fetches a bundle and discovers its map from, in order:</p>
+<ol>
+<li>the <code>SourceMap</code> response header;</li>
+<li>the legacy <code>X-SourceMap</code> response header; or</li>
+<li>one unambiguous trailing <code>sourceMappingURL</code> comment.</li>
+</ol>
+<p>Relative map URLs are resolved against the bundle URL. A map on another origin
+is fetched only when that exact origin is also authorized. Inline <code>data:</code> maps
+are not supported.</p>
+<p>Successfully retrieved maps are stored privately in Telebugs. A map whose
+debug ID was verified against the report remains cached until artifact
+retention removes it. Other successful maps are revalidated after 10 minutes
+with ETag or Last-Modified when the asset server provides one. A negative result
+is cached for 5 minutes.</p>
+<p>Only new reports enter hosted discovery automatically. Telebugs does not scan
+historical reports when an origin is added. To retry one older report, open it,
+select the report actions menu, and choose <strong>Retry source map</strong>. This action is
+admin-only and cannot bypass any origin, network, size, rate, disk, or instance
+safety rule.</p>
+<h3 id="security-and-privacy"><a class="header" href="#security-and-privacy">Security and Privacy</a></h3>
+<p>Hosted discovery fails closed:</p>
 <ul>
-<li>View or download individual artifacts for verification.</li>
-<li>Delete specific artifacts if uploaded incorrectly.</li>
-<li>Delete the entire release to remove all associated maps (caution: this breaks
-unminification for past errors from that version).</li>
+<li>Telebugs connects only to an exact authorized HTTPS origin.</li>
+<li>Every DNS lookup must return only globally routable addresses. Private,
+loopback, link-local, reserved, multicast, IPv4-mapped private, and mixed
+public/private answers are rejected.</li>
+<li>Telebugs pins a validated address for the connection while verifying the TLS
+certificate against the original hostname.</li>
+<li>Redirects and compressed responses are rejected. Environment proxy settings
+are not used.</li>
+<li>Requests contain no cookies, credentials, authorization headers, event
+headers, referrer, or customer secrets.</li>
+<li>Telebugs never follows <code>sources</code> or <code>sourceRoot</code> entries and never downloads
+original source files. Original code is shown only when the map itself
+contains <code>sourcesContent</code>.</li>
+<li>Request URLs, hostnames, network addresses, headers, queries, response
+bodies, source code, and report content are not written to hosted-discovery
+telemetry.</li>
 </ul>
-<p><strong>Pro tip:</strong> Use meaningful version tags and clean up old releases when they are
-no longer needed for active debugging.</p>
+<p>Private networks, authenticated maps, custom headers, redirects, inline maps,
+CSS maps, Wasm maps, and sectioned source maps are not supported. Use uploaded
+artifacts when a deployment does not meet these rules.</p>
+<h3 id="hosted-discovery-limits"><a class="header" href="#hosted-discovery-limits">Hosted Discovery Limits</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Boundary</th><th style="text-align: right">Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>Authorized origins per project</td><td style="text-align: right">10</td></tr>
+<tr><td>Bundle candidates per report</td><td style="text-align: right">2</td></tr>
+<tr><td>URL length</td><td style="text-align: right">2 KiB</td></tr>
+<tr><td>Generated JavaScript response</td><td style="text-align: right">8 MiB</td></tr>
+<tr><td>Source map response</td><td style="text-align: right">32 MiB</td></tr>
+<tr><td>DNS timeout</td><td style="text-align: right">1 second</td></tr>
+<tr><td>Connection timeout</td><td style="text-align: right">2 seconds</td></tr>
+<tr><td>Read timeout</td><td style="text-align: right">3 seconds</td></tr>
+<tr><td>Shared report budget</td><td style="text-align: right">10 seconds</td></tr>
+<tr><td>Hosted maps cached per project</td><td style="text-align: right">500</td></tr>
+<tr><td>Network fetches per project</td><td style="text-align: right">10/minute and 100/hour</td></tr>
+<tr><td>Network fetches per instance</td><td style="text-align: right">60/minute</td></tr>
+</tbody>
+</table>
+</div>
+<p>Transient network failures are retried once within the same 10-second report
+budget. Permanent validation and security failures are not retried
+automatically. Hosted network work runs on a separate single-worker queue, so a
+slow asset server does not delay error ingestion or uploaded source maps.</p>
+<h3 id="hosted-discovery-statuses-and-troubleshooting"><a class="header" href="#hosted-discovery-statuses-and-troubleshooting">Hosted Discovery Statuses and Troubleshooting</a></h3>
+<p>The report page shows one of these statuses:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Status</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Unprocessed</strong></td><td>Hosted or uploaded source map processing has not run.</td></tr>
+<tr><td><strong>Queued</strong></td><td>Processing is waiting on a background worker.</td></tr>
+<tr><td><strong>Fetching</strong></td><td>Telebugs is processing an uploaded map or performing hosted discovery.</td></tr>
+<tr><td><strong>Resolved</strong></td><td>At least one frame was mapped to original source.</td></tr>
+<tr><td><strong>Not found</strong></td><td>No candidate, reference, file, or applicable mapping was found.</td></tr>
+<tr><td><strong>Failed</strong></td><td>A network, server, size, or map-validation failure occurred safely.</td></tr>
+<tr><td><strong>Blocked</strong></td><td>An authorization, instance, disk, debug-ID, or network safety rule prevented processing.</td></tr>
+</tbody>
+</table>
+</div>
+<p>The same status appears as <code>Source Map Status</code> in <strong>View as Markdown</strong>. When a
+failure reason is available, Markdown also includes <code>Source Map Failure Code</code>.
+The codes are grouped below with the action to take:</p>
+<ul>
+<li><code>candidate_not_found</code>, <code>map_not_found</code>, <code>http_not_found</code>,
+<code>mapping_not_found</code>, <code>cached_not_found</code>: verify the JavaScript frame URL,
+deployment, source map reference, and mapping. Wait five minutes or use the
+admin retry after correcting the deployment.</li>
+<li><code>origin_not_allowed</code>, <code>invalid_url</code>, <code>invalid_map_reference</code>,
+<code>hosted_fetching_disabled</code>: authorize the exact bundle and map origins, use a
+supported external map URL, or re-enable the instance switch.</li>
+<li><code>non_public_address</code>, <code>redirect_rejected</code>, <code>compression_rejected</code>,
+<code>pinning_unavailable</code>, <code>invalid_request_header</code>: the request did not satisfy
+the hosted security boundary. Change the public asset response or use an
+uploaded map; retry cannot override the boundary.</li>
+<li><code>debug_id_mismatch</code>: deploy the map that belongs to the reported bundle, or
+upload the correct release artifacts.</li>
+<li><code>disk_pressure</code>: restore free disk space above the instance safety floor.</li>
+<li><code>dns_failure</code>, <code>network_error</code>, <code>timeout</code>, <code>http_unavailable</code>, <code>rate_limited</code>:
+correct the public DNS/server problem or wait for the temporary condition to
+clear, then retry.</li>
+<li><code>response_too_large</code>: reduce the generated bundle or map below the documented
+boundary, or use uploaded artifacts.</li>
+<li><code>http_error</code>, <code>invalid_map</code>, <code>artifact_processing_failed</code>,
+<code>unexpected_error</code>: verify that the response is a supported version-3 source
+map. If a valid uploaded map still fails, inspect the Jobs dashboard and
+Telebugs logs for the bounded error class.</li>
+</ul>
+<h2 id="managing-source-maps"><a class="header" href="#managing-source-maps">Managing Source Maps</a></h2>
+<p>Uploaded source maps appear as artifacts on the release details page. From
+there you can view or download an artifact, delete an incorrect artifact, or
+delete the release and all of its maps.</p>
+<p>Hosted maps are private cache entries and have no download interface. They are
+counted as artifacts for disk usage and retention. Time-based cleanup uses
+their last-use time, and disk-based cleanup removes least-recently-used hosted
+maps before uploaded release artifacts.</p>
+<p>Use meaningful release versions and immutable asset filenames. Immutable URLs
+make both uploaded and hosted source map matching more reliable.</p>
 
                     </main>
 

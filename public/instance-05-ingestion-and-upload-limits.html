@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5154d0dc.js";
+            window.path_to_searchindex_js = "searchindex-b2d28e23.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -354,6 +354,37 @@ or publish the new content under the correct release version.</p>
 direct release-file API. Telebugs has compatibility coverage for both Sentry CLI
 2.58.6 and 3.6.2. See <a href="release-01-source-maps.html">Source Maps</a> for setup and
 upload commands.</p>
+<h2 id="hosted-source-map-discovery"><a class="header" href="#hosted-source-map-discovery">Hosted Source Map Discovery</a></h2>
+<p>Hosted discovery uses separate, fixed boundaries from uploads:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Object or window</th><th style="text-align: right">Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>Authorized origins per project</td><td style="text-align: right">10</td></tr>
+<tr><td>Bundle candidates per report</td><td style="text-align: right">2</td></tr>
+<tr><td>URL</td><td style="text-align: right">2 KiB</td></tr>
+<tr><td>Generated JavaScript response</td><td style="text-align: right">8 MiB</td></tr>
+<tr><td>Source map response</td><td style="text-align: right">32 MiB</td></tr>
+<tr><td>DNS lookup</td><td style="text-align: right">1 second</td></tr>
+<tr><td>Connection</td><td style="text-align: right">2 seconds</td></tr>
+<tr><td>Response read</td><td style="text-align: right">3 seconds</td></tr>
+<tr><td>Shared discovery budget per report</td><td style="text-align: right">10 seconds</td></tr>
+<tr><td>Hosted cache entries per project</td><td style="text-align: right">500</td></tr>
+<tr><td>Fetches per project</td><td style="text-align: right">10/minute and 100/hour</td></tr>
+<tr><td>Fetches across the instance</td><td style="text-align: right">60/minute</td></tr>
+</tbody>
+</table>
+</div>
+<p>Transient requests are retried once only while the shared 10-second budget
+remains. Redirects, compressed responses, inline maps, non-public network
+addresses, and unauthorized origins are rejected rather than consuming a
+different or configurable limit. Hosted maps count toward artifact disk usage
+and are purged before uploaded artifacts under disk pressure.</p>
+<p>See <a href="release-01-source-maps.html#hosted-source-map-discovery">Hosted Source Map Discovery</a>
+for setup, cache behavior, security rules, status meanings, and corrective
+actions.</p>
 <h2 id="http-responses-and-retries"><a class="header" href="#http-responses-and-retries">HTTP Responses and Retries</a></h2>
 <div class="table-wrapper">
 <table>
