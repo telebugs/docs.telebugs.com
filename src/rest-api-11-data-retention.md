@@ -87,6 +87,34 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/artifacts
   }'
 ```
 
+## Hosted Source Map Processing
+
+Read or update the instance-wide hosted source map emergency switch with an
+admin API key:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}'
+```
+
+Both responses use this shape:
+
+```json
+{"enabled":false}
+```
+
+Disabling this switch prevents hosted network fetching. Uploaded release maps
+continue to work.
+
 ## Response Format (Ingest Protection)
 
 For ingest protection, `enabled` controls the accepted-errors-per-minute limit.

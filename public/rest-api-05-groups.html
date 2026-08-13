@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -333,6 +333,31 @@ project-level muting.</li>
 <li><code>mute_source</code> is <code>manual</code>, <code>project</code>, or <code>manual_and_project</code>.</li>
 </ul>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="rest-api-06-reports.html">Reports</a> endpoints under the group.</p>
+<h2 id="get-a-single-group"><a class="header" href="#get-a-single-group">Get a Single Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>The detail response adds structured grouping diagnostics while retaining the
+top-level <code>fingerprint</code>:</p>
+<pre><code class="language-json">{
+  "id": 42,
+  "fingerprint": "v2:abc123...",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError",
+      "value": "undefined method `foo' for nil:NilClass"
+    }
+  }
+}
+</code></pre>
+<p><code>algorithm</code> is <code>v1</code> or <code>v2</code>. A legacy v1 group that has been reused by the v2
+compatibility path returns <code>"algorithm":"v1"</code> and
+<code>"compatible_with":["v2"]</code>. The grouping object is intentionally omitted from
+list responses.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
   -X POST \

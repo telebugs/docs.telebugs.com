@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -2254,6 +2254,52 @@ automatically mutes new groups. Reports continue to be recorded.</p>
 </code></pre>
 <p>This stops future groups from inheriting the project mute. Existing groups
 remain muted until their deadline or until explicitly unmuted.</p>
+<h2 id="notification-severity-setting"><a class="header" href="#notification-severity-setting">Notification Severity Setting</a></h2>
+<p>An admin API key can read or update whether a project sends notifications only
+for <code>error</code> and <code>fatal</code> reports:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/notification_settings \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/notification_settings \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"error_and_fatal_notifications_only": true}'
+</code></pre>
+<p>Both responses use this shape:</p>
+<pre><code class="language-json">{"error_and_fatal_notifications_only":true}
+</code></pre>
+<h2 id="hosted-source-map-origins"><a class="header" href="#hosted-source-map-origins">Hosted Source Map Origins</a></h2>
+<p>Hosted source map origins are project-scoped and require an admin API key. List
+the exact public HTTPS origins authorized for a project:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>Authorize an origin:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"origin":"https://assets.example.com"}'
+</code></pre>
+<p>Origins are canonicalized and must be exact public HTTPS origins without a path,
+query, fragment, credentials, wildcard, or IP address. Each project can authorize
+up to ten origins. A successful create returns <code>201 Created</code> with the origin:</p>
+<pre><code class="language-json">{
+  "id": 7,
+  "origin": "https://assets.example.com",
+  "created_at": "2026-08-13T10:00:00Z",
+  "updated_at": "2026-08-13T10:00:00Z"
+}
+</code></pre>
+<p>Remove an origin with <code>DELETE</code>. This also purges hosted maps cached through the
+origin:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins/ORIGIN_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+</code></pre>
 <h2 id="delete-a-project"><a class="header" href="#delete-a-project">Delete a Project</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID \
   -X DELETE \
@@ -2400,6 +2446,31 @@ project-level muting.</li>
 <li><code>mute_source</code> is <code>manual</code>, <code>project</code>, or <code>manual_and_project</code>.</li>
 </ul>
 <p>To see per-occurrence details for a group (including <code>server_name</code>, <code>tags</code>, <code>environment</code>, user info, request context, etc.), use the <a href="#reports">Reports</a> endpoints under the group.</p>
+<h2 id="get-a-single-group"><a class="header" href="#get-a-single-group">Get a Single Group</a></h2>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>The detail response adds structured grouping diagnostics while retaining the
+top-level <code>fingerprint</code>:</p>
+<pre><code class="language-json">{
+  "id": 42,
+  "fingerprint": "v2:abc123...",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError",
+      "value": "undefined method `foo' for nil:NilClass"
+    }
+  }
+}
+</code></pre>
+<p><code>algorithm</code> is <code>v1</code> or <code>v2</code>. A legacy v1 group that has been reused by the v2
+compatibility path returns <code>"algorithm":"v1"</code> and
+<code>"compatible_with":["v2"]</code>. The grouping object is intentionally omitted from
+list responses.</p>
 <h2 id="resolve-a-group"><a class="header" href="#resolve-a-group">Resolve a Group</a></h2>
 <pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/resolve \
   -X POST \
@@ -2540,6 +2611,7 @@ under a specific group. Reports expose per-occurrence details such as
       "id": 123,
       "group_id": 42,
       "project_id": 1,
+      "event_id": "69b345eb156342a496e5880afee01452",
       "error_type": "NoMethodError",
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
@@ -2550,6 +2622,9 @@ under a specific group. Reports expose per-occurrence details such as
       "server_name": "eagle-618d24",
       "environment": "production",
       "release_version": "1.2.3",
+      "sourcemap_status": "resolved",
+      "sourcemap_failure_code": null,
+      "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
       "created_at": "2026-05-20T14:55:01Z",
       "tags": [
         { "key": "component", "value": "api" },
@@ -2572,6 +2647,7 @@ under a specific group. Reports expose per-occurrence details such as
   "id": 123,
   "group_id": 42,
   "project_id": 1,
+  "event_id": "69b345eb156342a496e5880afee01452",
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -2584,6 +2660,9 @@ under a specific group. Reports expose per-occurrence details such as
   "release_version": "1.2.3",
   "custom_fingerprint": null,
   "transaction_source": null,
+  "sourcemap_status": "resolved",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
   "created_at": "2026-05-20T14:55:01Z",
   "updated_at": "2026-05-20T14:55:01Z",
   "tags": [
@@ -2627,7 +2706,53 @@ under a specific group. Reports expose per-occurrence details such as
   }
 }
 </code></pre>
-<p>This makes per-report data such as <code>server_name</code> (and the tags used for group-level filtering) directly reachable via the API.</p>
+<p><code>event_id</code> is <code>null</code> on legacy reports received before occurrence identity was
+stored. Source map status is one of <code>unprocessed</code>, <code>queued</code>, <code>fetching</code>,
+<code>resolved</code>, <code>not_found</code>, <code>failed</code>, or <code>blocked</code>. Failure code and attempt time are
+<code>null</code> until applicable.</p>
+<h2 id="get-a-report-by-event-id"><a class="header" href="#get-a-report-by-event-id">Get a Report by Event ID</a></h2>
+<p>Use the project-scoped occurrence ID when an SDK or ingestion response gives you
+an event ID but not a Telebugs report ID:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/reports/EVENT_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>This returns the same detailed representation as the group-nested report route.
+Dashless and standard hyphenated event IDs are accepted case-insensitively and
+normalized to 32 lowercase hexadecimal characters. Invalid, missing,
+inaccessible, and wrong-project IDs return <code>404 Not Found</code>.</p>
+<h2 id="retry-source-map-processing"><a class="header" href="#retry-source-map-processing">Retry Source Map Processing</a></h2>
+<p>An admin API key can retry source map processing for one report:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports/REPORT_ID/sourcemap_retry \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>A queued or already-running attempt returns <code>202 Accepted</code>; an already resolved
+report returns <code>200 OK</code>:</p>
+<pre><code class="language-json">{
+  "result": "queued",
+  "report_id": 123,
+  "sourcemap_status": "queued",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": null
+}
+</code></pre>
+<p>Failures use <code>application/problem+json</code> and include the same public diagnostic
+fields:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Status</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>409 Conflict</code></td><td>No uploaded release map or authorized hosted origin is available</td></tr>
+<tr><td><code>422 Unprocessable Content</code></td><td>The report is not a JavaScript report</td></tr>
+<tr><td><code>503 Service Unavailable</code></td><td>Work could not be queued; retry shortly</td></tr>
+</tbody>
+</table>
+</div>
+<p>The internal processing token is never returned.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="apps-1"><a class="header" href="#apps-1">Apps</a></h1>
 <p>Apps are used to organize multiple projects (for example, a frontend and a
@@ -2713,6 +2838,26 @@ backend app).</p>
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
+<h2 id="automatic-regression-context"><a class="header" href="#automatic-regression-context">Automatic Regression Context</a></h2>
+<p>When a new report automatically reopens a resolved group, a
+<code>group.unresolved</code> API webhook includes <code>reason: "new_report"</code> plus correlation
+details captured before the resolution is cleared:</p>
+<pre><code class="language-json">{
+  "event": "group.unresolved",
+  "reason": "new_report",
+  "group_id": 42,
+  "project_id": 1,
+  "report_id": 123,
+  "event_id": "69b345eb156342a496e5880afee01452",
+  "release_version": "server-2026-08-12",
+  "report_occurred_at": "2026-08-12T09:00:00.000000Z",
+  "report_received_at": "2026-08-12T10:00:00.000000Z",
+  "previous_resolved_at": "2026-08-12T08:00:00.000000Z",
+  "previous_resolver_id": 3,
+  "previous_resolver_name": "Sunshine"
+}
+</code></pre>
+<p><code>event_id</code>, release, and resolver fields are <code>null</code> when unavailable.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="webhook-deliveries"><a class="header" href="#webhook-deliveries">Webhook Deliveries</a></h1>
 <p>You can inspect webhook delivery attempts through the API.</p>
@@ -2952,6 +3097,24 @@ a <code>403 Forbidden</code> problem document (see <a href="#forbidden">Problems
     "max_releases_kept": 10
   }'
 </code></pre>
+<h2 id="hosted-source-map-processing"><a class="header" href="#hosted-source-map-processing">Hosted Source Map Processing</a></h2>
+<p>Read or update the instance-wide hosted source map emergency switch with an
+admin API key:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}'
+</code></pre>
+<p>Both responses use this shape:</p>
+<pre><code class="language-json">{"enabled":false}
+</code></pre>
+<p>Disabling this switch prevents hosted network fetching. Uploaded release maps
+continue to work.</p>
 <h2 id="response-format-ingest-protection"><a class="header" href="#response-format-ingest-protection">Response Format (Ingest Protection)</a></h2>
 <p>For ingest protection, <code>enabled</code> controls the accepted-errors-per-minute limit.
 Backlog and disk protection have their own separate switches. The
@@ -3664,6 +3827,16 @@ severity:info assignee:me
   "id": 42,
   "project_id": 1,
   "fingerprint": "abc123",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError"
+    },
+    "untrusted": true,
+    "untrusted_fields": ["data"]
+  },
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -3689,6 +3862,10 @@ severity:info assignee:me
   "untrusted_fields": ["error_message", "culprit"]
 }
 </code></pre>
+<p><code>grouping.algorithm</code> is <code>v1</code> or <code>v2</code>. A legacy v1 group reused by the v2
+compatibility path has <code>compatible_with: ["v2"]</code>. Grouping data comes from the
+reported application, so MCP marks it as untrusted. Grouping diagnostics appear
+only in <code>get_error_group_tool</code>, not list results.</p>
 <p>Use <code>recent_report_ids</code> as a quick way to fetch individual occurrences with <a href="#reports-1"><code>get_report_tool</code></a>. For complete pagination through a group’s reports, use <a href="#reports-1"><code>list_reports_tool</code></a>. Group IDs and report IDs are separate IDs; do not pass a <code>group_id</code> to <code>get_report_tool</code>.</p>
 <h2 id="resolve-error-group"><a class="header" href="#resolve-error-group">Resolve Error Group</a></h2>
 <p><strong>Tool:</strong> <code>resolve_error_group_tool</code>
@@ -4007,6 +4184,7 @@ groups that have already been merged.</p>
       "id": 123,
       "group_id": 42,
       "project_id": 1,
+      "event_id": "69b345eb156342a496e5880afee01452",
       "error_type": "NoMethodError",
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
@@ -4017,6 +4195,9 @@ groups that have already been merged.</p>
       "server_name": "eagle-618d24",
       "environment": "production",
       "release_version": "1.2.3",
+      "sourcemap_status": "resolved",
+      "sourcemap_failure_code": null,
+      "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
       "created_at": "2026-05-20T14:55:02Z",
       "tags": [
         {
@@ -4051,12 +4232,27 @@ groups that have already been merged.</p>
 </tbody>
 </table>
 </div>
+<p>Alternatively, omit <code>report_id</code> and provide both of these parameters:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>project_id</code></td><td>integer</td><td>Yes</td><td>Project containing the event</td></tr>
+<tr><td><code>event_id</code></td><td>string</td><td>Yes</td><td>Sentry occurrence ID</td></tr>
+</tbody>
+</table>
+</div>
+<p>Use exactly one lookup form. Event IDs may be dashless or standard hyphenated
+hexadecimal IDs and are normalized case-insensitively.</p>
 <h3 id="example-response-1-3"><a class="header" href="#example-response-1-3">Example Response</a></h3>
 <pre><code class="language-json">{
   "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
   "id": 123,
   "group_id": 42,
   "project_id": 1,
+  "event_id": "69b345eb156342a496e5880afee01452",
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -4071,6 +4267,9 @@ groups that have already been merged.</p>
   "platform": "ruby",
   "custom_fingerprint": null,
   "transaction_source": "url",
+  "sourcemap_status": "resolved",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
   "tags": [
     {
       "key": "component",
@@ -4121,13 +4320,16 @@ groups that have already been merged.</p>
 </code></pre>
 <p>This marking applies to <code>error_message</code>, <code>culprit</code>, <code>tags</code>, <code>contexts</code>, <code>extras</code>, <code>backtraces</code>, <code>breadcrumbs</code>, <code>user.data</code>, <code>request.data</code>, <code>request.cookies</code>, <code>request.headers</code>, <code>request.env</code>, and similar application-supplied fields.</p>
 <h2 id="finding-report-ids"><a class="header" href="#finding-report-ids">Finding Report IDs</a></h2>
-<p>You need a <code>report_id</code> to use <code>get_report_tool</code>. You can obtain report IDs from:</p>
+<p>You can identify a report by its Telebugs <code>report_id</code>, or by <code>project_id</code> plus a
+Sentry <code>event_id</code>. Report IDs are available from:</p>
 <ul>
 <li><code>list_reports_tool</code> for a specific <code>group_id</code></li>
 <li><code>recent_report_ids</code> in <code>get_error_group_tool</code></li>
 <li>The Telebugs web UI on individual error report pages</li>
 <li>The REST API reports endpoint</li>
 </ul>
+<p>MCP exposes source map diagnostics but intentionally does not provide a retry or
+configuration tool. Use the Telebugs UI or REST API for those admin actions.</p>
 <h2 id="when-to-use-reports-vs-error-groups"><a class="header" href="#when-to-use-reports-vs-error-groups">When to Use Reports vs Error Groups</a></h2>
 <div class="table-wrapper">
 <table>

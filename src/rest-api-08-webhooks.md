@@ -57,3 +57,28 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/webh
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
+
+## Automatic Regression Context
+
+When a new report automatically reopens a resolved group, a
+`group.unresolved` API webhook includes `reason: "new_report"` plus correlation
+details captured before the resolution is cleared:
+
+```json
+{
+  "event": "group.unresolved",
+  "reason": "new_report",
+  "group_id": 42,
+  "project_id": 1,
+  "report_id": 123,
+  "event_id": "69b345eb156342a496e5880afee01452",
+  "release_version": "server-2026-08-12",
+  "report_occurred_at": "2026-08-12T09:00:00.000000Z",
+  "report_received_at": "2026-08-12T10:00:00.000000Z",
+  "previous_resolved_at": "2026-08-12T08:00:00.000000Z",
+  "previous_resolver_id": 3,
+  "previous_resolver_name": "Sunshine"
+}
+```
+
+`event_id`, release, and resolver fields are `null` when unavailable.

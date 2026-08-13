@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -234,6 +234,26 @@
   -X POST \
   -H "Authorization: Bearer YOUR_API_KEY"
 </code></pre>
+<h2 id="automatic-regression-context"><a class="header" href="#automatic-regression-context">Automatic Regression Context</a></h2>
+<p>When a new report automatically reopens a resolved group, a
+<code>group.unresolved</code> API webhook includes <code>reason: "new_report"</code> plus correlation
+details captured before the resolution is cleared:</p>
+<pre><code class="language-json">{
+  "event": "group.unresolved",
+  "reason": "new_report",
+  "group_id": 42,
+  "project_id": 1,
+  "report_id": 123,
+  "event_id": "69b345eb156342a496e5880afee01452",
+  "release_version": "server-2026-08-12",
+  "report_occurred_at": "2026-08-12T09:00:00.000000Z",
+  "report_received_at": "2026-08-12T10:00:00.000000Z",
+  "previous_resolved_at": "2026-08-12T08:00:00.000000Z",
+  "previous_resolver_id": 3,
+  "previous_resolver_name": "Sunshine"
+}
+</code></pre>
+<p><code>event_id</code>, release, and resolver fields are <code>null</code> when unavailable.</p>
 
                     </main>
 

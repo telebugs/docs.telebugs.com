@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -229,6 +229,7 @@ under a specific group. Reports expose per-occurrence details such as
       "id": 123,
       "group_id": 42,
       "project_id": 1,
+      "event_id": "69b345eb156342a496e5880afee01452",
       "error_type": "NoMethodError",
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
@@ -239,6 +240,9 @@ under a specific group. Reports expose per-occurrence details such as
       "server_name": "eagle-618d24",
       "environment": "production",
       "release_version": "1.2.3",
+      "sourcemap_status": "resolved",
+      "sourcemap_failure_code": null,
+      "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
       "created_at": "2026-05-20T14:55:01Z",
       "tags": [
         { "key": "component", "value": "api" },
@@ -261,6 +265,7 @@ under a specific group. Reports expose per-occurrence details such as
   "id": 123,
   "group_id": 42,
   "project_id": 1,
+  "event_id": "69b345eb156342a496e5880afee01452",
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -273,6 +278,9 @@ under a specific group. Reports expose per-occurrence details such as
   "release_version": "1.2.3",
   "custom_fingerprint": null,
   "transaction_source": null,
+  "sourcemap_status": "resolved",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
   "created_at": "2026-05-20T14:55:01Z",
   "updated_at": "2026-05-20T14:55:01Z",
   "tags": [
@@ -316,7 +324,53 @@ under a specific group. Reports expose per-occurrence details such as
   }
 }
 </code></pre>
-<p>This makes per-report data such as <code>server_name</code> (and the tags used for group-level filtering) directly reachable via the API.</p>
+<p><code>event_id</code> is <code>null</code> on legacy reports received before occurrence identity was
+stored. Source map status is one of <code>unprocessed</code>, <code>queued</code>, <code>fetching</code>,
+<code>resolved</code>, <code>not_found</code>, <code>failed</code>, or <code>blocked</code>. Failure code and attempt time are
+<code>null</code> until applicable.</p>
+<h2 id="get-a-report-by-event-id"><a class="header" href="#get-a-report-by-event-id">Get a Report by Event ID</a></h2>
+<p>Use the project-scoped occurrence ID when an SDK or ingestion response gives you
+an event ID but not a Telebugs report ID:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/reports/EVENT_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>This returns the same detailed representation as the group-nested report route.
+Dashless and standard hyphenated event IDs are accepted case-insensitively and
+normalized to 32 lowercase hexadecimal characters. Invalid, missing,
+inaccessible, and wrong-project IDs return <code>404 Not Found</code>.</p>
+<h2 id="retry-source-map-processing"><a class="header" href="#retry-source-map-processing">Retry Source Map Processing</a></h2>
+<p>An admin API key can retry source map processing for one report:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID/reports/REPORT_ID/sourcemap_retry \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<p>A queued or already-running attempt returns <code>202 Accepted</code>; an already resolved
+report returns <code>200 OK</code>:</p>
+<pre><code class="language-json">{
+  "result": "queued",
+  "report_id": 123,
+  "sourcemap_status": "queued",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": null
+}
+</code></pre>
+<p>Failures use <code>application/problem+json</code> and include the same public diagnostic
+fields:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Status</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>409 Conflict</code></td><td>No uploaded release map or authorized hosted origin is available</td></tr>
+<tr><td><code>422 Unprocessable Content</code></td><td>The report is not a JavaScript report</td></tr>
+<tr><td><code>503 Service Unavailable</code></td><td>Work could not be queued; retry shortly</td></tr>
+</tbody>
+</table>
+</div>
+<p>The internal processing token is never returned.</p>
 
                     </main>
 

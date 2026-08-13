@@ -123,6 +123,16 @@ Fetch full details for a single error group, including assignee, mute status, an
   "id": 42,
   "project_id": 1,
   "fingerprint": "abc123",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError"
+    },
+    "untrusted": true,
+    "untrusted_fields": ["data"]
+  },
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -148,6 +158,11 @@ Fetch full details for a single error group, including assignee, mute status, an
   "untrusted_fields": ["error_message", "culprit"]
 }
 ```
+
+`grouping.algorithm` is `v1` or `v2`. A legacy v1 group reused by the v2
+compatibility path has `compatible_with: ["v2"]`. Grouping data comes from the
+reported application, so MCP marks it as untrusted. Grouping diagnostics appear
+only in `get_error_group_tool`, not list results.
 
 Use `recent_report_ids` as a quick way to fetch individual occurrences with [`get_report_tool`](telebugs-mcp-06-reports.md). For complete pagination through a group's reports, use [`list_reports_tool`](telebugs-mcp-06-reports.md). Group IDs and report IDs are separate IDs; do not pass a `group_id` to `get_report_tool`.
 

@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -259,6 +259,24 @@
     "max_releases_kept": 10
   }'
 </code></pre>
+<h2 id="hosted-source-map-processing"><a class="header" href="#hosted-source-map-processing">Hosted Source Map Processing</a></h2>
+<p>Read or update the instance-wide hosted source map emergency switch with an
+admin API key:</p>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+</code></pre>
+<pre><code class="language-sh">curl https://your-telebugs-instance.com/api/telebugs/v1/data_retention/hosted_sourcemaps \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}'
+</code></pre>
+<p>Both responses use this shape:</p>
+<pre><code class="language-json">{"enabled":false}
+</code></pre>
+<p>Disabling this switch prevents hosted network fetching. Uploaded release maps
+continue to work.</p>
 <h2 id="response-format-ingest-protection"><a class="header" href="#response-format-ingest-protection">Response Format (Ingest Protection)</a></h2>
 <p>For ingest protection, <code>enabled</code> controls the accepted-errors-per-minute limit.
 Backlog and disk protection have their own separate switches. The

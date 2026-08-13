@@ -126,6 +126,74 @@ curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/mute
 This stops future groups from inheriting the project mute. Existing groups
 remain muted until their deadline or until explicitly unmuted.
 
+## Notification Severity Setting
+
+An admin API key can read or update whether a project sends notifications only
+for `error` and `fatal` reports:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/notification_settings \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/notification_settings \
+  -X PATCH \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"error_and_fatal_notifications_only": true}'
+```
+
+Both responses use this shape:
+
+```json
+{"error_and_fatal_notifications_only":true}
+```
+
+## Hosted Source Map Origins
+
+Hosted source map origins are project-scoped and require an admin API key. List
+the exact public HTTPS origins authorized for a project:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+Authorize an origin:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins \
+  -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"origin":"https://assets.example.com"}'
+```
+
+Origins are canonicalized and must be exact public HTTPS origins without a path,
+query, fragment, credentials, wildcard, or IP address. Each project can authorize
+up to ten origins. A successful create returns `201 Created` with the origin:
+
+```json
+{
+  "id": 7,
+  "origin": "https://assets.example.com",
+  "created_at": "2026-08-13T10:00:00Z",
+  "updated_at": "2026-08-13T10:00:00Z"
+}
+```
+
+Remove an origin with `DELETE`. This also purges hosted maps cached through the
+origin:
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/hosted_sourcemap_origins/ORIGIN_ID \
+  -X DELETE \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
 ## Delete a Project
 
 ```sh

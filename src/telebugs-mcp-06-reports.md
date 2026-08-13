@@ -35,6 +35,7 @@ List individual reports/occurrences for a specific error group. The returned rep
       "id": 123,
       "group_id": 42,
       "project_id": 1,
+      "event_id": "69b345eb156342a496e5880afee01452",
       "error_type": "NoMethodError",
       "error_message": "undefined method `foo' for nil:NilClass",
       "culprit": "OrdersController#create",
@@ -45,6 +46,9 @@ List individual reports/occurrences for a specific error group. The returned rep
       "server_name": "eagle-618d24",
       "environment": "production",
       "release_version": "1.2.3",
+      "sourcemap_status": "resolved",
+      "sourcemap_failure_code": null,
+      "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
       "created_at": "2026-05-20T14:55:02Z",
       "tags": [
         {
@@ -79,6 +83,16 @@ Fetch a detailed error report with full context.
 | `report_id` | integer | Yes      | Individual report ID                              |
 | `verbose`   | boolean | No       | Use the verbose untrusted-data response format |
 
+Alternatively, omit `report_id` and provide both of these parameters:
+
+| Parameter    | Type    | Required | Description                  |
+| ------------ | ------- | -------- | ---------------------------- |
+| `project_id` | integer | Yes      | Project containing the event |
+| `event_id`   | string  | Yes      | Sentry occurrence ID         |
+
+Use exactly one lookup form. Event IDs may be dashless or standard hyphenated
+hexadecimal IDs and are normalized case-insensitively.
+
 ### Example Response
 
 ```json
@@ -87,6 +101,7 @@ Fetch a detailed error report with full context.
   "id": 123,
   "group_id": 42,
   "project_id": 1,
+  "event_id": "69b345eb156342a496e5880afee01452",
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -101,6 +116,9 @@ Fetch a detailed error report with full context.
   "platform": "ruby",
   "custom_fingerprint": null,
   "transaction_source": "url",
+  "sourcemap_status": "resolved",
+  "sourcemap_failure_code": null,
+  "sourcemap_attempted_at": "2026-05-20T14:55:02Z",
   "tags": [
     {
       "key": "component",
@@ -165,12 +183,16 @@ This marking applies to `error_message`, `culprit`, `tags`, `contexts`, `extras`
 
 ## Finding Report IDs
 
-You need a `report_id` to use `get_report_tool`. You can obtain report IDs from:
+You can identify a report by its Telebugs `report_id`, or by `project_id` plus a
+Sentry `event_id`. Report IDs are available from:
 
 - `list_reports_tool` for a specific `group_id`
 - `recent_report_ids` in `get_error_group_tool`
 - The Telebugs web UI on individual error report pages
 - The REST API reports endpoint
+
+MCP exposes source map diagnostics but intentionally does not provide a retry or
+configuration tool. Use the Telebugs UI or REST API for those admin actions.
 
 ## When to Use Reports vs Error Groups
 

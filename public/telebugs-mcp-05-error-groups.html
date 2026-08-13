@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-15445896.js";
+            window.path_to_searchindex_js = "searchindex-50cb42eb.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -312,6 +312,16 @@ severity:info assignee:me
   "id": 42,
   "project_id": 1,
   "fingerprint": "abc123",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError"
+    },
+    "untrusted": true,
+    "untrusted_fields": ["data"]
+  },
   "error_type": "NoMethodError",
   "error_message": "undefined method `foo' for nil:NilClass",
   "culprit": "OrdersController#create",
@@ -337,6 +347,10 @@ severity:info assignee:me
   "untrusted_fields": ["error_message", "culprit"]
 }
 </code></pre>
+<p><code>grouping.algorithm</code> is <code>v1</code> or <code>v2</code>. A legacy v1 group reused by the v2
+compatibility path has <code>compatible_with: ["v2"]</code>. Grouping data comes from the
+reported application, so MCP marks it as untrusted. Grouping diagnostics appear
+only in <code>get_error_group_tool</code>, not list results.</p>
 <p>Use <code>recent_report_ids</code> as a quick way to fetch individual occurrences with <a href="telebugs-mcp-06-reports.html"><code>get_report_tool</code></a>. For complete pagination through a group’s reports, use <a href="telebugs-mcp-06-reports.html"><code>list_reports_tool</code></a>. Group IDs and report IDs are separate IDs; do not pass a <code>group_id</code> to <code>get_report_tool</code>.</p>
 <h2 id="resolve-error-group"><a class="header" href="#resolve-error-group">Resolve Error Group</a></h2>
 <p><strong>Tool:</strong> <code>resolve_error_group_tool</code>

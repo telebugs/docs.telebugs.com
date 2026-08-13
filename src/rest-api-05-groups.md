@@ -156,6 +156,38 @@ The mute fields describe the group's current active mute:
 
 To see per-occurrence details for a group (including `server_name`, `tags`, `environment`, user info, request context, etc.), use the [Reports](rest-api-06-reports.md) endpoints under the group.
 
+## Get a Single Group
+
+```sh
+curl https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups/GROUP_ID \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+The detail response adds structured grouping diagnostics while retaining the
+top-level `fingerprint`:
+
+```json
+{
+  "id": 42,
+  "fingerprint": "v2:abc123...",
+  "grouping": {
+    "algorithm": "v2",
+    "compatible_with": [],
+    "data": {
+      "method": "exception",
+      "type": "NoMethodError",
+      "value": "undefined method `foo' for nil:NilClass"
+    }
+  }
+}
+```
+
+`algorithm` is `v1` or `v2`. A legacy v1 group that has been reused by the v2
+compatibility path returns `"algorithm":"v1"` and
+`"compatible_with":["v2"]`. The grouping object is intentionally omitted from
+list responses.
+
 ## Resolve a Group
 
 ```sh
