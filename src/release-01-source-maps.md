@@ -93,9 +93,10 @@ artifact.
 ## Hosted Source Map Discovery
 
 Hosted discovery is useful when your generated JavaScript and `.map` files are
-already public. It does not publish, proxy, or expose a source map. It only lets
-your Telebugs server retrieve an asset that an unauthenticated internet client
-could already retrieve.
+already public. After an origin is authorized, Telebugs runs discovery
+automatically for every new JavaScript report. It does not publish, proxy, or
+expose a source map. It only lets your Telebugs server retrieve an asset that an
+unauthenticated internet client could already retrieve.
 
 Do not make a private map public just to use this feature. Keep private or
 protected maps private and use the upload workflow instead.
@@ -161,8 +162,8 @@ with ETag or Last-Modified when the asset server provides one. A negative result
 is cached for 5 minutes.
 
 Only new reports enter hosted discovery automatically. Telebugs does not scan
-historical reports when an origin is added. To retry one older report, open it,
-select the report actions menu, and choose **Retry source map**. This action is
+historical reports when an origin is added. To retry one older report, open it
+and select **Retry source map** in the source map warning. This action is
 admin-only and cannot bypass any origin, network, size, rate, disk, or instance
 safety rule.
 
