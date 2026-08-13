@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-c46f4f10.js";
+            window.path_to_searchindex_js = "searchindex-73f1cef1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -6581,6 +6581,12 @@ instead of retried.</p>
 permanently failed. The banner shows the count and age of the oldest failure and
 links to the existing jobs page. It does not include recipient addresses,
 webhook URLs, payloads, or remote response bodies.</p>
+<p>The warning stays visible while any permanently failed notification jobs remain.
+To clear it, fix the destination and retry the job, or discard the job if the
+notification no longer needs to be delivered. A retried job clears the warning
+after it succeeds. If it fails again, or another delivery fails permanently, the
+warning remains. After the last failed job is retried successfully or discarded,
+the warning can take up to 30 seconds and a page reload to disappear.</p>
 <p><code>telebugs status</code> shows the same condition as an advisory warning. It does not
 turn the instance unready because ingestion and unrelated destinations can
 continue safely.</p>
@@ -6602,10 +6608,18 @@ or chat:
 </ul>
 </li>
 <li>Fix the destination.</li>
-<li>Retry the failed job from the jobs page when repeating the notification is
-appropriate, or discard it when the destination or report is no longer
-relevant.</li>
+<li>Choose what should happen to the failed job:
+<ul>
+<li><strong>Retry</strong> it after the destination is fixed. The warning clears after the
+delivery succeeds.</li>
+<li><strong>Discard</strong> it if the notification no longer needs to be delivered. This
+removes the failed job without sending it.</li>
+</ul>
+</li>
 </ol>
+<p>If notification delivery keeps failing, the warning stays visible. Do not
+discard recurring failures just to hide it; fix or disable the broken
+destination first.</p>
 <p>Telebugs does not email an admin about failed email delivery because that can
 fail recursively. It also does not call a second external alerting provider.
 Operators who need paging should run their existing monitoring or scheduled

@@ -30,6 +30,13 @@ permanently failed. The banner shows the count and age of the oldest failure and
 links to the existing jobs page. It does not include recipient addresses,
 webhook URLs, payloads, or remote response bodies.
 
+The warning stays visible while any permanently failed notification jobs remain.
+To clear it, fix the destination and retry the job, or discard the job if the
+notification no longer needs to be delivered. A retried job clears the warning
+after it succeeds. If it fails again, or another delivery fails permanently, the
+warning remains. After the last failed job is retried successfully or discarded,
+the warning can take up to 30 seconds and a page reload to disappear.
+
 `telebugs status` shows the same condition as an advisory warning. It does not
 turn the instance unready because ingestion and unrelated destinations can
 continue safely.
@@ -50,9 +57,15 @@ alert about the first alert failing.
    - webhook authentication, URL allowlists, and the destination's status;
    - push VAPID configuration and outbound HTTPS access.
 4. Fix the destination.
-5. Retry the failed job from the jobs page when repeating the notification is
-   appropriate, or discard it when the destination or report is no longer
-   relevant.
+5. Choose what should happen to the failed job:
+   - **Retry** it after the destination is fixed. The warning clears after the
+     delivery succeeds.
+   - **Discard** it if the notification no longer needs to be delivered. This
+     removes the failed job without sending it.
+
+If notification delivery keeps failing, the warning stays visible. Do not
+discard recurring failures just to hide it; fix or disable the broken
+destination first.
 
 Telebugs does not email an admin about failed email delivery because that can
 fail recursively. It also does not call a second external alerting provider.
