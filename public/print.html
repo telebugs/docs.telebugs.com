@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-73f1cef1.js";
+            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-d5033a90.js"></script>
@@ -6490,6 +6490,8 @@ registry access, remote backup retrieval, DNS, TLS, and operator access.</p>
 <p>Telebugs exposes two small, unauthenticated HTTP checks and one detailed local
 command. The HTTP responses never include database names, paths, queue counts,
 error messages, or other diagnostic details.</p>
+<p>The short version: <code>/up</code> asks whether the web process is alive. <code>/ready</code> asks
+whether the Telebugs installation can do its job.</p>
 <h2 id="liveness-up"><a class="header" href="#liveness-up">Liveness: <code>/up</code></a></h2>
 <p><code>GET /up</code> returns <code>200</code> when the Rails web application boots and can answer a
 request. Use it to decide whether the web process should be restarted.</p>

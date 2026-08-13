@@ -4,6 +4,9 @@ Telebugs exposes two small, unauthenticated HTTP checks and one detailed local
 command. The HTTP responses never include database names, paths, queue counts,
 error messages, or other diagnostic details.
 
+The short version: `/up` asks whether the web process is alive. `/ready` asks
+whether the Telebugs installation can do its job.
+
 ## Liveness: `/up`
 
 `GET /up` returns `200` when the Rails web application boots and can answer a
