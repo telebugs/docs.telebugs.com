@@ -112,6 +112,16 @@ required on your side.
 To revoke access, disconnect the connector in Claude or remove the app under
 **Account Settings → Connected apps** in Telebugs.
 
+## Refreshing Available Tools
+
+New MCP connections discover the current Telebugs tools automatically. An
+already-running connection may keep an older tool catalog, so restart or
+reconnect it once after tools are added, removed, renamed, or their schemas
+change. Reauthentication is normally unnecessary unless the authorization
+scopes changed.
+
+Implementation-only fixes to existing tools do not require reconnection.
+
 ## Other MCP Clients
 
 Any MCP client supporting Streamable HTTP transport and OAuth 2.0 discovery can

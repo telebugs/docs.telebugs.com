@@ -284,6 +284,13 @@ Claude discovers OAuth metadata automatically — no manual client registration 
 required on your side.</p>
 <p>To revoke access, disconnect the connector in Claude or remove the app under
 <strong>Account Settings → Connected apps</strong> in Telebugs.</p>
+<h2 id="refreshing-available-tools"><a class="header" href="#refreshing-available-tools">Refreshing Available Tools</a></h2>
+<p>New MCP connections discover the current Telebugs tools automatically. An
+already-running connection may keep an older tool catalog, so restart or
+reconnect it once after tools are added, removed, renamed, or their schemas
+change. Reauthentication is normally unnecessary unless the authorization
+scopes changed.</p>
+<p>Implementation-only fixes to existing tools do not require reconnection.</p>
 <h2 id="other-mcp-clients"><a class="header" href="#other-mcp-clients">Other MCP Clients</a></h2>
 <p>Any MCP client supporting Streamable HTTP transport and OAuth 2.0 discovery can
 connect to Telebugs. The server advertises:</p>
