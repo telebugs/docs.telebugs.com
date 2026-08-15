@@ -21,6 +21,9 @@ Returns all active projects you have access to. No parameters are required.
       "name": "Production",
       "platform": "Ruby",
       "timezone": "UTC",
+      "web_url": "https://telebugs.example.com/projects/1",
+      "source_repository_url": "https://github.com/example/payments",
+      "source_default_branch": "main",
       "groups_count": 42,
       "reports_count": 1287,
       "muted": false,
@@ -32,6 +35,9 @@ Returns all active projects you have access to. No parameters are required.
       "name": "Staging",
       "platform": "Ruby",
       "timezone": "UTC",
+      "web_url": "https://telebugs.example.com/projects/2",
+      "source_repository_url": null,
+      "source_default_branch": "main",
       "groups_count": 17,
       "reports_count": 312
     }
@@ -40,6 +46,11 @@ Returns all active projects you have access to. No parameters are required.
 ```
 
 Use the project `id` as `project_id` when calling tools such as `list_error_groups_tool` or `list_project_users_tool`.
+
+`source_repository_url` never includes embedded URL credentials, query
+parameters, or fragments. Configure repository metadata under
+**Project Settings → Source repository** to enable source links in
+`get_investigation_context_tool`.
 
 ## Mute Project
 

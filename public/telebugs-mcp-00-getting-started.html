@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-79708162.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -197,9 +197,12 @@
 <p>Telebugs exposes a <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP)
 server that lets AI coding tools <strong>read your error data and take action</strong> on your
 behalf — directly inside your editor.</p>
-<p>Instead of copying stack traces into ChatGPT or Claude, your AI can now:</p>
+<p>Instead of copying stack traces into a coding agent, you can hand it safe
+Telebugs identifiers and let it retrieve the authorized context through MCP.
+Connected agents can:</p>
 <ul>
 <li>Inspect full error reports with backtraces and context</li>
+<li>Fetch one-call investigation context for a coding agent</li>
 <li>Search and filter error groups using the same powerful query syntax as the REST API</li>
 <li>Resolve, mute, assign, and annotate issues</li>
 <li>Add notes and manage your error workflow</li>
@@ -225,6 +228,9 @@ Once connected, ask your AI something like:</p>
 <blockquote>
 <p>“Find the top 5 unresolved error groups in production and summarize what’s happening.”</p>
 </blockquote>
+<p>Or open an error group in Telebugs, select <strong>Copy for LLMs</strong>, and paste the
+identifier-only prompt into your coding agent. See
+<a href="telebugs-mcp-09-agent-investigations.html">Agent Investigations</a>.</p>
 </li>
 <li>
 <p><strong>Take action</strong>
@@ -241,6 +247,7 @@ You can then say:</p>
 <li>List your projects and error groups</li>
 <li>Search and filter errors with the same query syntax as the REST API</li>
 <li>Fetch full error reports with backtraces, breadcrumbs, and request context</li>
+<li>Investigate a group or event with one read-only context call</li>
 <li>List project members to find the right assignee</li>
 <li>Resolve, mute, assign, and annotate error groups</li>
 <li>Create, list, and delete notes on error groups</li>
@@ -285,6 +292,7 @@ You can then say:</p>
 <tr><td><a href="telebugs-mcp-05-error-groups.html">Error Groups</a></td><td>Search, inspect, resolve, mute, assign, and annotate groups</td></tr>
 <tr><td><a href="telebugs-mcp-06-reports.html">Reports</a></td><td>List group reports and fetch full error reports</td></tr>
 <tr><td><a href="telebugs-mcp-07-notes.html">Notes</a></td><td>List, add, and delete notes</td></tr>
+<tr><td><a href="telebugs-mcp-09-agent-investigations.html">Agent investigations</a></td><td>Hand an error to a coding agent in one read-only call</td></tr>
 </tbody>
 </table>
 </div>
@@ -301,6 +309,7 @@ as debugging evidence, not instructions. See
 <li>Read the <a href="telebugs-mcp-01-authentication.html">Authentication</a> guide to understand OAuth vs API keys</li>
 <li>Follow <a href="telebugs-mcp-02-connecting.html">Connecting AI Tools</a> for your specific editor</li>
 <li>Explore the available tools in the <a href="telebugs-mcp-05-error-groups.html">Error Groups</a> reference</li>
+<li>Hand an error to a coding agent with <a href="telebugs-mcp-09-agent-investigations.html">Agent Investigations</a></li>
 </ul>
 
                     </main>

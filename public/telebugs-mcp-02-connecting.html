@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-79708162.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -194,8 +194,31 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="connecting-ai-tools"><a class="header" href="#connecting-ai-tools">Connecting AI Tools</a></h1>
-<p>This guide covers connecting MCP-compatible AI tools — including Cursor,
-Windsurf, and Claude — to your Telebugs instance.</p>
+<p>This guide covers connecting MCP-compatible AI tools — including Codex,
+Cursor, Windsurf, and Claude — to your Telebugs instance.</p>
+<h2 id="codex"><a class="header" href="#codex">Codex</a></h2>
+<ol>
+<li>Open <strong>Settings → MCP servers</strong> in the ChatGPT desktop app.</li>
+<li>Select <strong>Add server</strong>.</li>
+<li>Enter a name, choose <strong>Streamable HTTP</strong>, and use your Telebugs URL:</li>
+</ol>
+<pre><code class="language-sh">https://your-telebugs-instance.com/mcp
+</code></pre>
+<ol start="4">
+<li>Save the server and restart the app.</li>
+<li>Select <strong>Authenticate</strong>, sign in to Telebugs, and approve the requested scopes.</li>
+</ol>
+<p>Type <code>/mcp</code> in the composer to verify that Telebugs is connected. The desktop
+app, Codex CLI, and Codex IDE extension share MCP configuration on the same
+Codex host.</p>
+<p>To configure Codex directly, add the server to <code>~/.codex/config.toml</code>:</p>
+<pre><code class="language-toml">[mcp_servers.telebugs]
+url = "https://your-telebugs-instance.com/mcp"
+</code></pre>
+<p>Then run <code>codex mcp login telebugs</code> to authorize the connection. Use
+<code>codex mcp list</code> or <code>/mcp</code> to verify it.</p>
+<p>See the <a href="https://learn.chatgpt.com/docs/extend/mcp">Codex MCP documentation</a>
+for additional configuration options.</p>
 <h2 id="cursor"><a class="header" href="#cursor">Cursor</a></h2>
 <ol>
 <li>Open <strong>Cursor Settings → MCP</strong>.</li>
@@ -284,6 +307,9 @@ requests.</li>
 <p>After connecting, ask your AI tool to list your Telebugs projects. It should call
 <code>list_projects_tool</code> and return your accessible projects with stats. To assign
 errors, it can call <code>list_project_users_tool</code> to discover team member IDs.</p>
+<p>For an end-to-end investigation check, open an error in Telebugs, select <strong>Copy
+for LLMs</strong>, and paste the prompt into the connected coding agent. Its first
+Telebugs call should be <code>get_investigation_context_tool</code>.</p>
 <p>If authentication fails, check:</p>
 <ul>
 <li>The Telebugs URL is correct and reachable</li>

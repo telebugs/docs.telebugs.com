@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-79708162.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -204,6 +204,16 @@ Search/select, <strong>Change timezone</strong>. Use UTC for global teams.</li>
 <li><strong>Platform</strong>: Choose for icon and tailored SDK guides. Save changes.</li>
 </ul>
 <p>These make the dashboard more intuitive without affecting data.</p>
+<h3 id="source-repository"><a class="header" href="#source-repository">Source Repository</a></h3>
+<p>Set the repository URL and default branch to link in-app backtrace frames to
+source files. Telebugs supports GitHub, GitLab, Bitbucket, and custom HTTP or
+HTTPS repository hosts.</p>
+<p>The repository URL should identify the repository root, for example
+<code>https://github.com/example/payments</code>. Do not include credentials or access
+tokens. The default branch is typically <code>main</code> or <code>master</code>.</p>
+<p>Repository settings are also returned by Telebugs MCP so coding agents can
+confirm that they are inspecting the corresponding repository. See
+<a href="telebugs-mcp-09-agent-investigations.html">Agent Investigations</a>.</p>
 <h3 id="hosted-source-maps"><a class="header" href="#hosted-source-maps">Hosted Source Maps</a></h3>
 <p>Instance admins can open <strong>Hosted source maps</strong> in the project settings menu to
 authorize exact public HTTPS asset origins. Telebugs makes no hosted-map

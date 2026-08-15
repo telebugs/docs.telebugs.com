@@ -12,6 +12,20 @@ dropdown > **Project Settings**.
 
 These make the dashboard more intuitive without affecting data.
 
+### Source Repository
+
+Set the repository URL and default branch to link in-app backtrace frames to
+source files. Telebugs supports GitHub, GitLab, Bitbucket, and custom HTTP or
+HTTPS repository hosts.
+
+The repository URL should identify the repository root, for example
+`https://github.com/example/payments`. Do not include credentials or access
+tokens. The default branch is typically `main` or `master`.
+
+Repository settings are also returned by Telebugs MCP so coding agents can
+confirm that they are inspecting the corresponding repository. See
+[Agent Investigations](telebugs-mcp-09-agent-investigations.md).
+
 ### Hosted Source Maps
 
 Instance admins can open **Hosted source maps** in the project settings menu to

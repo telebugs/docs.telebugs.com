@@ -59,6 +59,7 @@
   - [Reports](telebugs-mcp-06-reports.md)
   - [Notes](telebugs-mcp-07-notes.md)
   - [Errors](telebugs-mcp-08-errors.md)
+  - [Agent Investigations](telebugs-mcp-09-agent-investigations.md)
 
 - [Releases](releases-00.md)
   - [Source Maps](release-01-source-maps.md)

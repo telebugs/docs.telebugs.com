@@ -9,6 +9,21 @@ Similar errors are automatically grouped into issues to reduce noise.
 Teams can add notes (with attachments) to discuss and track resolution (see
 [Notes and Collaboration][1]).
 
+## Investigating with a Coding Agent
+
+If your coding agent is connected to Telebugs MCP, open an error group or an
+individual report and select **Copy for LLMs**. Paste the copied prompt into the
+agent while it has the corresponding repository open.
+
+The clipboard prompt contains stable Telebugs identifiers and generic workflow
+instructions only. It does not include error messages, backtraces, request
+data, user data, notes, secrets, or other production payloads. The action only
+copies text; it does not start an agent or edit code.
+
+The agent uses its authorized Telebugs MCP connection to retrieve the error
+context, inspect the repository, and propose a fix without editing first. See
+[Agent Investigations][2] for the complete workflow and security model.
+
 ## Keyboard Navigation
 
 When viewing the reports within an error group, use `J` / `K` or the arrow keys
@@ -34,3 +49,4 @@ shortcut reference, custom assignments, favorites, and safety behavior.
 See the following sections for details.
 
 [1]: /error-reports-03-notes-and-collaboration.md
+[2]: /telebugs-mcp-09-agent-investigations.md

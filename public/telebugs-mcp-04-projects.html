@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-79708162.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -208,6 +208,9 @@
       "name": "Production",
       "platform": "Ruby",
       "timezone": "UTC",
+      "web_url": "https://telebugs.example.com/projects/1",
+      "source_repository_url": "https://github.com/example/payments",
+      "source_default_branch": "main",
       "groups_count": 42,
       "reports_count": 1287,
       "muted": false,
@@ -219,6 +222,9 @@
       "name": "Staging",
       "platform": "Ruby",
       "timezone": "UTC",
+      "web_url": "https://telebugs.example.com/projects/2",
+      "source_repository_url": null,
+      "source_default_branch": "main",
       "groups_count": 17,
       "reports_count": 312
     }
@@ -226,6 +232,10 @@
 }
 </code></pre>
 <p>Use the project <code>id</code> as <code>project_id</code> when calling tools such as <code>list_error_groups_tool</code> or <code>list_project_users_tool</code>.</p>
+<p><code>source_repository_url</code> never includes embedded URL credentials, query
+parameters, or fragments. Configure repository metadata under
+<strong>Project Settings → Source repository</strong> to enable source links in
+<code>get_investigation_context_tool</code>.</p>
 <h2 id="mute-project"><a class="header" href="#mute-project">Mute Project</a></h2>
 <p><strong>Tool:</strong> <code>mute_project_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code>

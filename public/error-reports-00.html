@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-79708162.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,6 +200,17 @@ diagnose problems quickly.</p>
 <p>Similar errors are automatically grouped into issues to reduce noise.</p>
 <p>Teams can add notes (with attachments) to discuss and track resolution (see
 <a href="/error-reports-03-notes-and-collaboration.html">Notes and Collaboration</a>).</p>
+<h2 id="investigating-with-a-coding-agent"><a class="header" href="#investigating-with-a-coding-agent">Investigating with a Coding Agent</a></h2>
+<p>If your coding agent is connected to Telebugs MCP, open an error group or an
+individual report and select <strong>Copy for LLMs</strong>. Paste the copied prompt into the
+agent while it has the corresponding repository open.</p>
+<p>The clipboard prompt contains stable Telebugs identifiers and generic workflow
+instructions only. It does not include error messages, backtraces, request
+data, user data, notes, secrets, or other production payloads. The action only
+copies text; it does not start an agent or edit code.</p>
+<p>The agent uses its authorized Telebugs MCP connection to retrieve the error
+context, inspect the repository, and propose a fix without editing first. See
+<a href="/telebugs-mcp-09-agent-investigations.html">Agent Investigations</a> for the complete workflow and security model.</p>
 <h2 id="keyboard-navigation"><a class="header" href="#keyboard-navigation">Keyboard Navigation</a></h2>
 <p>When viewing the reports within an error group, use <code>J</code> / <code>K</code> or the arrow keys
 to move through the visible reports. Use <code>O</code> or <code>Enter</code> to open the highlighted
