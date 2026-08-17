@@ -4,13 +4,9 @@ Telebugs exposes a [Model Context Protocol](https://modelcontextprotocol.io/) (M
 server that lets AI coding tools **read your error data and take action** on your
 behalf — directly inside your editor.
 
-Instead of copying stack traces into a coding agent, you can hand it safe
-Telebugs identifiers and let it retrieve the authorized context through MCP.
-Connected agents can:
+Instead of copying stack traces into ChatGPT or Claude, your AI can now:
 
-- Install a supported Sentry SDK and verify the first marked test error
 - Inspect full error reports with backtraces and context
-- Fetch one-call investigation context for a coding agent
 - Search and filter error groups using the same powerful query syntax as the REST API
 - Resolve, mute, assign, and annotate issues
 - Add notes and manage your error workflow
@@ -36,14 +32,6 @@ Get value in under two minutes:
 
    > "Find the top 5 unresolved error groups in production and summarize what's happening."
 
-   Or open an error group in Telebugs, select **Copy for LLMs**, and paste the
-   identifier-only prompt into your coding agent. See
-   [Agent Investigations](telebugs-mcp-09-agent-investigations.md).
-
-   When installing a new project, select **Copy setup for agent** to let the
-   coding agent configure the supported SDK features and verify the first test
-   error. See [Projects](telebugs-mcp-04-projects.md#agent-assisted-project-setup).
-
 3. **Take action**
    You can then say:
 
@@ -55,11 +43,9 @@ Get value in under two minutes:
 
 Connected AI tools can:
 
-- Configure supported project error reporting and verify test ingestion
 - List your projects and error groups
 - Search and filter errors with the same query syntax as the REST API
 - Fetch full error reports with backtraces, breadcrumbs, and request context
-- Investigate a group or event with one read-only context call
 - List project members to find the right assignee
 - Resolve, mute, assign, and annotate error groups
 - Create, list, and delete notes on error groups
@@ -113,11 +99,10 @@ Telebugs MCP tools are grouped by resource:
 
 | Resource                                        | Capabilities                                                |
 | ----------------------------------------------- | ----------------------------------------------------------- |
-| [Projects](telebugs-mcp-04-projects.md)         | List projects and members; configure and verify SDK setup   |
+| [Projects](telebugs-mcp-04-projects.md)         | List projects and members                                   |
 | [Error Groups](telebugs-mcp-05-error-groups.md) | Search, inspect, resolve, mute, assign, and annotate groups |
 | [Reports](telebugs-mcp-06-reports.md)           | List group reports and fetch full error reports             |
 | [Notes](telebugs-mcp-07-notes.md)               | List, add, and delete notes                                 |
-| [Agent investigations](telebugs-mcp-09-agent-investigations.md) | Hand an error to a coding agent in one read-only call |
 
 ## Security Notes
 
@@ -132,4 +117,3 @@ Telebugs MCP tools are grouped by resource:
 - Read the [Authentication](telebugs-mcp-01-authentication.md) guide to understand OAuth vs API keys
 - Follow [Connecting AI Tools](telebugs-mcp-02-connecting.md) for your specific editor
 - Explore the available tools in the [Error Groups](telebugs-mcp-05-error-groups.md) reference
-- Hand an error to a coding agent with [Agent Investigations](telebugs-mcp-09-agent-investigations.md)

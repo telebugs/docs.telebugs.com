@@ -51,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
+            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-79708162.js"></script>
+        <script src="toc-d5033a90.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -208,9 +208,6 @@
       "name": "Production",
       "platform": "Ruby",
       "timezone": "UTC",
-      "web_url": "https://telebugs.example.com/projects/1",
-      "source_repository_url": "https://github.com/example/payments",
-      "source_default_branch": "main",
       "groups_count": 42,
       "reports_count": 1287,
       "muted": false,
@@ -222,9 +219,6 @@
       "name": "Staging",
       "platform": "Ruby",
       "timezone": "UTC",
-      "web_url": "https://telebugs.example.com/projects/2",
-      "source_repository_url": null,
-      "source_default_branch": "main",
       "groups_count": 17,
       "reports_count": 312
     }
@@ -232,107 +226,6 @@
 }
 </code></pre>
 <p>Use the project <code>id</code> as <code>project_id</code> when calling tools such as <code>list_error_groups_tool</code> or <code>list_project_users_tool</code>.</p>
-<p><code>source_repository_url</code> never includes embedded URL credentials, query
-parameters, or fragments. Configure repository metadata under
-<strong>Project Settings → Source repository</strong> to enable source links in
-<code>get_investigation_context_tool</code>.</p>
-<h2 id="agent-assisted-project-setup"><a class="header" href="#agent-assisted-project-setup">Agent-Assisted Project Setup</a></h2>
-<p>Open a new project’s installation page and use the primary agent setup action:
-<strong>Copy setup for agent</strong> when OAuth-connected with <code>telebugs.read</code> access, or
-<strong>Set up with agent</strong> when Telebugs needs to explain the connection first.
-Paste the identifier-only prompt into a repository-aware coding agent connected
-to Telebugs MCP. The agent inspects the repository, installs the appropriate
-official Sentry SDK, keeps the DSN in an environment variable, sends one marked
-test exception, and asks Telebugs to verify receipt.</p>
-<p>If no read-authorized OAuth MCP client is visible, the dashboard first explains
-how to connect one. Users who configured MCP manually or with an API key can
-use the <strong>Already connected?</strong> action. The manual <strong>Copy DSN</strong> path remains
-available and does not require MCP.</p>
-<p>The copied prompt never contains a DSN, account credential, MCP token, or
-production event content.</p>
-<h3 id="get-project-setup"><a class="header" href="#get-project-setup">Get Project Setup</a></h3>
-<p><strong>Tool:</strong> <code>get_project_setup_tool</code><br>
-<strong>Scope required:</strong> <code>telebugs.read</code><br>
-<strong>Behavior:</strong> read-only and non-destructive; each call creates a new marker</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr><td><code>project_id</code></td><td>integer</td><td>Yes</td><td>Existing authorized Telebugs project</td></tr>
-</tbody>
-</table>
-</div>
-<p>The response is the authoritative setup contract for the agent. It contains:</p>
-<ul>
-<li>Project ID, name, platform, and canonical Telebugs URL</li>
-<li>Project DSN and the recommended <code>SENTRY_DSN</code> environment-variable name</li>
-<li>The official Sentry SDK instructions URL for the project’s platform</li>
-<li>Confirmed supported and unsupported capability IDs</li>
-<li>A unique verification marker and the arguments for
-<code>verify_ingestion_tool</code></li>
-</ul>
-<p>The DSN is a project ingestion credential. Agents must place it in the returned
-environment variable and must not commit it to source control. The tool never
-returns account API keys, OAuth access tokens, refresh tokens, or MCP
-credentials.</p>
-<p>Example response, with the DSN shortened for display:</p>
-<pre><code class="language-json">{
-  "project_id": 13,
-  "name": "Storefront",
-  "platform": "Ruby",
-  "web_url": "https://telebugs.example.com/projects/13",
-  "dsn": "https://project-token@telebugs.example.com/api/v1/sentry_errors/13",
-  "dsn_environment_variable": "SENTRY_DSN",
-  "sdk_capabilities": {
-    "supported": [
-      { "id": "error_reporting" },
-      { "id": "event_tags" }
-    ],
-    "unsupported": [
-      { "id": "tracing" },
-      { "id": "profiling" }
-    ]
-  },
-  "verification_marker": "telebugs-setup-0123456789abcdef0123456789abcdef"
-}
-</code></pre>
-<p>Agents must configure only the capabilities returned as supported. They must
-not infer support from the broader Sentry product or enable tracing and
-profiling.</p>
-<h3 id="verify-ingestion"><a class="header" href="#verify-ingestion">Verify Ingestion</a></h3>
-<p><strong>Tool:</strong> <code>verify_ingestion_tool</code><br>
-<strong>Scope required:</strong> <code>telebugs.read</code><br>
-<strong>Behavior:</strong> read-only, idempotent, and non-destructive</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr><td><code>project_id</code></td><td>integer</td><td>Yes</td><td>Project returned by the setup tool</td></tr>
-<tr><td><code>verification_marker</code></td><td>string</td><td>Yes</td><td>Exact marker returned by that call</td></tr>
-</tbody>
-</table>
-</div>
-<p>The agent attaches the exact marker to its safe test exception message or the
-<code>telebugs.verification_marker</code> string tag, flushes the SDK transport when
-needed, and calls this tool. Telebugs searches only that authorized project and
-only reports ingested during the bounded 30-minute window.</p>
-<p>A successful result contains the matching report and event identity:</p>
-<pre><code class="language-json">{
-  "received": true,
-  "report_id": 304578,
-  "event_id": "34de0458a4ea42159547f7a4df273941",
-  "received_at": "2026-08-15T13:24:06Z",
-  "web_url": "https://telebugs.example.com/errors/193/reports/304578"
-}
-</code></pre>
-<p>When no match is found, <code>received</code> is <code>false</code>, report fields are <code>null</code>, and
-<code>next_action</code> tells the agent to send the exact marked event, flush the SDK,
-and retry within the verification window. The tool is intentionally not a
-general-purpose event search.</p>
 <h2 id="mute-project"><a class="header" href="#mute-project">Mute Project</a></h2>
 <p><strong>Tool:</strong> <code>mute_project_tool</code>
 <strong>Scope required:</strong> <code>telebugs.write</code>

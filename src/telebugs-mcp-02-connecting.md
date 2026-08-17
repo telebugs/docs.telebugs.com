@@ -1,59 +1,7 @@
 # Connecting AI Tools
 
-This guide covers connecting MCP-compatible AI tools — including Codex,
-Cursor, Windsurf, and Claude — to your Telebugs instance.
-
-## Starting from an Agent Button
-
-Telebugs uses the same MCP-aware behavior wherever the dashboard hands work to
-a coding agent, including **Set up with agent** on a new project and **Use with
-an agent** on an error:
-
-- If Telebugs can see an OAuth-authorized MCP client with `telebugs.read`
-  access, the button copies the identifier-only prompt immediately.
-- If no OAuth connection is visible, the button explains that MCP is required
-  and links to **Account Settings → Connected apps**, where you can copy the
-  canonical MCP server URL.
-- If the agent was configured manually or with an API key, select the
-  **Already connected?** action to copy the prompt without OAuth detection.
-
-API-key connections happen entirely inside the MCP client, so the Telebugs
-dashboard cannot detect or list them. This never blocks the manual DSN workflow
-for project installation.
-
-MCP settings open in a separate tab. When you return, the original dashboard
-refreshes only the agent action so a newly authorized OAuth connection becomes
-available without reloading the page or disturbing unrelated work.
-
-## Codex
-
-1. Open **Settings → MCP servers** in the ChatGPT desktop app.
-2. Select **Add server**.
-3. Enter a name, choose **Streamable HTTP**, and use your Telebugs URL:
-
-```sh
-https://your-telebugs-instance.com/mcp
-```
-
-4. Save the server and restart the app.
-5. Select **Authenticate**, sign in to Telebugs, and approve the requested scopes.
-
-Type `/mcp` in the composer to verify that Telebugs is connected. The desktop
-app, Codex CLI, and Codex IDE extension share MCP configuration on the same
-Codex host.
-
-To configure Codex directly, add the server to `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.telebugs]
-url = "https://your-telebugs-instance.com/mcp"
-```
-
-Then run `codex mcp login telebugs` to authorize the connection. Use
-`codex mcp list` or `/mcp` to verify it.
-
-See the [Codex MCP documentation](https://learn.chatgpt.com/docs/extend/mcp)
-for additional configuration options.
+This guide covers connecting MCP-compatible AI tools — including Cursor,
+Windsurf, and Claude — to your Telebugs instance.
 
 ## Cursor
 
@@ -134,16 +82,6 @@ required on your side.
 To revoke access, disconnect the connector in Claude or remove the app under
 **Account Settings → Connected apps** in Telebugs.
 
-## Refreshing Available Tools
-
-New MCP connections discover the current Telebugs tools automatically. An
-already-running connection may keep an older tool catalog, so restart or
-reconnect it once after tools are added, removed, renamed, or their schemas
-change. Reauthentication is normally unnecessary unless the authorization
-scopes changed.
-
-Implementation-only fixes to existing tools do not require reconnection.
-
 ## Other MCP Clients
 
 Any MCP client supporting Streamable HTTP transport and OAuth 2.0 discovery can
@@ -165,10 +103,6 @@ API key:
 2. Configure the client to send `Authorization: Bearer tlbgs_...` on MCP
    requests.
 
-Because this connection does not create an OAuth session, it does not appear
-under **Connected apps**. Use the **Already connected?** action when a Telebugs
-agent button asks you to connect MCP.
-
 See [Authentication](telebugs-mcp-01-authentication.md) for details.
 
 ## Verifying the Connection
@@ -176,10 +110,6 @@ See [Authentication](telebugs-mcp-01-authentication.md) for details.
 After connecting, ask your AI tool to list your Telebugs projects. It should call
 `list_projects_tool` and return your accessible projects with stats. To assign
 errors, it can call `list_project_users_tool` to discover team member IDs.
-
-For an end-to-end investigation check, open an error in Telebugs, select **Copy
-for LLMs**, and paste the prompt into the connected coding agent. Its first
-Telebugs call should be `get_investigation_context_tool`.
 
 If authentication fails, check:
 
