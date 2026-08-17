@@ -22,6 +22,13 @@ frames.
 Open an error group or an individual report and select **Copy for LLMs**. Paste
 the copied prompt into a coding agent connected to Telebugs MCP.
 
+When Telebugs can see an OAuth-authorized MCP client with `telebugs.read`
+access, the button copies the prompt immediately. Otherwise, it opens a short
+connection explanation with a link to the MCP settings page. Users who
+configured their agent manually or with an API key can choose **Already
+connected? Copy prompt**. API-key connections are not visible to the Telebugs
+dashboard.
+
 The prompt contains stable Telebugs identifiers and generic workflow
 instructions only. It does not copy error messages, backtraces, request data,
 user data, notes, secrets, or other production payloads. It instructs the agent

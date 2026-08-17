@@ -196,6 +196,25 @@
                         <h1 id="connecting-ai-tools"><a class="header" href="#connecting-ai-tools">Connecting AI Tools</a></h1>
 <p>This guide covers connecting MCP-compatible AI tools — including Codex,
 Cursor, Windsurf, and Claude — to your Telebugs instance.</p>
+<h2 id="starting-from-an-agent-button"><a class="header" href="#starting-from-an-agent-button">Starting from an Agent Button</a></h2>
+<p>Telebugs uses the same MCP-aware behavior wherever the dashboard hands work to
+a coding agent, including <strong>Set up with agent</strong> on a new project and <strong>Use with
+an agent</strong> on an error:</p>
+<ul>
+<li>If Telebugs can see an OAuth-authorized MCP client with <code>telebugs.read</code>
+access, the button copies the identifier-only prompt immediately.</li>
+<li>If no OAuth connection is visible, the button explains that MCP is required
+and links to <strong>Account Settings → Connected apps</strong>, where you can copy the
+canonical MCP server URL.</li>
+<li>If the agent was configured manually or with an API key, select the
+<strong>Already connected?</strong> action to copy the prompt without OAuth detection.</li>
+</ul>
+<p>API-key connections happen entirely inside the MCP client, so the Telebugs
+dashboard cannot detect or list them. This never blocks the manual DSN workflow
+for project installation.</p>
+<p>MCP settings open in a separate tab. When you return, the original dashboard
+refreshes only the agent action so a newly authorized OAuth connection becomes
+available without reloading the page or disturbing unrelated work.</p>
 <h2 id="codex"><a class="header" href="#codex">Codex</a></h2>
 <ol>
 <li>Open <strong>Settings → MCP servers</strong> in the ChatGPT desktop app.</li>
@@ -309,6 +328,9 @@ API key:</p>
 <li>Configure the client to send <code>Authorization: Bearer tlbgs_...</code> on MCP
 requests.</li>
 </ol>
+<p>Because this connection does not create an OAuth session, it does not appear
+under <strong>Connected apps</strong>. Use the <strong>Already connected?</strong> action when a Telebugs
+agent button asks you to connect MCP.</p>
 <p>See <a href="telebugs-mcp-01-authentication.html">Authentication</a> for details.</p>
 <h2 id="verifying-the-connection"><a class="header" href="#verifying-the-connection">Verifying the Connection</a></h2>
 <p>After connecting, ask your AI tool to list your Telebugs projects. It should call

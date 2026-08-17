@@ -212,6 +212,12 @@ frames.</p>
 <h2 id="copy-an-investigation-prompt"><a class="header" href="#copy-an-investigation-prompt">Copy an Investigation Prompt</a></h2>
 <p>Open an error group or an individual report and select <strong>Copy for LLMs</strong>. Paste
 the copied prompt into a coding agent connected to Telebugs MCP.</p>
+<p>When Telebugs can see an OAuth-authorized MCP client with <code>telebugs.read</code>
+access, the button copies the prompt immediately. Otherwise, it opens a short
+connection explanation with a link to the MCP settings page. Users who
+configured their agent manually or with an API key can choose <strong>Already
+connected? Copy prompt</strong>. API-key connections are not visible to the Telebugs
+dashboard.</p>
 <p>The prompt contains stable Telebugs identifiers and generic workflow
 instructions only. It does not copy error messages, backtraces, request data,
 user data, notes, secrets, or other production payloads. It instructs the agent

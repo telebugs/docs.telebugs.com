@@ -201,6 +201,7 @@ behalf — directly inside your editor.</p>
 Telebugs identifiers and let it retrieve the authorized context through MCP.
 Connected agents can:</p>
 <ul>
+<li>Install a supported Sentry SDK and verify the first marked test error</li>
 <li>Inspect full error reports with backtraces and context</li>
 <li>Fetch one-call investigation context for a coding agent</li>
 <li>Search and filter error groups using the same powerful query syntax as the REST API</li>
@@ -231,6 +232,9 @@ Once connected, ask your AI something like:</p>
 <p>Or open an error group in Telebugs, select <strong>Copy for LLMs</strong>, and paste the
 identifier-only prompt into your coding agent. See
 <a href="telebugs-mcp-09-agent-investigations.html">Agent Investigations</a>.</p>
+<p>When installing a new project, select <strong>Copy setup for agent</strong> to let the
+coding agent configure the supported SDK features and verify the first test
+error. See <a href="telebugs-mcp-04-projects.html#agent-assisted-project-setup">Projects</a>.</p>
 </li>
 <li>
 <p><strong>Take action</strong>
@@ -244,6 +248,7 @@ You can then say:</p>
 <h2 id="what-you-can-do"><a class="header" href="#what-you-can-do">What You Can Do</a></h2>
 <p>Connected AI tools can:</p>
 <ul>
+<li>Configure supported project error reporting and verify test ingestion</li>
 <li>List your projects and error groups</li>
 <li>Search and filter errors with the same query syntax as the REST API</li>
 <li>Fetch full error reports with backtraces, breadcrumbs, and request context</li>
@@ -288,7 +293,7 @@ You can then say:</p>
 <tr><th>Resource</th><th>Capabilities</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="telebugs-mcp-04-projects.html">Projects</a></td><td>List projects and members</td></tr>
+<tr><td><a href="telebugs-mcp-04-projects.html">Projects</a></td><td>List projects and members; configure and verify SDK setup</td></tr>
 <tr><td><a href="telebugs-mcp-05-error-groups.html">Error Groups</a></td><td>Search, inspect, resolve, mute, assign, and annotate groups</td></tr>
 <tr><td><a href="telebugs-mcp-06-reports.html">Reports</a></td><td>List group reports and fetch full error reports</td></tr>
 <tr><td><a href="telebugs-mcp-07-notes.html">Notes</a></td><td>List, add, and delete notes</td></tr>

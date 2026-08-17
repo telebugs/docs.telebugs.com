@@ -8,6 +8,7 @@ Instead of copying stack traces into a coding agent, you can hand it safe
 Telebugs identifiers and let it retrieve the authorized context through MCP.
 Connected agents can:
 
+- Install a supported Sentry SDK and verify the first marked test error
 - Inspect full error reports with backtraces and context
 - Fetch one-call investigation context for a coding agent
 - Search and filter error groups using the same powerful query syntax as the REST API
@@ -39,6 +40,10 @@ Get value in under two minutes:
    identifier-only prompt into your coding agent. See
    [Agent Investigations](telebugs-mcp-09-agent-investigations.md).
 
+   When installing a new project, select **Copy setup for agent** to let the
+   coding agent configure the supported SDK features and verify the first test
+   error. See [Projects](telebugs-mcp-04-projects.md#agent-assisted-project-setup).
+
 3. **Take action**
    You can then say:
 
@@ -50,6 +55,7 @@ Get value in under two minutes:
 
 Connected AI tools can:
 
+- Configure supported project error reporting and verify test ingestion
 - List your projects and error groups
 - Search and filter errors with the same query syntax as the REST API
 - Fetch full error reports with backtraces, breadcrumbs, and request context
@@ -107,7 +113,7 @@ Telebugs MCP tools are grouped by resource:
 
 | Resource                                        | Capabilities                                                |
 | ----------------------------------------------- | ----------------------------------------------------------- |
-| [Projects](telebugs-mcp-04-projects.md)         | List projects and members                                   |
+| [Projects](telebugs-mcp-04-projects.md)         | List projects and members; configure and verify SDK setup   |
 | [Error Groups](telebugs-mcp-05-error-groups.md) | Search, inspect, resolve, mute, assign, and annotate groups |
 | [Reports](telebugs-mcp-06-reports.md)           | List group reports and fetch full error reports             |
 | [Notes](telebugs-mcp-07-notes.md)               | List, add, and delete notes                                 |
