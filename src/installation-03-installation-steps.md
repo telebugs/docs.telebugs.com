@@ -19,16 +19,21 @@ The whole process takes less than 5 minutes. Here is how to get started.
    Your personal command will look similar to this:
 
    ```bash
-   bash -c "$(curl -fsSL https://auth.telebugs.com/install/a12b-c34d-e56f-g78h)"
+   bash -c "$(curl --disable -fsSL https://license.telebugs.com/install/a12b-c34d-e56f-g78h)"
    ```
 
    **Important:** Keep your install command private. Do not share it or post it
    online. It is tied to your account and license. The purchase token is included
    in your email.
 
+Already purchased Telebugs? Keep using the exact command and key in your email.
+Earlier Auth commands and Licensing's `install.sh` command remain supported;
+there is no need to exchange your key or reinstall an existing server.
+
 When you run this command, it will automatically install Docker on your server
 (assuming you’re using Linux, which is standard for most cloud environments). It
-will then download the latest version of the Telebugs app as a Docker container.
+will then download the newest Telebugs version covered by your purchase as a
+Docker container.
 During setup, you’ll be prompted to enter your domain name so we can generate a
 TLS certificate for you.
 
@@ -40,7 +45,10 @@ user. After that, you can invite your team.
 Telebugs updates itself automatically every night at 1 AM (server local time).
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the [telebugs command][5]. Connect to your server and run `telebugs`
-to see all options.
+to see all options. New purchases include one year of updates and support,
+renewing at $99/year unless cancelled. Covered versions keep working and remain
+available for download after coverage ends; later releases require renewed
+coverage. Existing Auth customers retain their original license terms.
 
 After first launch, run `telebugs status` on the server. Before sending
 production errors, create an off-server [backup and restore plan][6] and decide
@@ -54,7 +62,7 @@ Do not follow the normal installation steps or run `telebugs setup` on a
 replacement server. Install only the recovery CLI:
 
 ```bash
-bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 ```
 
 Then copy your backup, run `telebugs data verify`, and follow the
