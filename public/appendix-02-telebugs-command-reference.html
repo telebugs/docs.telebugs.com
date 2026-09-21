@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
+            window.path_to_searchindex_js = "searchindex-f7060b50.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -199,7 +199,7 @@
 provider’s web-based terminal.</p>
 <h2 id="fresh-server-recovery-bootstrap"><a class="header" href="#fresh-server-recovery-bootstrap">Fresh-server recovery bootstrap</a></h2>
 <p>Install only the CLI on a fresh replacement server:</p>
-<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+<pre><code class="language-bash">bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 </code></pre>
 <p>The public bootstrap verifies a platform-specific SHA-256 checksum and installs
 <code>/usr/local/bin/telebugs</code>. It does not run setup, create configuration, install

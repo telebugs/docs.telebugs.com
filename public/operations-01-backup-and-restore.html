@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
+            window.path_to_searchindex_js = "searchindex-f7060b50.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -277,10 +277,11 @@ restore.</p>
 <p>Verification detects corruption and incomplete archives; it is not an external
 digital signature. Keep archives in access-controlled, tamper-resistant storage
 as well as encrypting them.</p>
-<p>Current backups use format 2 and contain a version-2 license receipt bound to the
-exact installation token and licensed domain. The CLI verifies that receipt
+<p>Current backups use format 2 and contain a signed license receipt bound to the
+exact installation token and licensed domain. Auth licenses use version-2 Auth
+receipts; Licensing purchases use perpetual Licensing receipts. The CLI verifies that receipt
 locally, so archive verification and restore authorization work without
-<code>auth.telebugs.com</code>. Retrieving the captured container image can still require
+the license service. Retrieving the captured container image can still require
 registry access.</p>
 <p>Format-1 manifest backups use the retired receipt format. The current CLI
 contacts <code>auth.telebugs.com</code> during <code>data verify</code> or <code>data restore</code>.
@@ -301,7 +302,7 @@ changed. Use the current Telebugs CLI for restoration; it pairs the stored data
 with the captured application image so database migrations are not guessed.</p>
 <h2 id="restore"><a class="header" href="#restore">Restore</a></h2>
 <p>On a fresh replacement server, install the current recovery CLI:</p>
-<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+<pre><code class="language-bash">bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 </code></pre>
 <p>This public bootstrap detects Linux or macOS on x86_64 or arm64, downloads the
 matching CLI through a short-lived URL, verifies its SHA-256 sidecar, and
@@ -536,7 +537,7 @@ network isolation or outbound firewall rules provide the boundary before you
 can sign in and replace destinations with drill-safe configuration.</p>
 <ol>
 <li>Start with a fresh host containing neither the CLI nor Docker.</li>
-<li>Install the CLI with <code>bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"</code>.
+<li>Install the CLI with <code>bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"</code>.
 Confirm that it created no Telebugs configuration or container.</li>
 <li>Copy the newest off-server archive to the drill host.</li>
 <li>Run <code>telebugs data verify</code>.</li>
@@ -555,6 +556,15 @@ notification channels you depend on.</li>
 <li>Record the archive date, restore duration, Telebugs version, and result, then
 destroy the drill host securely.</li>
 </ol>
+<p>The CLI keeps the license service and signed receipt in the backup. It selects
+the correct service automatically for older Auth licenses, existing Licensing
+keys, and new short Licensing keys. No extra service flag is needed. Older
+<code>auth.telebugs.com/restore</code> commands remain supported.</p>
+<p>For Licensing purchases, covered image bundles remain downloadable after
+coverage expires. A locally retained image and valid receipt allow offline
+recovery; fetching a missing image still requires a network connection. Setup
+and restore reports are retried privately if delivery fails, without changing
+the outcome of the operation.</p>
 <p>The license permits temporary same-domain overlap solely for an isolated restore
 drill, migration, and rollback. The temporary copy must not become an additional
 production instance, and only one endpoint may serve production traffic.</p>

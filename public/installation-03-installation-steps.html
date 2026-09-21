@@ -16,7 +16,7 @@
             document.head.appendChild(script);
           }
         </script>
-
+        
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-64a0a13e.js";
+            window.path_to_searchindex_js = "searchindex-f7060b50.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -213,16 +213,20 @@ to your server IP. Do not use proxying. Telebugs handles TLS itself.</p>
 <p><strong>Run the installation command.</strong> Copy the command from your purchase email
 and paste it into the server terminal. Installation can take up to 5 minutes.</p>
 <p>Your personal command will look similar to this:</p>
-<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/install/a12b-c34d-e56f-g78h)"
+<pre><code class="language-bash">bash -c "$(curl --disable -fsSL https://license.telebugs.com/install/a12b-c34d-e56f-g78h)"
 </code></pre>
 <p><strong>Important:</strong> Keep your install command private. Do not share it or post it
 online. It is tied to your account and license. The purchase token is included
 in your email.</p>
 </li>
 </ol>
+<p>Already purchased Telebugs? Keep using the exact command and key in your email.
+Earlier Auth commands and Licensing’s <code>install.sh</code> command remain supported;
+there is no need to exchange your key or reinstall an existing server.</p>
 <p>When you run this command, it will automatically install Docker on your server
 (assuming you’re using Linux, which is standard for most cloud environments). It
-will then download the latest version of the Telebugs app as a Docker container.
+will then download the newest Telebugs version covered by your purchase as a
+Docker container.
 During setup, you’ll be prompted to enter your domain name so we can generate a
 TLS certificate for you.</p>
 <p><img src="assets/images/installation-03-installation-steps/02.webp" alt="Successful Telebugs installation"></p>
@@ -231,7 +235,10 @@ user. After that, you can invite your team.</p>
 <p>Telebugs updates itself automatically every night at 1 AM (server local time).
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the <a href="/appendix-02-telebugs-command-reference.html">telebugs command</a>. Connect to your server and run <code>telebugs</code>
-to see all options.</p>
+to see all options. New purchases include one year of updates and support,
+renewing at $99/year unless cancelled. Covered versions keep working and remain
+available for download after coverage ends; later releases require renewed
+coverage. Existing Auth customers retain their original license terms.</p>
 <p>After first launch, run <code>telebugs status</code> on the server. Before sending
 production errors, create an off-server <a href="/operations-01-backup-and-restore.html">backup and restore plan</a> and decide
 whether your external monitoring should check <a href="/operations-02-health-and-status.html"><code>/ready</code></a>.</p>
@@ -241,7 +248,7 @@ whether your external monitoring should check <a href="/operations-02-health-and
 <h2 id="replacing-or-recovering-an-existing-server"><a class="header" href="#replacing-or-recovering-an-existing-server">Replacing or Recovering an Existing Server</a></h2>
 <p>Do not follow the normal installation steps or run <code>telebugs setup</code> on a
 replacement server. Install only the recovery CLI:</p>
-<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+<pre><code class="language-bash">bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 </code></pre>
 <p>Then copy your backup, run <code>telebugs data verify</code>, and follow the
 <a href="/operations-01-backup-and-restore.html">backup and restore runbook</a>. Restore uses the exact licensed domain captured
