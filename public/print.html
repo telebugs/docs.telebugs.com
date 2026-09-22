@@ -52,7 +52,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f7060b50.js";
+            window.path_to_searchindex_js = "searchindex-81052db0.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -427,6 +427,9 @@ recommend DigitalOcean (see the <a href="/appendix-04-installing-on-digital-ocea
 <li>
 <p><strong>Point your domain.</strong> Update your DNS records so your domain points directly
 to your server IP. Do not use proxying. Telebugs handles TLS itself.</p>
+<p>If a reverse proxy or Cloudflare Tunnel handles HTTPS, use
+<a href="/installation-04-custom-tls.html">local HTTP mode</a> instead: leave the domain prompt blank during setup.
+The direct DNS requirement above does not apply to that mode.</p>
 <p><img src="assets/images/installation-03-installation-steps/01.webp" alt="Cloudflare DNS configuration example"></p>
 </li>
 <li>
@@ -455,7 +458,7 @@ TLS certificate for you.</p>
 <p><img src="assets/images/installation-03-installation-steps/02.webp" alt="Successful Telebugs installation"></p>
 <p>That is it. Visit <code>https://YOUR-DOMAIN</code> in your browser to create the first
 user. After that, you can invite your team.</p>
-<p>Telebugs updates itself automatically every night at 1 AM (server local time).
+<p>On Linux, Telebugs updates itself automatically every night at 1 AM (server local time).
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the <a href="/appendix-02-telebugs-command-reference.html">telebugs command</a>. Connect to your server and run <code>telebugs</code>
 to see all options. New purchases include one year of updates and support,
@@ -468,6 +471,17 @@ whether your external monitoring should check <a href="/operations-02-health-and
 <blockquote>
 <p>💡 Want multiple Telebugs installations? You need a separate license for each domain.</p>
 </blockquote>
+<h2 id="installing-on-a-mac"><a class="header" href="#installing-on-a-mac">Installing on a Mac</a></h2>
+<p>Start your existing Docker environment, such as Colima or Docker Desktop, before
+running the installation command. Run it from your usual Mac account. The
+installer asks for administrator permission only to install the CLI; setup and
+later <code>telebugs</code> commands use your account’s Docker context.</p>
+<p>For a new Licensing installation, use the <code>/install/YOUR-LICENSE-KEY</code> command
+shown above with your existing key, including an older <code>TLB-SH-</code> key. Leave the
+domain blank when using <a href="/installation-04-custom-tls.html">Cloudflare Tunnel or another reverse proxy</a>.</p>
+<p>New Mac installations store data in <code>~/.local/share/telebugs</code>. Run management,
+backup and restore commands from the same Mac account. To update, run
+<code>telebugs update</code>; automatic scheduling is not enabled on macOS.</p>
 <h2 id="replacing-or-recovering-an-existing-server"><a class="header" href="#replacing-or-recovering-an-existing-server">Replacing or Recovering an Existing Server</a></h2>
 <p>Do not follow the normal installation steps or run <code>telebugs setup</code> on a
 replacement server. Install only the recovery CLI:</p>
@@ -482,6 +496,17 @@ ports 80/443, TLS, and rollback.</p>
 <h1 id="custom-tls-certificates"><a class="header" href="#custom-tls-certificates">Custom TLS Certificates</a></h1>
 <p>Telebugs automatically creates and installs a Let’s Encrypt TLS certificate for
 you. If you already have your own certificate, you can use it instead.</p>
+<h2 id="cloudflare-tunnel"><a class="header" href="#cloudflare-tunnel">Cloudflare Tunnel</a></h2>
+<p>During setup, leave the domain prompt blank and press Enter. Do not type
+<code>localhost</code> or your public hostname. This selects local HTTP on port 5555 and
+skips the direct public IP check.</p>
+<p>Keep your public hostname in the Tunnel configuration. If <code>cloudflared</code> runs
+directly on the same host as Telebugs, set its service URL to
+<code>http://127.0.0.1:5555</code>. Cloudflare handles public HTTPS.</p>
+<p>If <code>cloudflared</code> runs inside a container, use an address reachable from that
+container instead: <code>127.0.0.1</code> refers to the connector’s own container. On a Mac,
+start Colima or Docker Desktop first and run the Telebugs installer from your
+usual account.</p>
 <h2 id="tls-termination-with-nginx"><a class="header" href="#tls-termination-with-nginx">TLS Termination with Nginx</a></h2>
 <p><a href="https://nginx.org/">Nginx</a> is the recommended way to use a custom certificate. It works as a reverse
 proxy and handles TLS termination.</p>
@@ -6313,6 +6338,10 @@ If an admin banner reports a delivery failure, follow the
 Telebugs data and recovery configuration. The archive contains sensitive
 recovery secrets, so treat it like production credentials as well as production
 data.</p>
+<p>On macOS, run backup and restore from the same ordinary Mac account used for
+installation, with its Docker environment running. The recovery installer uses
+that account too. New Mac storage defaults to <code>~/.local/share/telebugs</code>; an
+existing installation keeps its configured storage path.</p>
 <h2 id="create-a-backup"><a class="header" href="#create-a-backup">Create a Backup</a></h2>
 <p>Connect to the Telebugs server and run:</p>
 <pre><code class="language-bash">telebugs data backup

@@ -9,6 +9,10 @@ The whole process takes less than 5 minutes. Here is how to get started.
 2. **Point your domain.** Update your DNS records so your domain points directly
    to your server IP. Do not use proxying. Telebugs handles TLS itself.
 
+   If a reverse proxy or Cloudflare Tunnel handles HTTPS, use
+   [local HTTP mode][8] instead: leave the domain prompt blank during setup.
+   The direct DNS requirement above does not apply to that mode.
+
    ![Cloudflare DNS configuration example][1]
 
 3. **Connect to your server.** Use SSH or your provider console.
@@ -42,7 +46,7 @@ TLS certificate for you.
 That is it. Visit `https://YOUR-DOMAIN` in your browser to create the first
 user. After that, you can invite your team.
 
-Telebugs updates itself automatically every night at 1 AM (server local time).
+On Linux, Telebugs updates itself automatically every night at 1 AM (server local time).
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the [telebugs command][5]. Connect to your server and run `telebugs`
 to see all options. New purchases include one year of updates and support,
@@ -55,6 +59,21 @@ production errors, create an off-server [backup and restore plan][6] and decide
 whether your external monitoring should check [`/ready`][7].
 
 > 💡 Want multiple Telebugs installations? You need a separate license for each domain.
+
+## Installing on a Mac
+
+Start your existing Docker environment, such as Colima or Docker Desktop, before
+running the installation command. Run it from your usual Mac account. The
+installer asks for administrator permission only to install the CLI; setup and
+later `telebugs` commands use your account's Docker context.
+
+For a new Licensing installation, use the `/install/YOUR-LICENSE-KEY` command
+shown above with your existing key, including an older `TLB-SH-` key. Leave the
+domain blank when using [Cloudflare Tunnel or another reverse proxy][8].
+
+New Mac installations store data in `~/.local/share/telebugs`. Run management,
+backup and restore commands from the same Mac account. To update, run
+`telebugs update`; automatic scheduling is not enabled on macOS.
 
 ## Replacing or Recovering an Existing Server
 
@@ -78,3 +97,4 @@ ports 80/443, TLS, and rollback.
 [5]: /appendix-02-telebugs-command-reference.md
 [6]: /operations-01-backup-and-restore.md
 [7]: /operations-02-health-and-status.md
+[8]: /installation-04-custom-tls.md

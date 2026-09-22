@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f7060b50.js";
+            window.path_to_searchindex_js = "searchindex-81052db0.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -198,6 +198,10 @@
 Telebugs data and recovery configuration. The archive contains sensitive
 recovery secrets, so treat it like production credentials as well as production
 data.</p>
+<p>On macOS, run backup and restore from the same ordinary Mac account used for
+installation, with its Docker environment running. The recovery installer uses
+that account too. New Mac storage defaults to <code>~/.local/share/telebugs</code>; an
+existing installation keeps its configured storage path.</p>
 <h2 id="create-a-backup"><a class="header" href="#create-a-backup">Create a Backup</a></h2>
 <p>Connect to the Telebugs server and run:</p>
 <pre><code class="language-bash">telebugs data backup

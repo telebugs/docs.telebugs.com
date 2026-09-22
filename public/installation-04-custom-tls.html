@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-f7060b50.js";
+            window.path_to_searchindex_js = "searchindex-81052db0.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-79708162.js"></script>
@@ -196,6 +196,17 @@
                         <h1 id="custom-tls-certificates"><a class="header" href="#custom-tls-certificates">Custom TLS Certificates</a></h1>
 <p>Telebugs automatically creates and installs a Let’s Encrypt TLS certificate for
 you. If you already have your own certificate, you can use it instead.</p>
+<h2 id="cloudflare-tunnel"><a class="header" href="#cloudflare-tunnel">Cloudflare Tunnel</a></h2>
+<p>During setup, leave the domain prompt blank and press Enter. Do not type
+<code>localhost</code> or your public hostname. This selects local HTTP on port 5555 and
+skips the direct public IP check.</p>
+<p>Keep your public hostname in the Tunnel configuration. If <code>cloudflared</code> runs
+directly on the same host as Telebugs, set its service URL to
+<code>http://127.0.0.1:5555</code>. Cloudflare handles public HTTPS.</p>
+<p>If <code>cloudflared</code> runs inside a container, use an address reachable from that
+container instead: <code>127.0.0.1</code> refers to the connector’s own container. On a Mac,
+start Colima or Docker Desktop first and run the Telebugs installer from your
+usual account.</p>
 <h2 id="tls-termination-with-nginx"><a class="header" href="#tls-termination-with-nginx">TLS Termination with Nginx</a></h2>
 <p><a href="https://nginx.org/">Nginx</a> is the recommended way to use a custom certificate. It works as a reverse
 proxy and handles TLS termination.</p>

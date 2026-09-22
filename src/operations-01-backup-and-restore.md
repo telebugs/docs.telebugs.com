@@ -5,6 +5,11 @@ Telebugs data and recovery configuration. The archive contains sensitive
 recovery secrets, so treat it like production credentials as well as production
 data.
 
+On macOS, run backup and restore from the same ordinary Mac account used for
+installation, with its Docker environment running. The recovery installer uses
+that account too. New Mac storage defaults to `~/.local/share/telebugs`; an
+existing installation keeps its configured storage path.
+
 ## Create a Backup
 
 Connect to the Telebugs server and run:
