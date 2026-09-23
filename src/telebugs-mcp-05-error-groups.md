@@ -53,17 +53,33 @@ The `query` parameter supports a powerful syntax (same as the REST API):
 ```
 is:unresolved server_name:eagle-618d24 timeout
 environment:production tags.region:eu-west
-!is:resolved is:error,warning
-severity:info assignee:me
+!is:resolved severity:error,warning
+checkout severity:error tags.component:payments
 ```
 
-**Useful patterns:**
+Free text searches the error type, message, and culprit. Supported qualifiers
+are:
 
-- `is:unresolved environment:production`
-- `error_type:NoMethodError since:2026-06-01`
-- `severity:info Burn-in starting`
-- `query:checkout tags.component:payments`
-- `!is:muted reports_count:>10`
+| Qualifier | Meaning |
+| --- | --- |
+| `is:unresolved`, `is:resolved` | Resolution status |
+| `is:muted`, `is:unmuted` | Mute status |
+| `severity:LEVEL` or `is:LEVEL` | `fatal`, `error`, `warning`, `info`, `debug`, or `sample_level` |
+| `severity:error,warning` | Any listed severity |
+| `!severity:error` | Exclude a severity |
+| `environment:VALUE` | Environment |
+| `server_name:VALUE` | Server or device name |
+| `tags.KEY:VALUE` | Arbitrary report tag |
+
+Different qualifiers combine with AND. Comma-separated severities provide OR
+within the severity list. Structured OR and negation for environments, server
+names, and tags are not supported. Quote values containing spaces.
+
+`since` and `to_time` are separate tool parameters, not query qualifiers. The
+same applies to `status`, `resolved`, and `severity`; prefer either the
+dedicated parameter or its query equivalent instead of supplying contradictory
+values. See the REST API [query syntax](rest-api-05-groups.md#query-syntax) for
+the complete semantics.
 
 ### Example Response
 

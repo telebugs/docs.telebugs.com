@@ -16,7 +16,6 @@
             document.head.appendChild(script);
           }
         </script>
-
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-709110ce.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-ba1cdd70.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -196,38 +195,32 @@
                         <h1 id="account-settings"><a class="header" href="#account-settings">Account Settings</a></h1>
 <p>Account settings let you update your profile, manage security, configure local
 development, and control notifications.</p>
-<p>Click your profile icon in the top-right and select <strong>Account Settings</strong>.</p>
-<p>On desktop, the navigation is grouped into <strong>Personal</strong>, <strong>Security</strong>, and
-<strong>Developer</strong> sections. On smaller screens, use the <strong>Settings section</strong>
-selector. The available pages are <strong>Profile</strong>, <strong>Appearance</strong>,
-<strong>Accessibility</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
+<p>Click your profile icon in the top-right, then select the block containing your
+name, email address, and role to open <strong>Profile</strong>. On desktop, use the settings
+sidebar to move between pages. Related pages are separated by whitespace. On
+smaller screens, use the <strong>Settings section</strong> selector. The page title stays
+visible as you scroll.</p>
+<p>The available pages are <strong>Profile</strong>, <strong>Appearance</strong>, <strong>Keyboard shortcuts</strong>,
+<strong>Command palette</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
 <strong>API access</strong>, and <strong>Connected apps</strong>.</p>
 <p><span id="profile"></span></p>
 <h2 id="general">Profile</h2>
 
-<p>The <strong>Profile</strong> page contains only your profile picture and name.</p>
+<p>The <strong>Profile</strong> page contains your photo and full name. Your name, email, and
+access-level badge appear in the settings sidebar and account menu.</p>
 <h3 id="profile-picture"><a class="header" href="#profile-picture">Profile Picture</a></h3>
 <p>Your profile picture shows next to your name in the dashboard and team views.</p>
-<p>To upload or change it:</p>
-<ol>
-<li>In the <strong>Your profile picture</strong> card, click the preview area (it shows your
-current picture or the default user icon).</li>
-<li>Select a new image file from your device.</li>
-<li>The preview updates immediately.</li>
-<li>Click <strong>Update profile picture</strong>.</li>
-</ol>
-<p>To remove it and revert to the default icon:</p>
-<ol>
-<li>Hover over or focus the preview area. A trash icon appears when a custom
-picture is set.</li>
-<li>Click the trash icon to clear the picture.</li>
-<li>Click <strong>Update profile picture</strong> to confirm.</li>
-</ol>
+<p>To upload or change it, click your photo or <strong>Choose photo</strong>, then select a
+JPEG, PNG, or WebP image. Hovering over or focusing the photo reveals <strong>edit</strong>.
+The photo saves automatically after selection. Select <strong>Remove photo</strong> to
+return to the default avatar.</p>
 <h3 id="changing-your-name"><a class="header" href="#changing-your-name">Changing Your Name</a></h3>
-<p>Your name appears in team lists and notes.</p>
-<p>To change it, enter your full name in the <strong>Your name</strong> card and click <strong>Change
-name</strong>.</p>
-<p>There are no restrictions on length or characters.</p>
+<p>Edit <strong>Full name</strong> to change the name shown in team lists and notes. Changes
+save automatically after you pause typing or leave the field. A green tick
+beside the input confirms that the name was saved.</p>
+<p>Photo and name changes save automatically. If a save fails, the page shows an
+error and a <strong>Retry</strong> action. The help icon below the card opens the relevant
+manual page.</p>
 <h2 id="local-development"><a class="header" href="#local-development">Local Development</a></h2>
 <p>Use <strong>Account Settings → Local development</strong> to configure editor links and
 local source paths.</p>
@@ -255,24 +248,47 @@ mapping are not offered in the picker.</p>
 <h2 id="appearance"><a class="header" href="#appearance">Appearance</a></h2>
 <p>Use <strong>Account Settings → Appearance</strong> to choose the color scheme, text size,
 and related display preferences. See <a href="account-settings-01-appearance.html">Appearance</a>.</p>
-<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
-<p>Use <strong>Account Settings → Accessibility</strong> to configure keyboard access,
-shortcuts, and command palette preferences. See
-<a href="account-settings-02-accessibility.html">Accessibility</a>.</p>
+<p><span id="accessibility"></span></p>
+<h2 id="keyboard-shortcuts"><a class="header" href="#keyboard-shortcuts">Keyboard Shortcuts</a></h2>
+<p>Use <strong>Account Settings → Keyboard shortcuts</strong> to enable or disable
+character-key shortcuts and customize key bindings. Use <strong>Find shortcut</strong> to
+filter the grouped list. See <a href="account-settings-02-accessibility.html">Keyboard shortcuts</a>.</p>
+<h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
+<p>Use <strong>Account Settings → Command palette</strong> to review and manage favorite
+commands. Use <strong>Find command</strong> to filter the catalogue. These preferences have
+their own page in the sidebar. See <a href="account-settings-03-command-palette.html">Command palette</a>.</p>
 <h2 id="security-settings"><a class="header" href="#security-settings">Security Settings</a></h2>
-<p>Use <strong>Account Settings → Security</strong> for email, password, and device sign-in.</p>
+<p>Use <strong>Account Settings → Security</strong> to manage your sign-in details and get a
+private link for signing in on another device. Email and password changes open
+in dialogs and require explicit submission. A green tick beside the changed
+setting confirms that it was saved. The help icon below the cards opens this
+reference.</p>
+<p><span id="email-address"></span></p>
 <h3 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h3>
-<p>Enter your new email address and current password, then click <strong>Change email</strong>.</p>
+<p>On <strong>Account Settings → Security</strong>, select the edit icon beside <strong>Email address</strong>. Enter your new email address and account password, then
+select <strong>Change email</strong>. Your updated email also appears in the settings sidebar
+and account menu.</p>
 <h3 id="change-password"><a class="header" href="#change-password">Change Password</a></h3>
-<p>Enter your current password, new password, and confirmation, then click
-<strong>Change password</strong>.</p>
+<p>Select <strong>Change password</strong> in the <strong>Password</strong> row. Enter your current password,
+new password, and confirmation, then select <strong>Change password</strong> in the dialog.</p>
+<p>If the change succeeds, the dialog closes and a green tick appears beside the
+action. If it fails, the dialog shows an error so you can try again. Password
+fields are cleared after a submission or when you close the dialog.</p>
 <h2 id="log-in-on-another-device"><a class="header" href="#log-in-on-another-device">Log In on Another Device</a></h2>
 <p>The <strong>Log in on another device</strong> card is on <strong>Account Settings → Security</strong>.
-Copy or share the private sign-in link to sign in on another device.</p>
+Use the copy icon beside <strong>Sign-in link</strong> to copy the private link. A tick
+confirms it was copied. The share icon is available when your browser supports
+sharing. You can also select and copy the link directly from the field.</p>
 <p>The link expires after 4 hours. Do not share it with anyone else.</p>
 <h2 id="notification-preferences"><a class="header" href="#notification-preferences">Notification Preferences</a></h2>
 <p>Use <strong>Account Settings → Notifications</strong> to choose which projects send you
-notifications. Changes save automatically.</p>
+notifications. The list shows active projects you belong to, with a switch for
+each project. These switches control your own notification preferences. Select
+a project name to open that project.</p>
+<p>Changes save automatically. A green tick beside the changed switch confirms
+the save. If a change cannot be saved, <strong>Not saved</strong> and <strong>Retry</strong> appear beside
+that switch. Select <strong>Retry</strong> to save your chosen value again.</p>
+<p>The help icon below the project list opens this reference.</p>
 <h2 id="api">API Access</h2>
 
 <p>The <strong>API access</strong> page contains your personal API key and links to the REST API

@@ -18,8 +18,8 @@ to count or iterate over issues per device, environment, or other tags.
 
 The recommended way to filter and search groups is with the `query` parameter.
 It supports a rich search syntax that lets you combine status, severity, server/device
-names, arbitrary tags, environments, and free-text search (including negation and OR)
-in a single parameter.
+names, arbitrary tags, environments, and free-text search in a single
+parameter.
 
 **Common use case** — reading issues for a specific device/server:
 
@@ -49,12 +49,11 @@ The `query` value can contain any combination of the following:
 | `is:unmuted`                | Only unmuted groups                                           | `is:unmuted`                         |
 | `!is:resolved`              | Negated status (equivalent to `is:unresolved`)                | `!is:resolved`                       |
 | `!is:unresolved`            | Negated status (equivalent to `is:resolved`)                  | `!is:unresolved`                     |
-| `is:error`                  | Groups whose (max) severity is `error`                        | `is:error`                           |
-| `is:warning`                | Groups whose (max) severity is `warning`                      | `is:warning`                         |
-| `is:info` / `is:debug` / `is:fatal` | Other severity levels                                  | `is:info`                            |
-| `!is:error`                 | Groups whose severity is *not* `error`                        | `!is:error`                          |
-| `is:error,warning`          | Severity OR (comma-separated)                                 | `is:error,warning` or `is:error, warning` |
-| `!is:error,warning`         | Negated severity OR                                           | `!is:error,warning`                  |
+| `severity:error` or `is:error` | Groups whose (max) severity is `error`                     | `severity:error`                     |
+| `severity:LEVEL`            | `fatal`, `error`, `warning`, `info`, `debug`, or `sample_level` | `severity:warning`                 |
+| `!severity:error`           | Groups whose severity is *not* `error`                        | `!severity:error`                    |
+| `severity:error,warning`    | Any listed severity (comma-separated OR)                      | `severity:error,warning`             |
+| `!severity:error,warning`   | Exclude every listed severity                                 | `!severity:error,warning`            |
 | `server_name:VALUE`         | Groups that have reports from this server/device              | `server_name:"eagle-618d24"`         |
 | `tags.server_name:VALUE`    | Same as above (tag form)                                      | `tags.server_name:prod-box-7`        |
 | `environment:VALUE`         | Filter by environment                                         | `environment:production`             |
@@ -72,7 +71,17 @@ You can mix filters and free text:
 - Negated status + free text:
   `?query=!is:resolved "payment failed"`
 
-Negation (`!is:...`) is supported for both status and severity filters. Comma syntax provides OR semantics within a single `is:` or `!is:` clause (most useful for severities). Status negation is automatically inverted (e.g. `!is:resolved` behaves like `is:unresolved`). Last filter of a given type wins if duplicated.
+`is:LEVEL` remains an alias for `severity:LEVEL`. Negation is supported for
+status and severity filters. Status negation is automatically inverted (for
+example, `!is:resolved` behaves like `is:unresolved`). Different filter types
+and free-text terms combine with AND. Comma syntax provides OR only within one
+severity clause; structured OR between tags, environments, or other qualifiers
+is not supported. Environment, server-name, and tag negation are also not
+supported.
+
+Quote values that contain spaces, such as `environment:"production west"`.
+Multiple different tag qualifiers combine with AND. When a status,
+environment, server name, or the same tag key is repeated, the last value wins.
 
 ### Other List Parameters
 
@@ -141,7 +150,9 @@ curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/gro
 
 See [Pagination](rest-api-02-pagination.md) for how to use `next_cursor` and `limit`.
 
-The `severity` field on each group is the highest severity ever observed for reports in that group (`fatal`, `error`, `warning`, `info`, or `debug`).
+The `severity` field on each group is the highest severity ever observed for
+reports in that group (`fatal`, `error`, `warning`, `info`, `debug`, or
+`sample_level`).
 
 The mute fields describe the group's current active mute:
 

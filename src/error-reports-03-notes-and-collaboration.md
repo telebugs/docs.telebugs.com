@@ -27,7 +27,7 @@ upload status to assistive technology. Each queued file has a labelled removal
 button; after removal, keyboard focus moves to the next available file or back
 to **Attach files**.
 
-See [Accessibility](/account-settings-02-accessibility.md) for general keyboard,
+See [Keyboard shortcuts](/account-settings-02-accessibility.md) for general keyboard,
 dialog, status-message, and file-control behavior.
 
 ## Managing Notes

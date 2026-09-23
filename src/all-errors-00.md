@@ -87,5 +87,5 @@ When character shortcuts are enabled, the date presets are also available
 directly from the keyboard. The command palette shows the bindings that apply
 to the current page.
 
-See [Accessibility](/account-settings-02-accessibility.md) for the complete
+See [Keyboard shortcuts](/account-settings-02-accessibility.md) for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.

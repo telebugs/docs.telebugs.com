@@ -3,12 +3,16 @@
 The **Appearance** settings let you customize the Telebugs interface for your
 account.
 
-To open them, click your avatar in the top-right corner, select **Account
-Settings**, then select **Appearance** from the sidebar.
+To open them, click your avatar in the top-right corner, select your identity
+block, then select **Appearance** from the settings sidebar.
 
 Select a tile for **Color mode** and **Width**, choose the **Font** and **Text
-size** options you prefer, then click **Update appearance**. Your choices apply
-only to your account.
+size** options you prefer. Each change applies immediately and saves
+automatically for your account. A green tick beside the page title confirms
+the save. If a save fails, an error and **Retry** action appear there.
+
+Color mode and width share a card; font and text size share another. The help
+icon below the cards opens this page.
 
 <h2 id="theme"><a class="header" href="#theme">Color mode</a></h2>
 

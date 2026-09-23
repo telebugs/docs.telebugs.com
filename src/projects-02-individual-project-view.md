@@ -8,8 +8,9 @@ Key elements:
   project, or open the current project's settings. Press `Enter` when the
   search leaves one match.
 - Releases link: View release history.
-- Search bar: Find errors by message, type, or details, or find one exact
-  occurrence by its occurrence ID (live updates).
+- Search bar: Find errors by type, message, or culprit; combine text with
+  structured qualifiers; or find one exact occurrence by its occurrence ID
+  (live updates).
 - Date range selector: Filter by time (e.g., today, last week) with pager, and
   compare supported ranges with the immediately preceding period.
 - Stats overview: Total reports, new vs. reoccurred.
@@ -23,6 +24,43 @@ Key elements:
 If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.
 
 Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.
+
+## Search Syntax
+
+Project search accepts free text and structured qualifiers in the same query:
+
+```text
+checkout
+checkout severity:error
+checkout severity:error tags.component:payments
+is:resolved severity:warning
+environment:production server_name:storefront-web-03
+tags.component:payments
+```
+
+Free text searches the error type, message, and culprit. The following
+qualifiers are supported:
+
+| Qualifier | Meaning |
+| --- | --- |
+| `is:unresolved`, `is:resolved` | Filter by resolution status |
+| `is:muted`, `is:unmuted` | Filter by mute status |
+| `severity:LEVEL` or `is:LEVEL` | Filter by `fatal`, `error`, `warning`, `info`, `debug`, or `sample_level` |
+| `severity:error,warning` | Match any listed severity |
+| `!severity:error` | Exclude a severity |
+| `environment:VALUE` | Match an environment |
+| `server_name:VALUE` | Match a server or device name |
+| `tags.KEY:VALUE` | Match an arbitrary report tag |
+
+Quote a value when it contains spaces, for example
+`environment:"production west"`. Different qualifiers combine with AND;
+comma-separated severities provide OR within that severity list. Environment,
+server-name, and tag negation are not supported.
+
+An explicit `is:resolved` or `is:unresolved` qualifier overrides the selected
+resolved/unresolved tab. The selected date range continues to apply to the
+results. Switching tabs removes the explicit resolution qualifier while
+preserving the rest of the query.
 
 ## Find an Exact Occurrence
 
@@ -78,5 +116,5 @@ Press `Command-K` or `Control-K` to search errors, change the status or date
 filter, run applicable actions for selected errors, or navigate to another
 project or application.
 
-See [Accessibility](/account-settings-02-accessibility.md) for the complete
+See [Keyboard shortcuts](/account-settings-02-accessibility.md) for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.

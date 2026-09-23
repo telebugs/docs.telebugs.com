@@ -55,7 +55,7 @@ reassignment.
 You can also open the command palette with `Command-K` or `Control-K` and
 select **Own it** or **Unclaim** when that action is available.
 
-See [Accessibility](/account-settings-02-accessibility.md) for shortcut
+See [Keyboard shortcuts](/account-settings-02-accessibility.md) for shortcut
 preferences and safety behavior.
 
 ### Best Practices

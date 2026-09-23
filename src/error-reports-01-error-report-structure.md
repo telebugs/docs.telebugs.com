@@ -21,7 +21,7 @@ work on the **Details**, **Reports**, and **Notes** tabs.
 The same available occurrence and error actions appear in the command palette,
 which opens with `Command-K` or `Control-K`.
 
-See [Accessibility](/account-settings-02-accessibility.md) for the complete
+See [Keyboard shortcuts](/account-settings-02-accessibility.md) for the complete
 context-aware shortcut reference and safety behavior.
 
 ## Report Details

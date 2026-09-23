@@ -3,46 +3,40 @@
 Account settings let you update your profile, manage security, configure local
 development, and control notifications.
 
-Click your profile icon in the top-right and select **Account Settings**.
+Click your profile icon in the top-right, then select the block containing your
+name, email address, and role to open **Profile**. On desktop, use the settings
+sidebar to move between pages. Related pages are separated by whitespace. On
+smaller screens, use the **Settings section** selector. The page title stays
+visible as you scroll.
 
-On desktop, the navigation is grouped into **Personal**, **Security**, and
-**Developer** sections. On smaller screens, use the **Settings section**
-selector. The available pages are **Profile**, **Appearance**,
-**Accessibility**, **Notifications**, **Security**, **Local development**,
+The available pages are **Profile**, **Appearance**, **Keyboard shortcuts**,
+**Command palette**, **Notifications**, **Security**, **Local development**,
 **API access**, and **Connected apps**.
 
 <span id="profile"></span>
 <h2 id="general">Profile</h2>
 
-The **Profile** page contains only your profile picture and name.
+The **Profile** page contains your photo and full name. Your name, email, and
+access-level badge appear in the settings sidebar and account menu.
 
 ### Profile Picture
 
 Your profile picture shows next to your name in the dashboard and team views.
 
-To upload or change it:
-
-1. In the **Your profile picture** card, click the preview area (it shows your
-   current picture or the default user icon).
-2. Select a new image file from your device.
-3. The preview updates immediately.
-4. Click **Update profile picture**.
-
-To remove it and revert to the default icon:
-
-1. Hover over or focus the preview area. A trash icon appears when a custom
-   picture is set.
-2. Click the trash icon to clear the picture.
-3. Click **Update profile picture** to confirm.
+To upload or change it, click your photo or **Choose photo**, then select a
+JPEG, PNG, or WebP image. Hovering over or focusing the photo reveals **edit**.
+The photo saves automatically after selection. Select **Remove photo** to
+return to the default avatar.
 
 ### Changing Your Name
 
-Your name appears in team lists and notes.
+Edit **Full name** to change the name shown in team lists and notes. Changes
+save automatically after you pause typing or leave the field. A green tick
+beside the input confirms that the name was saved.
 
-To change it, enter your full name in the **Your name** card and click **Change
-name**.
-
-There are no restrictions on length or characters.
+Photo and name changes save automatically. If a save fails, the page shows an
+error and a **Retry** action. The help icon below the card opens the relevant
+manual page.
 
 ## Local Development
 
@@ -79,36 +73,65 @@ mapping are not offered in the picker.
 Use **Account Settings → Appearance** to choose the color scheme, text size,
 and related display preferences. See [Appearance](account-settings-01-appearance.md).
 
-## Accessibility
+<span id="accessibility"></span>
+## Keyboard Shortcuts
 
-Use **Account Settings → Accessibility** to configure keyboard access,
-shortcuts, and command palette preferences. See
-[Accessibility](account-settings-02-accessibility.md).
+Use **Account Settings → Keyboard shortcuts** to enable or disable
+character-key shortcuts and customize key bindings. Use **Find shortcut** to
+filter the grouped list. See [Keyboard shortcuts](account-settings-02-accessibility.md).
+
+## Command Palette
+
+Use **Account Settings → Command palette** to review and manage favorite
+commands. Use **Find command** to filter the catalogue. These preferences have
+their own page in the sidebar. See [Command palette](account-settings-03-command-palette.md).
 
 ## Security Settings
 
-Use **Account Settings → Security** for email, password, and device sign-in.
+Use **Account Settings → Security** to manage your sign-in details and get a
+private link for signing in on another device. Email and password changes open
+in dialogs and require explicit submission. A green tick beside the changed
+setting confirms that it was saved. The help icon below the cards opens this
+reference.
+
+<span id="email-address"></span>
 
 ### Change Email Address
 
-Enter your new email address and current password, then click **Change email**.
+On **Account Settings → Security**, select the edit icon beside **Email address**. Enter your new email address and account password, then
+select **Change email**. Your updated email also appears in the settings sidebar
+and account menu.
 
 ### Change Password
 
-Enter your current password, new password, and confirmation, then click
-**Change password**.
+Select **Change password** in the **Password** row. Enter your current password,
+new password, and confirmation, then select **Change password** in the dialog.
+
+If the change succeeds, the dialog closes and a green tick appears beside the
+action. If it fails, the dialog shows an error so you can try again. Password
+fields are cleared after a submission or when you close the dialog.
 
 ## Log In on Another Device
 
 The **Log in on another device** card is on **Account Settings → Security**.
-Copy or share the private sign-in link to sign in on another device.
+Use the copy icon beside **Sign-in link** to copy the private link. A tick
+confirms it was copied. The share icon is available when your browser supports
+sharing. You can also select and copy the link directly from the field.
 
 The link expires after 4 hours. Do not share it with anyone else.
 
 ## Notification Preferences
 
 Use **Account Settings → Notifications** to choose which projects send you
-notifications. Changes save automatically.
+notifications. The list shows active projects you belong to, with a switch for
+each project. These switches control your own notification preferences. Select
+a project name to open that project.
+
+Changes save automatically. A green tick beside the changed switch confirms
+the save. If a change cannot be saved, **Not saved** and **Retry** appear beside
+that switch. Select **Retry** to save your chosen value again.
+
+The help icon below the project list opens this reference.
 
 <h2 id="api">API Access</h2>
 

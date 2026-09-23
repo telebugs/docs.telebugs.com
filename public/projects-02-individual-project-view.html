@@ -16,7 +16,6 @@
             document.head.appendChild(script);
           }
         </script>
-
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-709110ce.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-ba1cdd70.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -201,8 +200,9 @@
 project, or open the current project’s settings. Press <code>Enter</code> when the
 search leaves one match.</li>
 <li>Releases link: View release history.</li>
-<li>Search bar: Find errors by message, type, or details, or find one exact
-occurrence by its occurrence ID (live updates).</li>
+<li>Search bar: Find errors by type, message, or culprit; combine text with
+structured qualifiers; or find one exact occurrence by its occurrence ID
+(live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager, and
 compare supported ranges with the immediately preceding period.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
@@ -215,6 +215,42 @@ remain in the appropriate list and display a mute-status badge.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="search-syntax"><a class="header" href="#search-syntax">Search Syntax</a></h2>
+<p>Project search accepts free text and structured qualifiers in the same query:</p>
+<pre><code class="language-text">checkout
+checkout severity:error
+checkout severity:error tags.component:payments
+is:resolved severity:warning
+environment:production server_name:storefront-web-03
+tags.component:payments
+</code></pre>
+<p>Free text searches the error type, message, and culprit. The following
+qualifiers are supported:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Qualifier</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>is:unresolved</code>, <code>is:resolved</code></td><td>Filter by resolution status</td></tr>
+<tr><td><code>is:muted</code>, <code>is:unmuted</code></td><td>Filter by mute status</td></tr>
+<tr><td><code>severity:LEVEL</code> or <code>is:LEVEL</code></td><td>Filter by <code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or <code>sample_level</code></td></tr>
+<tr><td><code>severity:error,warning</code></td><td>Match any listed severity</td></tr>
+<tr><td><code>!severity:error</code></td><td>Exclude a severity</td></tr>
+<tr><td><code>environment:VALUE</code></td><td>Match an environment</td></tr>
+<tr><td><code>server_name:VALUE</code></td><td>Match a server or device name</td></tr>
+<tr><td><code>tags.KEY:VALUE</code></td><td>Match an arbitrary report tag</td></tr>
+</tbody>
+</table>
+</div>
+<p>Quote a value when it contains spaces, for example
+<code>environment:"production west"</code>. Different qualifiers combine with AND;
+comma-separated severities provide OR within that severity list. Environment,
+server-name, and tag negation are not supported.</p>
+<p>An explicit <code>is:resolved</code> or <code>is:unresolved</code> qualifier overrides the selected
+resolved/unresolved tab. The selected date range continues to apply to the
+results. Switching tabs removes the explicit resolution qualifier while
+preserving the rest of the query.</p>
 <h2 id="find-an-exact-occurrence"><a class="header" href="#find-an-exact-occurrence">Find an Exact Occurrence</a></h2>
 <p>Paste an occurrence ID into the project search to find that exact occurrence.
 Telebugs accepts the 32-character form returned when a report is accepted and
@@ -255,7 +291,7 @@ highlighted error from the bulk selection, or <code>Escape</code> to clear the h
 <p>Press <code>Command-K</code> or <code>Control-K</code> to search errors, change the status or date
 filter, run applicable actions for selected errors, or navigate to another
 project or application.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 
                     </main>

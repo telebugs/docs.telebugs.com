@@ -17,7 +17,6 @@
             document.head.appendChild(script);
           }
         </script>
-
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -52,10 +51,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-709110ce.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-ba1cdd70.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -757,38 +756,32 @@ demote).</p>
 <h1 id="account-settings"><a class="header" href="#account-settings">Account Settings</a></h1>
 <p>Account settings let you update your profile, manage security, configure local
 development, and control notifications.</p>
-<p>Click your profile icon in the top-right and select <strong>Account Settings</strong>.</p>
-<p>On desktop, the navigation is grouped into <strong>Personal</strong>, <strong>Security</strong>, and
-<strong>Developer</strong> sections. On smaller screens, use the <strong>Settings section</strong>
-selector. The available pages are <strong>Profile</strong>, <strong>Appearance</strong>,
-<strong>Accessibility</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
+<p>Click your profile icon in the top-right, then select the block containing your
+name, email address, and role to open <strong>Profile</strong>. On desktop, use the settings
+sidebar to move between pages. Related pages are separated by whitespace. On
+smaller screens, use the <strong>Settings section</strong> selector. The page title stays
+visible as you scroll.</p>
+<p>The available pages are <strong>Profile</strong>, <strong>Appearance</strong>, <strong>Keyboard shortcuts</strong>,
+<strong>Command palette</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
 <strong>API access</strong>, and <strong>Connected apps</strong>.</p>
 <p><span id="profile"></span></p>
 <h2 id="general">Profile</h2>
 
-<p>The <strong>Profile</strong> page contains only your profile picture and name.</p>
+<p>The <strong>Profile</strong> page contains your photo and full name. Your name, email, and
+access-level badge appear in the settings sidebar and account menu.</p>
 <h3 id="profile-picture"><a class="header" href="#profile-picture">Profile Picture</a></h3>
 <p>Your profile picture shows next to your name in the dashboard and team views.</p>
-<p>To upload or change it:</p>
-<ol>
-<li>In the <strong>Your profile picture</strong> card, click the preview area (it shows your
-current picture or the default user icon).</li>
-<li>Select a new image file from your device.</li>
-<li>The preview updates immediately.</li>
-<li>Click <strong>Update profile picture</strong>.</li>
-</ol>
-<p>To remove it and revert to the default icon:</p>
-<ol>
-<li>Hover over or focus the preview area. A trash icon appears when a custom
-picture is set.</li>
-<li>Click the trash icon to clear the picture.</li>
-<li>Click <strong>Update profile picture</strong> to confirm.</li>
-</ol>
+<p>To upload or change it, click your photo or <strong>Choose photo</strong>, then select a
+JPEG, PNG, or WebP image. Hovering over or focusing the photo reveals <strong>edit</strong>.
+The photo saves automatically after selection. Select <strong>Remove photo</strong> to
+return to the default avatar.</p>
 <h3 id="changing-your-name"><a class="header" href="#changing-your-name">Changing Your Name</a></h3>
-<p>Your name appears in team lists and notes.</p>
-<p>To change it, enter your full name in the <strong>Your name</strong> card and click <strong>Change
-name</strong>.</p>
-<p>There are no restrictions on length or characters.</p>
+<p>Edit <strong>Full name</strong> to change the name shown in team lists and notes. Changes
+save automatically after you pause typing or leave the field. A green tick
+beside the input confirms that the name was saved.</p>
+<p>Photo and name changes save automatically. If a save fails, the page shows an
+error and a <strong>Retry</strong> action. The help icon below the card opens the relevant
+manual page.</p>
 <h2 id="local-development"><a class="header" href="#local-development">Local Development</a></h2>
 <p>Use <strong>Account Settings → Local development</strong> to configure editor links and
 local source paths.</p>
@@ -816,24 +809,47 @@ mapping are not offered in the picker.</p>
 <h2 id="appearance"><a class="header" href="#appearance">Appearance</a></h2>
 <p>Use <strong>Account Settings → Appearance</strong> to choose the color scheme, text size,
 and related display preferences. See <a href="#appearance-1">Appearance</a>.</p>
-<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
-<p>Use <strong>Account Settings → Accessibility</strong> to configure keyboard access,
-shortcuts, and command palette preferences. See
-<a href="#accessibility-1">Accessibility</a>.</p>
+<p><span id="accessibility"></span></p>
+<h2 id="keyboard-shortcuts"><a class="header" href="#keyboard-shortcuts">Keyboard Shortcuts</a></h2>
+<p>Use <strong>Account Settings → Keyboard shortcuts</strong> to enable or disable
+character-key shortcuts and customize key bindings. Use <strong>Find shortcut</strong> to
+filter the grouped list. See <a href="#keyboard-shortcuts-1">Keyboard shortcuts</a>.</p>
+<h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
+<p>Use <strong>Account Settings → Command palette</strong> to review and manage favorite
+commands. Use <strong>Find command</strong> to filter the catalogue. These preferences have
+their own page in the sidebar. See <a href="#command-palette-2">Command palette</a>.</p>
 <h2 id="security-settings"><a class="header" href="#security-settings">Security Settings</a></h2>
-<p>Use <strong>Account Settings → Security</strong> for email, password, and device sign-in.</p>
+<p>Use <strong>Account Settings → Security</strong> to manage your sign-in details and get a
+private link for signing in on another device. Email and password changes open
+in dialogs and require explicit submission. A green tick beside the changed
+setting confirms that it was saved. The help icon below the cards opens this
+reference.</p>
+<p><span id="email-address"></span></p>
 <h3 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h3>
-<p>Enter your new email address and current password, then click <strong>Change email</strong>.</p>
+<p>On <strong>Account Settings → Security</strong>, select the edit icon beside <strong>Email address</strong>. Enter your new email address and account password, then
+select <strong>Change email</strong>. Your updated email also appears in the settings sidebar
+and account menu.</p>
 <h3 id="change-password"><a class="header" href="#change-password">Change Password</a></h3>
-<p>Enter your current password, new password, and confirmation, then click
-<strong>Change password</strong>.</p>
+<p>Select <strong>Change password</strong> in the <strong>Password</strong> row. Enter your current password,
+new password, and confirmation, then select <strong>Change password</strong> in the dialog.</p>
+<p>If the change succeeds, the dialog closes and a green tick appears beside the
+action. If it fails, the dialog shows an error so you can try again. Password
+fields are cleared after a submission or when you close the dialog.</p>
 <h2 id="log-in-on-another-device"><a class="header" href="#log-in-on-another-device">Log In on Another Device</a></h2>
 <p>The <strong>Log in on another device</strong> card is on <strong>Account Settings → Security</strong>.
-Copy or share the private sign-in link to sign in on another device.</p>
+Use the copy icon beside <strong>Sign-in link</strong> to copy the private link. A tick
+confirms it was copied. The share icon is available when your browser supports
+sharing. You can also select and copy the link directly from the field.</p>
 <p>The link expires after 4 hours. Do not share it with anyone else.</p>
 <h2 id="notification-preferences"><a class="header" href="#notification-preferences">Notification Preferences</a></h2>
 <p>Use <strong>Account Settings → Notifications</strong> to choose which projects send you
-notifications. Changes save automatically.</p>
+notifications. The list shows active projects you belong to, with a switch for
+each project. These switches control your own notification preferences. Select
+a project name to open that project.</p>
+<p>Changes save automatically. A green tick beside the changed switch confirms
+the save. If a change cannot be saved, <strong>Not saved</strong> and <strong>Retry</strong> appear beside
+that switch. Select <strong>Retry</strong> to save your chosen value again.</p>
+<p>The help icon below the project list opens this reference.</p>
 <h2 id="api">API Access</h2>
 
 <p>The <strong>API access</strong> page contains your personal API key and links to the REST API
@@ -865,11 +881,14 @@ remains the protocol name used in setup instructions and technical references.</
 <h1 id="appearance-1"><a class="header" href="#appearance-1">Appearance</a></h1>
 <p>The <strong>Appearance</strong> settings let you customize the Telebugs interface for your
 account.</p>
-<p>To open them, click your avatar in the top-right corner, select <strong>Account
-Settings</strong>, then select <strong>Appearance</strong> from the sidebar.</p>
+<p>To open them, click your avatar in the top-right corner, select your identity
+block, then select <strong>Appearance</strong> from the settings sidebar.</p>
 <p>Select a tile for <strong>Color mode</strong> and <strong>Width</strong>, choose the <strong>Font</strong> and <strong>Text
-size</strong> options you prefer, then click <strong>Update appearance</strong>. Your choices apply
-only to your account.</p>
+size</strong> options you prefer. Each change applies immediately and saves
+automatically for your account. A green tick beside the page title confirms
+the save. If a save fails, an error and <strong>Retry</strong> action appear there.</p>
+<p>Color mode and width share a card; font and text size share another. The help
+icon below the cards opens this page.</p>
 <h2 id="theme"><a class="header" href="#theme">Color mode</a></h2>
 
 <p>Controls whether the interface uses light or dark colors without defining a
@@ -943,11 +962,15 @@ when your browser’s default text size is 16px.</p>
 <p>All three text sizes work with both the <strong>Default</strong> and <strong>Monospace</strong> font
 options.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="accessibility-1"><a class="header" href="#accessibility-1">Accessibility</a></h1>
-<p>The <strong>Accessibility</strong> settings let you control Telebugs’ keyboard shortcuts
-and favorite commands for your account.</p>
-<p>To open them, click your profile icon in the top-right corner, select <strong>Account
-Settings</strong>, then select <strong>Accessibility</strong> from the sidebar.</p>
+<p><span id="accessibility-1"></span></p>
+<h1 id="keyboard-shortcuts-1"><a class="header" href="#keyboard-shortcuts-1">Keyboard Shortcuts</a></h1>
+<p>The <strong>Keyboard shortcuts</strong> settings let you control Telebugs’ keyboard access
+and customize key bindings for your account.</p>
+<p>To open them, click your profile icon in the top-right, select your identity
+block, then select <strong>Keyboard shortcuts</strong> from the settings sidebar. On a
+small screen, use the <strong>Settings section</strong> selector.</p>
+<p>Favorite commands have their own <a href="#command-palette-2">Command palette</a>
+settings page. Existing <code>/settings/accessibility</code> links open Keyboard shortcuts.</p>
 <h2 id="general-keyboard-access"><a class="header" href="#general-keyboard-access">General Keyboard Access</a></h2>
 <p>Press <code>Tab</code> after a page loads to reveal <strong>Skip to main content</strong>. Activating it
 moves focus past the repeated navigation and into the page content.</p>
@@ -971,12 +994,12 @@ and error-group actions on these pages:</p>
 </ul>
 <p>To disable or re-enable them:</p>
 <ol>
-<li>Open <strong>Account Settings → Accessibility</strong>.</li>
-<li>Open the <strong>Shortcuts</strong> tab.</li>
-<li>Clear or select <strong>Character-key shortcuts</strong>.</li>
+<li>Open <strong>Account Settings → Keyboard shortcuts</strong>.</li>
+<li>Turn <strong>Character-key shortcuts</strong> off or on.</li>
 </ol>
-<p>The change saves automatically. A <strong>Saved</strong> status remains visible with the
-tabs as you scroll, without moving you away from the active tab.</p>
+<p>The change saves automatically. A green tick beside the page title confirms
+the save and stays visible as you scroll. A failed save shows an error and a
+<strong>Retry</strong> action.</p>
 <p>Disabling this setting turns off the printable <code>J</code>, <code>K</code>, <code>O</code>, <code>X</code>, <code>P</code>, <code>N</code>,
 <code>U</code>, <code>R</code>, <code>M</code>, <code>A</code>, and <code>?</code> shortcuts, together with the <code>G</code> navigation
 sequences. Native <code>Tab</code> and <code>Enter</code> behavior remains available. You can also
@@ -1022,15 +1045,17 @@ The Search control displays the current command-palette shortcut, and
 <strong>Keyboard shortcuts</strong> appears in the initial suggestions so you do not need
 to search for it.</p>
 <h2 id="customizing-shortcuts"><a class="header" href="#customizing-shortcuts">Customizing Shortcuts</a></h2>
-<p>Open <strong>Account Settings → Accessibility</strong>, then open the <strong>Shortcuts</strong> tab.
-Each command shows its current assignment:</p>
+<p>Open <strong>Account Settings → Keyboard shortcuts</strong>. Use <strong>Find shortcut</strong> to search
+command names, groups, or the displayed key bindings. Clearing the search
+restores the complete list. Filtering does not change any assignments.</p>
+<p>Each command shows its current assignment:</p>
 <ol>
 <li>Select the labelled edit button beside the command.</li>
 <li>Press the new key, chord, or two-key sequence.</li>
 </ol>
 <p>The edit button remains in place while the current key changes to <strong>Press
 keys…</strong>. The assignment saves automatically after you finish recording, and
-Telebugs displays <strong>Saved</strong> in the sticky tab bar without reloading the page.
+Telebugs shows a green tick beside the title without reloading the page.
 Press <code>Escape</code> or move focus away to cancel without changing the assignment.</p>
 <p>Direct commands accept one printable key or a portable chord containing
 <code>Command</code> on macOS or <code>Control</code> on other platforms. A chord can also include
@@ -1048,49 +1073,20 @@ assignment conflicts with another command, Telebugs names the conflicting
 command and keeps the existing assignments unchanged.</p>
 <p>Use the labelled clear icon to leave one command unassigned, or the reset icon
 to restore that command’s default. <strong>Restore defaults</strong> resets every assignment
-after confirmation but keeps your favorite commands. These changes also save
-automatically.</p>
-<h2 id="command-palette"><a class="header" href="#command-palette">Command Palette</a></h2>
-<p>Open the command palette with <code>Command</code> + <code>K</code> on macOS or <code>Control</code> + <code>K</code> on
-other platforms. You can also select <strong>Search</strong> in the navigation bar. Its key
-hint follows your customized command-palette binding.</p>
-<p>Start typing to find:</p>
-<ul>
-<li>Projects and applications you can access</li>
-<li>Global destinations such as All Errors, All Reports, and Account Settings</li>
-<li>Navigation and error actions available on the current page</li>
-<li>Existing search, status, project, and date filters</li>
-<li>Applicable bulk actions when errors are selected</li>
-</ul>
-<p>Use <code>ArrowUp</code> and <code>ArrowDown</code>, <code>Home</code>, or <code>End</code> to change the active result,
-then press <code>Enter</code> to run it. <code>Command</code> + <code>Enter</code> or <code>Control</code> + <code>Enter</code> opens
-a navigation result in a new tab; it never submits an action. Press <code>Escape</code>,
-use the opening shortcut again, or select the close button to close the
-palette.</p>
-<p>Telebugs does not replace the normal <code>Command</code> + <code>K</code> or <code>Control</code> + <code>K</code>
-behavior while you are editing a field. Use <code>Command</code> + <code>Option</code> + <code>K</code> on
-macOS or <code>Control</code> + <code>Alt</code> + <code>K</code> on other platforms when you intentionally
-want the palette from an editing field.</p>
-<p>Palette actions use the same visible controls, permissions, confirmations, and
-endpoints as pointer interaction. Project and application results are loaded
-only from resources your account can access.</p>
+after confirmation, including assignments hidden by a search, and keeps your
+favorite commands. Conflicts are checked against every assignment, including
+filtered-out rows. These changes also save automatically.</p>
+<h2 id="command-palette-1"><a class="header" href="#command-palette-1">Command Palette</a></h2>
+<p>The palette searches commands, projects, and applications. Open it with
+<strong>Search</strong> in the header, <code>Command</code> + <code>K</code> on macOS, or <code>Control</code> + <code>K</code> on other
+platforms. See <a href="#command-palette-2">Command palette</a> for
+navigation, keyboard behavior, and preferences.</p>
+<p>The bindings for opening the palette remain on the <strong>Keyboard shortcuts</strong>
+settings page with the other key bindings.</p>
 <h3 id="favorites-and-recent-commands"><a class="header" href="#favorites-and-recent-commands">Favorites and Recent Commands</a></h3>
-<p>When a favoritable command is active in the palette, use the star at the end
-of its highlighted row. An outlined star adds the command to favorites; a
-filled star removes it. The palette stays open and the command remains in
-place while you manage it. Use <strong>Customize shortcuts</strong> at the bottom of the
-palette, or open <strong>Account Settings → Accessibility → Command palette</strong>, to
-manage all favorite commands. Changes made there save automatically.
-Favorites sync with your Telebugs account and appear first the next time the
-palette opens with an empty search.</p>
-<p>Commands you run from the palette appear in <strong>Recent</strong> suggestions on that
-browser. Recent commands are deduplicated and limited to ten. They stay in the
-browser’s local storage and are never synced or sent to Telebugs. Project and
-application results, raw keystrokes, and shortcuts used outside the palette
-are not added to this history.</p>
-<p>Favorites and recent entries never make a command appear on a page where it is
-unavailable. Projects, applications, current-project results, and dynamic
-project filters cannot be favorited.</p>
+<p>Manage favorites on <strong>Account Settings → Command palette</strong> or with the star
+beside an active command in the palette. See
+<a href="#favorites-and-recent-commands-1">Favorites and recent commands</a>.</p>
 <h2 id="global-navigation-sequences"><a class="header" href="#global-navigation-sequences">Global Navigation Sequences</a></h2>
 <p>Press <code>G</code>, then <code>P</code>, <code>E</code>, <code>R</code>, or <code>S</code> to navigate globally. A small <strong>Go to</strong>
 reference appears after <code>G</code> and lists the valid second keys. The sequence
@@ -1175,6 +1171,67 @@ shortcuts described here.</p>
 Unassigned modifier combinations are left to the browser and operating
 system. Held keys do not repeatedly open pages, show help, or submit actions.
 List movement may repeat so you can move through a list efficiently.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="command-palette-2"><a class="header" href="#command-palette-2">Command Palette</a></h1>
+<p>The command palette gives you quick access to navigation, actions, projects,
+and applications. Its settings page manages your favorite commands.</p>
+<p>To open the settings, select your identity block in the account menu, then
+choose <strong>Command palette</strong> in the settings sidebar. On a small screen, use the
+<strong>Settings section</strong> selector.</p>
+<h2 id="opening-and-using-the-palette"><a class="header" href="#opening-and-using-the-palette">Opening and Using the Palette</a></h2>
+<p>Open the command palette with <code>Command</code> + <code>K</code> on macOS or <code>Control</code> + <code>K</code> on
+other platforms. You can also select <strong>Search</strong> in the navigation bar. Its key
+hint follows your customized command-palette binding.</p>
+<p>Start typing to find:</p>
+<ul>
+<li>Projects and applications you can access</li>
+<li>Global destinations such as All Errors, All Reports, and Account Settings</li>
+<li>Navigation and error actions available on the current page</li>
+<li>Existing search, status, project, and date filters</li>
+<li>Applicable bulk actions when errors are selected</li>
+</ul>
+<p>Use <code>ArrowUp</code> and <code>ArrowDown</code>, <code>Home</code>, or <code>End</code> to change the active result,
+then press <code>Enter</code> to run it. <code>Command</code> + <code>Enter</code> or <code>Control</code> + <code>Enter</code> opens
+a navigation result in a new tab; it never submits an action. Press <code>Escape</code>,
+use the opening shortcut again, or select the close button to close the
+palette.</p>
+<p>Telebugs does not replace the normal <code>Command</code> + <code>K</code> or <code>Control</code> + <code>K</code>
+behavior while you are editing a field. Use <code>Command</code> + <code>Option</code> + <code>K</code> on
+macOS or <code>Control</code> + <code>Alt</code> + <code>K</code> on other platforms when you intentionally
+want the palette from an editing field.</p>
+<p>Palette actions use the same visible controls, permissions, confirmations, and
+endpoints as pointer interaction. Project and application results are loaded
+only from resources your account can access.</p>
+<h2 id="favorites-and-recent-commands-1"><a class="header" href="#favorites-and-recent-commands-1">Favorites and Recent Commands</a></h2>
+<p>When a favoritable command is active in the palette, use the star at the end
+of its highlighted row. An outlined star adds the command to favorites; a
+filled star removes it. The palette stays open and the command remains in
+place while you manage it.</p>
+<p>To review the full command catalogue, open <strong>Account Settings → Command
+palette</strong>. <strong>Find command</strong> filters by command name or group; clearing the
+search restores the complete list. Select the star beside a command to add or
+remove it from favorites. Filtering does not change favorites, and saving a
+visible command keeps your hidden favorites. <strong>Clear all</strong> removes every
+favorite, including those hidden by the current search.</p>
+<p>Changes save automatically. A green tick beside the page title confirms the
+save and remains visible while you scroll. Failed saves show an error and a
+<strong>Retry</strong> action. These changes keep your key bindings and the character-key
+switch unchanged.</p>
+<p>Favorites sync with your Telebugs account and appear first the next time the
+palette opens with an empty search.</p>
+<p>Commands you run from the palette appear in <strong>Recent</strong> suggestions on that
+browser. Recent commands are deduplicated and limited to ten. They stay in the
+browser’s local storage and are never synced or sent to Telebugs. Project and
+application results, raw keystrokes, and shortcuts used outside the palette
+are not added to this history.</p>
+<p>Favorites and recent entries never make a command appear on a page where it is
+unavailable. Projects, applications, current-project results, and dynamic
+project filters cannot be favorited.</p>
+<h2 id="customizing-the-opening-shortcut"><a class="header" href="#customizing-the-opening-shortcut">Customizing the Opening Shortcut</a></h2>
+<p>Choose <strong>Keyboard shortcuts</strong> in the settings sidebar, or <strong>Customize
+shortcuts</strong> in the palette footer. The <strong>Command palette</strong> group includes
+bindings for opening the palette outside and inside editing fields. See
+<a href="#customizing-shortcuts">Customizing shortcuts</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="notifications"><a class="header" href="#notifications">Notifications</a></h1>
 <p>Telebugs supports email, push notifications, and webhooks for real-time alerts
@@ -1484,8 +1541,9 @@ reports, settings, and access controls.</p>
 project, or open the current project’s settings. Press <code>Enter</code> when the
 search leaves one match.</li>
 <li>Releases link: View release history.</li>
-<li>Search bar: Find errors by message, type, or details, or find one exact
-occurrence by its occurrence ID (live updates).</li>
+<li>Search bar: Find errors by type, message, or culprit; combine text with
+structured qualifiers; or find one exact occurrence by its occurrence ID
+(live updates).</li>
 <li>Date range selector: Filter by time (e.g., today, last week) with pager, and
 compare supported ranges with the immediately preceding period.</li>
 <li>Stats overview: Total reports, new vs. reoccurred.</li>
@@ -1498,6 +1556,42 @@ remain in the appropriate list and display a mute-status badge.</li>
 </ul>
 <p>If no errors, dashboard shows SDK setup instructions. Refreshes automatically as reports arrive.</p>
 <p>Use search and filters to triage high-volume unresolved errors. Chart helps spot deploy or traffic patterns.</p>
+<h2 id="search-syntax"><a class="header" href="#search-syntax">Search Syntax</a></h2>
+<p>Project search accepts free text and structured qualifiers in the same query:</p>
+<pre><code class="language-text">checkout
+checkout severity:error
+checkout severity:error tags.component:payments
+is:resolved severity:warning
+environment:production server_name:storefront-web-03
+tags.component:payments
+</code></pre>
+<p>Free text searches the error type, message, and culprit. The following
+qualifiers are supported:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Qualifier</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>is:unresolved</code>, <code>is:resolved</code></td><td>Filter by resolution status</td></tr>
+<tr><td><code>is:muted</code>, <code>is:unmuted</code></td><td>Filter by mute status</td></tr>
+<tr><td><code>severity:LEVEL</code> or <code>is:LEVEL</code></td><td>Filter by <code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or <code>sample_level</code></td></tr>
+<tr><td><code>severity:error,warning</code></td><td>Match any listed severity</td></tr>
+<tr><td><code>!severity:error</code></td><td>Exclude a severity</td></tr>
+<tr><td><code>environment:VALUE</code></td><td>Match an environment</td></tr>
+<tr><td><code>server_name:VALUE</code></td><td>Match a server or device name</td></tr>
+<tr><td><code>tags.KEY:VALUE</code></td><td>Match an arbitrary report tag</td></tr>
+</tbody>
+</table>
+</div>
+<p>Quote a value when it contains spaces, for example
+<code>environment:"production west"</code>. Different qualifiers combine with AND;
+comma-separated severities provide OR within that severity list. Environment,
+server-name, and tag negation are not supported.</p>
+<p>An explicit <code>is:resolved</code> or <code>is:unresolved</code> qualifier overrides the selected
+resolved/unresolved tab. The selected date range continues to apply to the
+results. Switching tabs removes the explicit resolution qualifier while
+preserving the rest of the query.</p>
 <h2 id="find-an-exact-occurrence"><a class="header" href="#find-an-exact-occurrence">Find an Exact Occurrence</a></h2>
 <p>Paste an occurrence ID into the project search to find that exact occurrence.
 Telebugs accepts the 32-character form returned when a report is accepted and
@@ -1538,7 +1632,7 @@ highlighted error from the bulk selection, or <code>Escape</code> to clear the h
 <p>Press <code>Command-K</code> or <code>Control-K</code> to search errors, change the status or date
 filter, run applicable actions for selected errors, or navigate to another
 project or application.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="pinning-projects"><a class="header" href="#pinning-projects">Pinning Projects</a></h1>
@@ -1774,7 +1868,7 @@ resolve, mute, or merge actions for selected errors.</p>
 <p>When character shortcuts are enabled, the date presets are also available
 directly from the keyboard. The command palette shows the bindings that apply
 to the current page.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="all-reports"><a class="header" href="#all-reports">All Reports</a></h1>
@@ -1850,7 +1944,7 @@ project or date filter, clear active filters, or navigate elsewhere.</p>
 <p>When character shortcuts are enabled, the date presets are also available
 directly from the keyboard. The command palette shows the bindings that apply
 to the current page.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="getting-started-with-the-rest-api"><a class="header" href="#getting-started-with-the-rest-api">Getting Started with the REST API</a></h1>
@@ -2319,8 +2413,8 @@ to count or iterate over issues per device, environment, or other tags.</p>
 <h2 id="filtering-and-search"><a class="header" href="#filtering-and-search">Filtering and Search</a></h2>
 <p>The recommended way to filter and search groups is with the <code>query</code> parameter.
 It supports a rich search syntax that lets you combine status, severity, server/device
-names, arbitrary tags, environments, and free-text search (including negation and OR)
-in a single parameter.</p>
+names, arbitrary tags, environments, and free-text search in a single
+parameter.</p>
 <p><strong>Common use case</strong> — reading issues for a specific device/server:</p>
 <pre><code class="language-sh">curl "https://your-telebugs-instance.com/api/telebugs/v1/projects/PROJECT_ID/groups?query=server_name:%22eagle-618d24%22" \
   -H "Authorization: Bearer YOUR_API_KEY" \
@@ -2345,12 +2439,11 @@ in a single parameter.</p>
 <tr><td><code>is:unmuted</code></td><td>Only unmuted groups</td><td><code>is:unmuted</code></td></tr>
 <tr><td><code>!is:resolved</code></td><td>Negated status (equivalent to <code>is:unresolved</code>)</td><td><code>!is:resolved</code></td></tr>
 <tr><td><code>!is:unresolved</code></td><td>Negated status (equivalent to <code>is:resolved</code>)</td><td><code>!is:unresolved</code></td></tr>
-<tr><td><code>is:error</code></td><td>Groups whose (max) severity is <code>error</code></td><td><code>is:error</code></td></tr>
-<tr><td><code>is:warning</code></td><td>Groups whose (max) severity is <code>warning</code></td><td><code>is:warning</code></td></tr>
-<tr><td><code>is:info</code> / <code>is:debug</code> / <code>is:fatal</code></td><td>Other severity levels</td><td><code>is:info</code></td></tr>
-<tr><td><code>!is:error</code></td><td>Groups whose severity is <em>not</em> <code>error</code></td><td><code>!is:error</code></td></tr>
-<tr><td><code>is:error,warning</code></td><td>Severity OR (comma-separated)</td><td><code>is:error,warning</code> or <code>is:error, warning</code></td></tr>
-<tr><td><code>!is:error,warning</code></td><td>Negated severity OR</td><td><code>!is:error,warning</code></td></tr>
+<tr><td><code>severity:error</code> or <code>is:error</code></td><td>Groups whose (max) severity is <code>error</code></td><td><code>severity:error</code></td></tr>
+<tr><td><code>severity:LEVEL</code></td><td><code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or <code>sample_level</code></td><td><code>severity:warning</code></td></tr>
+<tr><td><code>!severity:error</code></td><td>Groups whose severity is <em>not</em> <code>error</code></td><td><code>!severity:error</code></td></tr>
+<tr><td><code>severity:error,warning</code></td><td>Any listed severity (comma-separated OR)</td><td><code>severity:error,warning</code></td></tr>
+<tr><td><code>!severity:error,warning</code></td><td>Exclude every listed severity</td><td><code>!severity:error,warning</code></td></tr>
 <tr><td><code>server_name:VALUE</code></td><td>Groups that have reports from this server/device</td><td><code>server_name:"eagle-618d24"</code></td></tr>
 <tr><td><code>tags.server_name:VALUE</code></td><td>Same as above (tag form)</td><td><code>tags.server_name:prod-box-7</code></td></tr>
 <tr><td><code>environment:VALUE</code></td><td>Filter by environment</td><td><code>environment:production</code></td></tr>
@@ -2370,7 +2463,16 @@ in a single parameter.</p>
 <li>Negated status + free text:
 <code>?query=!is:resolved "payment failed"</code></li>
 </ul>
-<p>Negation (<code>!is:...</code>) is supported for both status and severity filters. Comma syntax provides OR semantics within a single <code>is:</code> or <code>!is:</code> clause (most useful for severities). Status negation is automatically inverted (e.g. <code>!is:resolved</code> behaves like <code>is:unresolved</code>). Last filter of a given type wins if duplicated.</p>
+<p><code>is:LEVEL</code> remains an alias for <code>severity:LEVEL</code>. Negation is supported for
+status and severity filters. Status negation is automatically inverted (for
+example, <code>!is:resolved</code> behaves like <code>is:unresolved</code>). Different filter types
+and free-text terms combine with AND. Comma syntax provides OR only within one
+severity clause; structured OR between tags, environments, or other qualifiers
+is not supported. Environment, server-name, and tag negation are also not
+supported.</p>
+<p>Quote values that contain spaces, such as <code>environment:"production west"</code>.
+Multiple different tag qualifiers combine with AND. When a status,
+environment, server name, or the same tag key is repeated, the last value wins.</p>
 <h3 id="other-list-parameters"><a class="header" href="#other-list-parameters">Other List Parameters</a></h3>
 <div class="table-wrapper">
 <table>
@@ -2433,7 +2535,9 @@ in a single parameter.</p>
 }
 </code></pre>
 <p>See <a href="#pagination">Pagination</a> for how to use <code>next_cursor</code> and <code>limit</code>.</p>
-<p>The <code>severity</code> field on each group is the highest severity ever observed for reports in that group (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, or <code>debug</code>).</p>
+<p>The <code>severity</code> field on each group is the highest severity ever observed for
+reports in that group (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or
+<code>sample_level</code>).</p>
 <p>The mute fields describe the group’s current active mute:</p>
 <ul>
 <li><code>muted</code> is <code>true</code> when notifications are currently suppressed.</li>
@@ -3762,17 +3866,36 @@ Existing groups remain muted until their deadline or until explicitly unmuted.</
 <p>The <code>query</code> parameter supports a powerful syntax (same as the REST API):</p>
 <pre><code>is:unresolved server_name:eagle-618d24 timeout
 environment:production tags.region:eu-west
-!is:resolved is:error,warning
-severity:info assignee:me
+!is:resolved severity:error,warning
+checkout severity:error tags.component:payments
 </code></pre>
-<p><strong>Useful patterns:</strong></p>
-<ul>
-<li><code>is:unresolved environment:production</code></li>
-<li><code>error_type:NoMethodError since:2026-06-01</code></li>
-<li><code>severity:info Burn-in starting</code></li>
-<li><code>query:checkout tags.component:payments</code></li>
-<li><code>!is:muted reports_count:&gt;10</code></li>
-</ul>
+<p>Free text searches the error type, message, and culprit. Supported qualifiers
+are:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Qualifier</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>is:unresolved</code>, <code>is:resolved</code></td><td>Resolution status</td></tr>
+<tr><td><code>is:muted</code>, <code>is:unmuted</code></td><td>Mute status</td></tr>
+<tr><td><code>severity:LEVEL</code> or <code>is:LEVEL</code></td><td><code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or <code>sample_level</code></td></tr>
+<tr><td><code>severity:error,warning</code></td><td>Any listed severity</td></tr>
+<tr><td><code>!severity:error</code></td><td>Exclude a severity</td></tr>
+<tr><td><code>environment:VALUE</code></td><td>Environment</td></tr>
+<tr><td><code>server_name:VALUE</code></td><td>Server or device name</td></tr>
+<tr><td><code>tags.KEY:VALUE</code></td><td>Arbitrary report tag</td></tr>
+</tbody>
+</table>
+</div>
+<p>Different qualifiers combine with AND. Comma-separated severities provide OR
+within the severity list. Structured OR and negation for environments, server
+names, and tags are not supported. Quote values containing spaces.</p>
+<p><code>since</code> and <code>to_time</code> are separate tool parameters, not query qualifiers. The
+same applies to <code>status</code>, <code>resolved</code>, and <code>severity</code>; prefer either the
+dedicated parameter or its query equivalent instead of supplying contradictory
+values. See the REST API <a href="#query-syntax">query syntax</a> for
+the complete semantics.</p>
 <h3 id="example-response-2"><a class="header" href="#example-response-2">Example Response</a></h3>
 <pre><code class="language-json">{
   "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
@@ -4916,7 +5039,7 @@ includes available occurrence navigation and error actions.</p>
 values and release links in a keyboard-accessible format. With the table open,
 select <strong>Download CSV</strong> to export the selected range. Comparison exports include
 both periods.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <p>See the following sections for details.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -4936,7 +5059,7 @@ or unmute, and <code>A</code> to claim or unclaim the error for yourself. These 
 work on the <strong>Details</strong>, <strong>Reports</strong>, and <strong>Notes</strong> tabs.</p>
 <p>The same available occurrence and error actions appear in the command palette,
 which opens with <code>Command-K</code> or <code>Control-K</code>.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 context-aware shortcut reference and safety behavior.</p>
 <h2 id="report-details"><a class="header" href="#report-details">Report Details</a></h2>
 <p>High-level overview:</p>
@@ -5186,7 +5309,7 @@ and track progress toward resolution.</p>
 upload status to assistive technology. Each queued file has a labelled removal
 button; after removal, keyboard focus moves to the next available file or back
 to <strong>Attach files</strong>.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for general keyboard,
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for general keyboard,
 dialog, status-message, and file-control behavior.</p>
 <h2 id="managing-notes"><a class="header" href="#managing-notes">Managing Notes</a></h2>
 <ul>
@@ -5248,7 +5371,7 @@ person owns the error because Telebugs currently supports self-claiming, not
 reassignment.</p>
 <p>You can also open the command palette with <code>Command-K</code> or <code>Control-K</code> and
 select <strong>Own it</strong> or <strong>Unclaim</strong> when that action is available.</p>
-<p>See <a href="/account-settings-02-accessibility.html">Accessibility</a> for shortcut
+<p>See <a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for shortcut
 preferences and safety behavior.</p>
 <h3 id="best-practices-3"><a class="header" href="#best-practices-3">Best Practices</a></h3>
 <ul>
@@ -5368,7 +5491,7 @@ uses the current <strong>Unmute</strong> or <strong>Unsnooze</strong> action.</p
 <p>Press <code>R</code> on the same tabs to use the current <strong>Resolve</strong> or <strong>Unresolve</strong>
 action. These available actions also appear in the command palette opened with
 <code>Command-K</code> or <code>Control-K</code>. See
-<a href="/account-settings-02-accessibility.html">Accessibility</a> for the complete
+<a href="/account-settings-02-accessibility.html">Keyboard shortcuts</a> for the complete
 context-aware shortcut reference.</p>
 <h3 id="api-and-mcp-support"><a class="header" href="#api-and-mcp-support">API and MCP Support</a></h3>
 <p>Muting is also available through automation interfaces:</p>

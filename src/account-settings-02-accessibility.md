@@ -1,10 +1,15 @@
-# Accessibility
+<span id="accessibility"></span>
+# Keyboard Shortcuts
 
-The **Accessibility** settings let you control Telebugs' keyboard shortcuts
-and favorite commands for your account.
+The **Keyboard shortcuts** settings let you control Telebugs' keyboard access
+and customize key bindings for your account.
 
-To open them, click your profile icon in the top-right corner, select **Account
-Settings**, then select **Accessibility** from the sidebar.
+To open them, click your profile icon in the top-right, select your identity
+block, then select **Keyboard shortcuts** from the settings sidebar. On a
+small screen, use the **Settings section** selector.
+
+Favorite commands have their own [Command palette](account-settings-03-command-palette.md)
+settings page. Existing `/settings/accessibility` links open Keyboard shortcuts.
 
 ## General Keyboard Access
 
@@ -34,12 +39,12 @@ and error-group actions on these pages:
 
 To disable or re-enable them:
 
-1. Open **Account Settings → Accessibility**.
-2. Open the **Shortcuts** tab.
-3. Clear or select **Character-key shortcuts**.
+1. Open **Account Settings → Keyboard shortcuts**.
+2. Turn **Character-key shortcuts** off or on.
 
-The change saves automatically. A **Saved** status remains visible with the
-tabs as you scroll, without moving you away from the active tab.
+The change saves automatically. A green tick beside the page title confirms
+the save and stays visible as you scroll. A failed save shows an error and a
+**Retry** action.
 
 Disabling this setting turns off the printable `J`, `K`, `O`, `X`, `P`, `N`,
 `U`, `R`, `M`, `A`, and `?` shortcuts, together with the `G` navigation
@@ -86,7 +91,10 @@ to search for it.
 
 ## Customizing Shortcuts
 
-Open **Account Settings → Accessibility**, then open the **Shortcuts** tab.
+Open **Account Settings → Keyboard shortcuts**. Use **Find shortcut** to search
+command names, groups, or the displayed key bindings. Clearing the search
+restores the complete list. Filtering does not change any assignments.
+
 Each command shows its current assignment:
 
 1. Select the labelled edit button beside the command.
@@ -94,7 +102,7 @@ Each command shows its current assignment:
 
 The edit button remains in place while the current key changes to **Press
 keys…**. The assignment saves automatically after you finish recording, and
-Telebugs displays **Saved** in the sticky tab bar without reloading the page.
+Telebugs shows a green tick beside the title without reloading the page.
 Press `Escape` or move focus away to cancel without changing the assignment.
 
 Direct commands accept one printable key or a portable chord containing
@@ -116,58 +124,25 @@ command and keeps the existing assignments unchanged.
 
 Use the labelled clear icon to leave one command unassigned, or the reset icon
 to restore that command's default. **Restore defaults** resets every assignment
-after confirmation but keeps your favorite commands. These changes also save
-automatically.
+after confirmation, including assignments hidden by a search, and keeps your
+favorite commands. Conflicts are checked against every assignment, including
+filtered-out rows. These changes also save automatically.
 
 ## Command Palette
 
-Open the command palette with `Command` + `K` on macOS or `Control` + `K` on
-other platforms. You can also select **Search** in the navigation bar. Its key
-hint follows your customized command-palette binding.
+The palette searches commands, projects, and applications. Open it with
+**Search** in the header, `Command` + `K` on macOS, or `Control` + `K` on other
+platforms. See [Command palette](account-settings-03-command-palette.md) for
+navigation, keyboard behavior, and preferences.
 
-Start typing to find:
-
-- Projects and applications you can access
-- Global destinations such as All Errors, All Reports, and Account Settings
-- Navigation and error actions available on the current page
-- Existing search, status, project, and date filters
-- Applicable bulk actions when errors are selected
-
-Use `ArrowUp` and `ArrowDown`, `Home`, or `End` to change the active result,
-then press `Enter` to run it. `Command` + `Enter` or `Control` + `Enter` opens
-a navigation result in a new tab; it never submits an action. Press `Escape`,
-use the opening shortcut again, or select the close button to close the
-palette.
-
-Telebugs does not replace the normal `Command` + `K` or `Control` + `K`
-behavior while you are editing a field. Use `Command` + `Option` + `K` on
-macOS or `Control` + `Alt` + `K` on other platforms when you intentionally
-want the palette from an editing field.
-
-Palette actions use the same visible controls, permissions, confirmations, and
-endpoints as pointer interaction. Project and application results are loaded
-only from resources your account can access.
+The bindings for opening the palette remain on the **Keyboard shortcuts**
+settings page with the other key bindings.
 
 ### Favorites and Recent Commands
 
-When a favoritable command is active in the palette, use the star at the end
-of its highlighted row. An outlined star adds the command to favorites; a
-filled star removes it. The palette stays open and the command remains in
-place while you manage it. Use **Customize shortcuts** at the bottom of the
-palette, or open **Account Settings → Accessibility → Command palette**, to
-manage all favorite commands. Changes made there save automatically.
-Favorites sync with your Telebugs account and appear first the next time the
-palette opens with an empty search.
-
-Commands you run from the palette appear in **Recent** suggestions on that
-browser. Recent commands are deduplicated and limited to ten. They stay in the
-browser's local storage and are never synced or sent to Telebugs. Project and
-application results, raw keystrokes, and shortcuts used outside the palette
-are not added to this history.
-
-Favorites and recent entries never make a command appear on a page where it is
-unavailable. Projects, applications, current-project results, and dynamic
-project filters cannot be favorited.
+Manage favorites on **Account Settings → Command palette** or with the star
+beside an active command in the palette. See
+[Favorites and recent commands](account-settings-03-command-palette.md#favorites-and-recent-commands).
 
 ## Global Navigation Sequences
 

@@ -15,7 +15,8 @@
 - [Team Management](team-management-00.md)
 - [Account Settings](account-settings-00.md)
   - [Appearance](account-settings-01-appearance.md)
-  - [Accessibility](account-settings-02-accessibility.md)
+  - [Keyboard shortcuts](account-settings-02-accessibility.md)
+  - [Command palette](account-settings-03-command-palette.md)
 
 - [Notifications](notifications-00.md)
   - [Email](notifications-01-email.md)

@@ -16,7 +16,6 @@
             document.head.appendChild(script);
           }
         </script>
-
         <script async src="https://analytics.kyrylo.org/js/pa-9zEBAgavUR2PfQ-kWueZL.js"></script>
         <script>
           window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
@@ -51,10 +50,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-dd6d19ad.js";
+            window.path_to_searchindex_js = "searchindex-709110ce.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d5033a90.js"></script>
+        <script src="toc-ba1cdd70.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -247,17 +246,36 @@
 <p>The <code>query</code> parameter supports a powerful syntax (same as the REST API):</p>
 <pre><code>is:unresolved server_name:eagle-618d24 timeout
 environment:production tags.region:eu-west
-!is:resolved is:error,warning
-severity:info assignee:me
+!is:resolved severity:error,warning
+checkout severity:error tags.component:payments
 </code></pre>
-<p><strong>Useful patterns:</strong></p>
-<ul>
-<li><code>is:unresolved environment:production</code></li>
-<li><code>error_type:NoMethodError since:2026-06-01</code></li>
-<li><code>severity:info Burn-in starting</code></li>
-<li><code>query:checkout tags.component:payments</code></li>
-<li><code>!is:muted reports_count:&gt;10</code></li>
-</ul>
+<p>Free text searches the error type, message, and culprit. Supported qualifiers
+are:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Qualifier</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>is:unresolved</code>, <code>is:resolved</code></td><td>Resolution status</td></tr>
+<tr><td><code>is:muted</code>, <code>is:unmuted</code></td><td>Mute status</td></tr>
+<tr><td><code>severity:LEVEL</code> or <code>is:LEVEL</code></td><td><code>fatal</code>, <code>error</code>, <code>warning</code>, <code>info</code>, <code>debug</code>, or <code>sample_level</code></td></tr>
+<tr><td><code>severity:error,warning</code></td><td>Any listed severity</td></tr>
+<tr><td><code>!severity:error</code></td><td>Exclude a severity</td></tr>
+<tr><td><code>environment:VALUE</code></td><td>Environment</td></tr>
+<tr><td><code>server_name:VALUE</code></td><td>Server or device name</td></tr>
+<tr><td><code>tags.KEY:VALUE</code></td><td>Arbitrary report tag</td></tr>
+</tbody>
+</table>
+</div>
+<p>Different qualifiers combine with AND. Comma-separated severities provide OR
+within the severity list. Structured OR and negation for environments, server
+names, and tags are not supported. Quote values containing spaces.</p>
+<p><code>since</code> and <code>to_time</code> are separate tool parameters, not query qualifiers. The
+same applies to <code>status</code>, <code>resolved</code>, and <code>severity</code>; prefer either the
+dedicated parameter or its query equivalent instead of supplying contradictory
+values. See the REST API <a href="rest-api-05-groups.html#query-syntax">query syntax</a> for
+the complete semantics.</p>
 <h3 id="example-response"><a class="header" href="#example-response">Example Response</a></h3>
 <pre><code class="language-json">{
   "_security_note": "UNTRUSTED INPUT: This value came from the errored application...",
