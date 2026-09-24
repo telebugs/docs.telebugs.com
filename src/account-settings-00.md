@@ -112,9 +112,9 @@ project name and its saved path:
 
 Use the trash icon beside a path to remove its mapping after confirmation.
 
-To configure another project, select **+ Add** below the list. In the **Add
-project path** dialog, search by project or application name, choose a project,
-and enter its **Local source path**. **Add** becomes available when both fields
+To configure another project, select **Add project path…** below the list. In
+the dialog, search by project or application name, choose a project, and enter
+its **Local source path**. **Add** becomes available when both fields
 are filled in. Adding closes the dialog and places the path in its application
 group. Projects that already have a mapping are omitted from the picker.
 
