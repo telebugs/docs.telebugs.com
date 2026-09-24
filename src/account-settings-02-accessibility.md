@@ -42,9 +42,9 @@ To disable or re-enable them:
 1. Open **Account Settings → Keyboard shortcuts**.
 2. Turn **Character-key shortcuts** off or on.
 
-The change saves automatically. A green tick beside the page title confirms
-the save and stays visible as you scroll. A failed save shows an error and a
-**Retry** action.
+The change saves automatically. A green tick immediately beside the switch
+confirms the save. A failed save shows an error and a **Retry** action in the
+same card. Your shortcut assignments remain editable when this switch is off.
 
 Disabling this setting turns off the printable `J`, `K`, `O`, `X`, `P`, `N`,
 `U`, `R`, `M`, `A`, and `?` shortcuts, together with the `G` navigation
@@ -92,8 +92,10 @@ to search for it.
 ## Customizing Shortcuts
 
 Open **Account Settings → Keyboard shortcuts**. Use **Find shortcut** to search
-command names, groups, or the displayed key bindings. Clearing the search
-restores the complete list. Filtering does not change any assignments.
+command names, groups, or the displayed key bindings. Search is beside the
+page title on desktop and below it on smaller screens, and stays available as
+you scroll. Clearing the search restores the complete list. Filtering does not
+change any assignments.
 
 Each command shows its current assignment:
 

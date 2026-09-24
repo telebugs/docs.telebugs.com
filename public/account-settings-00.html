@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-709110ce.js";
+            window.path_to_searchindex_js = "searchindex-c8ed41b7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ba1cdd70.js"></script>
@@ -196,18 +196,28 @@
 <p>Account settings let you update your profile, manage security, configure local
 development, and control notifications.</p>
 <p>Click your profile icon in the top-right, then select the block containing your
-name, email address, and role to open <strong>Profile</strong>. On desktop, use the settings
+name, email address, and role to open <strong>Account</strong>. On desktop, use the settings
 sidebar to move between pages. Related pages are separated by whitespace. On
 smaller screens, use the <strong>Settings section</strong> selector. The page title stays
 visible as you scroll.</p>
-<p>The available pages are <strong>Profile</strong>, <strong>Appearance</strong>, <strong>Keyboard shortcuts</strong>,
-<strong>Command palette</strong>, <strong>Notifications</strong>, <strong>Security</strong>, <strong>Local development</strong>,
-<strong>API access</strong>, and <strong>Connected apps</strong>.</p>
-<p><span id="profile"></span></p>
-<h2 id="general">Profile</h2>
+<p>The available pages are <strong>Account</strong>, <strong>Appearance</strong>, <strong>Notifications</strong>,
+<strong>Keyboard shortcuts</strong>, <strong>Command palette</strong>, <strong>Local development</strong>, <strong>API access</strong>,
+and <strong>Connected apps</strong>.</p>
+<p><span id="account"></span>
+<span id="profile"></span></p>
+<h2 id="general">Account</h2>
 
-<p>The <strong>Profile</strong> page contains your photo and full name. Your name, email, and
-access-level badge appear in the settings sidebar and account menu.</p>
+<p>The <strong>Account</strong> page brings your personal details and sign-in settings together:</p>
+<ul>
+<li><strong>Personal details:</strong> photo, full name, and email address.</li>
+<li><strong>Sign-in:</strong> password.</li>
+<li><strong>Log in on another device:</strong> your private sign-in link.</li>
+</ul>
+<p>Your name, email, and access-level badge appear in the settings sidebar and
+account menu. Select this identity block to return to Account. There is no
+separate Security menu item.</p>
+<p>Account keeps the <code>/settings/profile</code> URL. Old <code>/settings/security</code> links redirect
+to Account, and <code>/settings/sessions</code> links open its device sign-in section.</p>
 <h3 id="profile-picture"><a class="header" href="#profile-picture">Profile Picture</a></h3>
 <p>Your profile picture shows next to your name in the dashboard and team views.</p>
 <p>To upload or change it, click your photo or <strong>Choose photo</strong>, then select a
@@ -215,36 +225,68 @@ JPEG, PNG, or WebP image. Hovering over or focusing the photo reveals <strong>ed
 The photo saves automatically after selection. Select <strong>Remove photo</strong> to
 return to the default avatar.</p>
 <h3 id="changing-your-name"><a class="header" href="#changing-your-name">Changing Your Name</a></h3>
-<p>Edit <strong>Full name</strong> to change the name shown in team lists and notes. Changes
-save automatically after you pause typing or leave the field. A green tick
-beside the input confirms that the name was saved.</p>
-<p>Photo and name changes save automatically. If a save fails, the page shows an
-error and a <strong>Retry</strong> action. The help icon below the card opens the relevant
-manual page.</p>
+<p>Under <strong>Account → Personal details</strong>, select the edit icon beside <strong>Full name</strong>.
+Enter your name in the dialog, then select <strong>Save</strong>. The updated name appears in
+team lists, notes, the settings sidebar, and the account menu. A green tick beside
+the name confirms that it was saved.</p>
+<p>Select <strong>Cancel</strong> or press <strong>Escape</strong> to discard your changes. If saving fails,
+the dialog keeps your entered name and shows an error; select <strong>Save</strong> to retry.</p>
+<p>Photo changes still save automatically. If a photo save fails, use <strong>Retry</strong> beside
+the error. The help icon below the Account cards opens this manual page.</p>
+<h3 id="security-settings">Email and Password</h3>
+
+<p>Email and password changes open in dialogs and require your current password
+and explicit submission. A green tick beside the changed setting confirms that
+it was saved.</p>
+<p><span id="email-address"></span></p>
+<h4 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h4>
+<p>Under <strong>Account → Personal details</strong>, select the edit icon beside <strong>Email address</strong>.
+Enter your new email address and current password, then
+select <strong>Save</strong>. Your updated email also appears in the settings sidebar
+and account menu.</p>
+<h4 id="change-password"><a class="header" href="#change-password">Change Password</a></h4>
+<p>Under <strong>Account → Sign-in</strong>, the <strong>Password</strong> row shows a fixed eight-dot mask,
+unrelated to your password’s length. Select the edit icon beside it. Enter your current password, new password,
+and confirmation, then select <strong>Change password</strong> in the dialog.</p>
+<p>If the change succeeds, the dialog closes and a green tick appears beside the
+action. If it fails, the dialog shows an error so you can try again. Password
+fields are cleared after a submission or when you close the dialog.</p>
+<h3 id="log-in-on-another-device"><a class="header" href="#log-in-on-another-device">Log In on Another Device</a></h3>
+<p>The <strong>Log in on another device</strong> card is on <strong>Account</strong>.
+Use the copy icon beside <strong>Sign-in link</strong> to copy the private link. A tick
+confirms it was copied. The share icon is available when your browser supports
+sharing. You can also select and copy the link directly from the field.</p>
+<p>The link expires after 4 hours. Do not share it with anyone else.</p>
 <h2 id="local-development"><a class="header" href="#local-development">Local Development</a></h2>
 <p>Use <strong>Account Settings → Local development</strong> to configure editor links and
 local source paths.</p>
 <h3 id="preferred-local-editor"><a class="header" href="#preferred-local-editor">Preferred Local Editor</a></h3>
-<p>Choose the editor used by <strong>Open in Editor</strong> links in error backtraces.</p>
-<ol>
-<li>In the <strong>Preferred local editor</strong> card, select an editor from the <strong>Local
-editor</strong> menu.</li>
-<li>Select <strong>None (disable local open)</strong> to disable editor links.</li>
-<li>Click <strong>Update editor preference</strong>.</li>
-</ol>
+<p>In the <strong>Editor</strong> card, choose an application from <strong>Open files with</strong>. Choose
+<strong>None</strong> to disable editor links. Your selection saves
+immediately. A green tick confirms the save; if it fails, use <strong>Retry</strong>.</p>
 <h3 id="local-source-code-paths-per-project"><a class="header" href="#local-source-code-paths-per-project">Local Source Code Paths (per project)</a></h3>
-<p>Configure the local path to each project’s source code on your machine. This
-lets Telebugs open source files from production error backtraces in your
-preferred editor.</p>
-<p>Configured projects appear as independently editable rows:</p>
+<p>Set each project’s source folder on your computer to open files from error
+backtraces in your preferred editor. Editor and path preferences belong to
+your account.</p>
+<p>Configured projects appear as compact rows, grouped by application, with the
+project name and its saved path:</p>
 <ol>
-<li>Enter or update the full local filesystem path for a configured project.</li>
-<li>Click <strong>Save path</strong>.</li>
-<li>Use <strong>Remove path</strong> to remove a mapping explicitly.</li>
+<li>Select the edit icon beside a project.</li>
+<li>Enter its full local source path in the dialog and select <strong>Save path</strong>.</li>
+<li>A green tick confirms the save. <strong>Cancel</strong> leaves the saved path unchanged.</li>
 </ol>
-<p>To configure another project, click <strong>Add project path</strong>, select an active
-project, enter its local source path, and save it. Projects that already have a
-mapping are not offered in the picker.</p>
+<p>Use the trash icon beside a path to remove its mapping after confirmation.</p>
+<p>To configure another project, select <strong>+ Add</strong> below the list. In the <strong>Add
+project path</strong> dialog, search by project or application name, choose a project,
+and enter its <strong>Local source path</strong>. <strong>Add</strong> becomes available when both fields
+are filled in. Adding closes the dialog and places the path in its application
+group. Projects that already have a mapping are omitted from the picker.</p>
+<p><strong>Cancel</strong> or Escape discards the draft. If adding fails, the dialog keeps your
+selection and path so you can retry. The same dialog is used on desktop and
+mobile.</p>
+<p>When more than ten paths are configured, <strong>Filter configured projects</strong> searches
+project and application names. The help icon below the settings opens this
+reference.</p>
 <h2 id="appearance"><a class="header" href="#appearance">Appearance</a></h2>
 <p>Use <strong>Account Settings → Appearance</strong> to choose the color scheme, text size,
 and related display preferences. See <a href="account-settings-01-appearance.html">Appearance</a>.</p>
@@ -257,63 +299,81 @@ filter the grouped list. See <a href="account-settings-02-accessibility.html">Ke
 <p>Use <strong>Account Settings → Command palette</strong> to review and manage favorite
 commands. Use <strong>Find command</strong> to filter the catalogue. These preferences have
 their own page in the sidebar. See <a href="account-settings-03-command-palette.html">Command palette</a>.</p>
-<h2 id="security-settings"><a class="header" href="#security-settings">Security Settings</a></h2>
-<p>Use <strong>Account Settings → Security</strong> to manage your sign-in details and get a
-private link for signing in on another device. Email and password changes open
-in dialogs and require explicit submission. A green tick beside the changed
-setting confirms that it was saved. The help icon below the cards opens this
-reference.</p>
-<p><span id="email-address"></span></p>
-<h3 id="change-email-address"><a class="header" href="#change-email-address">Change Email Address</a></h3>
-<p>On <strong>Account Settings → Security</strong>, select the edit icon beside <strong>Email address</strong>. Enter your new email address and account password, then
-select <strong>Change email</strong>. Your updated email also appears in the settings sidebar
-and account menu.</p>
-<h3 id="change-password"><a class="header" href="#change-password">Change Password</a></h3>
-<p>Select <strong>Change password</strong> in the <strong>Password</strong> row. Enter your current password,
-new password, and confirmation, then select <strong>Change password</strong> in the dialog.</p>
-<p>If the change succeeds, the dialog closes and a green tick appears beside the
-action. If it fails, the dialog shows an error so you can try again. Password
-fields are cleared after a submission or when you close the dialog.</p>
-<h2 id="log-in-on-another-device"><a class="header" href="#log-in-on-another-device">Log In on Another Device</a></h2>
-<p>The <strong>Log in on another device</strong> card is on <strong>Account Settings → Security</strong>.
-Use the copy icon beside <strong>Sign-in link</strong> to copy the private link. A tick
-confirms it was copied. The share icon is available when your browser supports
-sharing. You can also select and copy the link directly from the field.</p>
-<p>The link expires after 4 hours. Do not share it with anyone else.</p>
 <h2 id="notification-preferences"><a class="header" href="#notification-preferences">Notification Preferences</a></h2>
-<p>Use <strong>Account Settings → Notifications</strong> to choose which projects send you
-notifications. The list shows active projects you belong to, with a switch for
-each project. These switches control your own notification preferences. Select
-a project name to open that project.</p>
+<p>Open <strong>Account Settings → Notifications</strong> to manage your project email and push
+notifications.</p>
+<p>Use <strong>Allow notifications</strong> to turn them off or back on for your account. Turning
+it off keeps your individual project choices. The project switches are dimmed
+while notifications are off; turning them back on restores the same choices.
+This also applies to projects you join later. It does not change another team
+member’s preferences, shared webhook deliveries, or account security emails.</p>
+<p>Use the project switches to choose which projects you receive notifications
+from. The list shows active projects you belong to. Select a project name to open it.</p>
 <p>Changes save automatically. A green tick beside the changed switch confirms
 the save. If a change cannot be saved, <strong>Not saved</strong> and <strong>Retry</strong> appear beside
-that switch. Select <strong>Retry</strong> to save your chosen value again.</p>
+that switch. The displayed choice has not taken effect until it is saved; select
+<strong>Retry</strong> to try again. Project switches are unavailable while the master switch
+saves, and remain unavailable while <strong>Allow notifications</strong> is off.</p>
+<p>Turning notifications back on allows future notifications from your selected
+projects. Notifications skipped while they were off are not replayed.</p>
 <p>The help icon below the project list opens this reference.</p>
 <h2 id="api">API Access</h2>
 
-<p>The <strong>API access</strong> page contains your personal API key and links to the REST API
-documentation.</p>
+<p>Open <strong>Account Settings → API access</strong> to copy or regenerate your personal API
+key and manage project webhooks.</p>
 <h3 id="your-api-key"><a class="header" href="#your-api-key">Your API Key</a></h3>
 <p>Your API key authenticates requests to the Telebugs REST API. Treat it like a
 password and do not commit it to source control.</p>
+<p>Use the copy icon beside the key. A green tick confirms it was copied. You can
+also select and copy the key directly from the field. If the browser cannot copy
+the key, an error appears below it and the key is selected for manual copying.</p>
 <h3 id="regenerating-your-api-key"><a class="header" href="#regenerating-your-api-key">Regenerating Your API Key</a></h3>
-<p>If your API key is compromised or needs rotation, click <strong>Regenerate</strong>.</p>
-<p>After regenerating:</p>
-<ul>
-<li>Copy the new key immediately.</li>
-<li>Update integrations and scripts that use the old key.</li>
-<li>The previous key stops working.</li>
-</ul>
+<p>If your API key is compromised or needs rotation, select the refresh icon
+(<strong>Regenerate API key</strong>) beside the copy icon, then confirm. The confirmation
+explains that the current key will stop working immediately. Cancel to keep
+your existing key.</p>
+<p>After confirmation, the new key appears selected so you can copy it immediately.
+A green tick beside the refresh icon confirms the change. Copy the new key and
+update any integrations or scripts using the old one. The copy icon always
+copies the key currently displayed.</p>
 <h3 id="using-the-api"><a class="header" href="#using-the-api">Using the API</a></h3>
-<p>See the <a href="/rest-api-00-getting-started.html">REST API</a> documentation for available
-endpoints and examples.</p>
+<p>The <strong>REST API documentation</strong> link opens the
+<a href="/rest-api-00-getting-started.html">API getting-started guide</a>, with authentication
+instructions and links to available endpoints.</p>
+<h3 id="project-webhooks"><a class="header" href="#project-webhooks">Project Webhooks</a></h3>
+<p>The <strong>Webhooks</strong> list shows active projects you belong to and the number of
+webhook endpoints configured for each. Select a project to open its webhook
+settings. See <a href="/rest-api-08-webhooks.html">Webhooks</a> for setup and delivery details.</p>
+<p>The help icon below the list opens this account-settings reference.</p>
 <p><span id="connected-apps"></span></p>
 <h2 id="connected-mcp-apps">Connected Apps</h2>
 
 <p>AI coding tools can connect to Telebugs through the
-<a href="/telebugs-mcp-00-getting-started.html">Model Context Protocol (MCP)</a>. After
-authorizing a tool, review or revoke its access from <strong>Account Settings →
-Connected apps</strong>.</p>
+<a href="/telebugs-mcp-00-getting-started.html">Model Context Protocol (MCP)</a>. Open
+<strong>Account Settings → Connected apps</strong> to set up a connection or review apps
+you have authorized.</p>
+<h3 id="connect-an-app"><a class="header" href="#connect-an-app">Connect an App</a></h3>
+<p>Copy the <strong>MCP server URL</strong> using the copy icon. A green tick confirms it was
+copied. If copying fails, an error appears below the field and the URL is selected
+for manual copying. Add the URL to your AI tool, then sign in and approve its
+requested access. The <strong>App setup instructions</strong> link opens the
+<a href="/telebugs-mcp-02-connecting.html">connecting guide</a>.</p>
+<p>Read access lets an app investigate errors. Write access lets it record findings
+and update error status. Your AI tool refreshes its authorized session
+automatically.</p>
+<h3 id="review-authorized-apps"><a class="header" href="#review-authorized-apps">Review Authorized Apps</a></h3>
+<p>The <strong>Authorized apps</strong> card shows each app’s name, icon, and granted access.
+Permissions reflect your current authorizations, including sessions with an
+expired access token that can still refresh. Select an app’s name or disclosure
+arrow to see its client ID, which helps distinguish connections with the same
+name.</p>
+<p>Use the trash icon beside an app to <strong>revoke access</strong>, then confirm. The app is
+removed from the list and a green tick confirms the change. This revokes all of
+your active or refreshable sessions for that connection without affecting other
+users. Cancel to keep the connection. You can reconnect the app later.</p>
+<p>Apps using your API key are not listed here. Manage that key under
+<strong>Account Settings → API access</strong>. The help icon below the app list opens this
+reference.</p>
 <p>The page retains the <code>/settings/mcp</code> application URL for compatibility. MCP
 remains the protocol name used in setup instructions and technical references.</p>
 

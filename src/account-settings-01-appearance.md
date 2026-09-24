@@ -8,8 +8,14 @@ block, then select **Appearance** from the settings sidebar.
 
 Select a tile for **Color mode** and **Width**, choose the **Font** and **Text
 size** options you prefer. Each change applies immediately and saves
-automatically for your account. A green tick beside the page title confirms
-the save. If a save fails, an error and **Retry** action appear there.
+automatically for your account. A spinner beside the changed option shows that
+it is saving, followed by a green tick when it is saved. Each option has its own
+feedback, so changing **Font** or **Text size** confirms the save beside that
+control. Options you have not changed stay quiet.
+
+If a save fails, an error and **Retry** action appear beside the affected option.
+Your selection stays applied while you retry. Changes made in quick succession
+are saved in order, and a tick confirms the latest choice for that option.
 
 Color mode and width share a card; font and text size share another. The help
 icon below the cards opens this page.

@@ -44,7 +44,8 @@ filled star removes it. The palette stays open and the command remains in
 place while you manage it.
 
 To review the full command catalogue, open **Account Settings → Command
-palette**. **Find command** filters by command name or group; clearing the
+palette**. **Find command**, beside the title on desktop and below it on smaller
+screens, filters by command name or group; clearing the
 search restores the complete list. Select the star beside a command to add or
 remove it from favorites. Filtering does not change favorites, and saving a
 visible command keeps your hidden favorites. **Clear all** removes every
