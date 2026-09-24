@@ -5,12 +5,28 @@ dropdown > **Project Settings**.
 
 ## General Settings
 
-- **Name**: Update for clarity, e.g., "AwesomeApp Backend". Click **Rename**.
-- **Timezone**: Set to match team or servers (affects dates in reports).
-  Search/select, **Change timezone**. Use UTC for global teams.
-- **Platform**: Choose for icon and tailored SDK guides. Save changes.
+Project settings use a sidebar on desktop and a section picker on smaller
+screens. The project name stays visible so you can tell which project you’re
+configuring. These settings apply to everyone with access to the project.
 
-These make the dashboard more intuitive without affecting data.
+- **Project name**: Select the edit icon, enter a name, then choose **Save**.
+  **Cancel** discards your draft. Renaming does not change the project token.
+- **Reporting timezone**: Choose the timezone used for reporting days and charts.
+  The selection saves automatically. Changing it rebuilds statistics in the
+  background; large projects can take a while to finish.
+- **Platform**: Choose the project icon and SDK setup instructions. This saves
+  automatically and does not change existing reports.
+
+### Source Code Linking
+
+Select the edit icon beside **Repository** to set a GitHub, GitLab, or Bitbucket
+repository URL and its default deployment branch. Choose **Save** to apply both
+fields, or **Cancel** to discard changes. Leave the URL blank to turn off source
+code linking.
+
+Backtrace links open the corresponding source file. Private repositories work
+when the viewer is signed in to the code host and has access; Telebugs does not
+need repository credentials.
 
 ### Hosted Source Maps
 
@@ -18,11 +34,12 @@ Instance admins can open **Hosted source maps** in the project settings menu to
 authorize exact public HTTPS asset origins. Telebugs makes no hosted-map
 requests until an origin is listed.
 
-Enter an origin such as `https://assets.example.com`, without a path, query,
+Choose **Authorize origin…**, enter an origin, and choose **Authorize**. You can
+authorize up to ten origins. Use an origin such as `https://assets.example.com`, without a path, query,
 fragment, wildcard, IP address, or credentials. If a bundle points to a map on
 a different CDN origin, authorize that exact origin separately.
 
-Removing an origin prevents future use and purges its hosted-map cache. Existing
+Use the trash icon to remove an origin after confirming. Removing it prevents future use and purges its hosted-map cache. Existing
 reports retain frames that were already remapped. See [Source Maps][3] for
 setup, supported discovery methods, security behavior, limits, statuses, and
 troubleshooting.
@@ -47,7 +64,9 @@ palette command changes to **Manage project muting** and opens the same
 settings.
 
 Use project muting before URL scans, load tests, or other planned noisy work.
-The active duration and stop control appear in **Project muting** settings.
+In **General > Project muting**, choose **Mute project…**, select a duration,
+and choose **Mute**. The active duration and **Stop muting new errors** control
+appear in the same group.
 
 Selecting **Stop muting new errors** stops future groups from inheriting the
 project mute. Errors already muted by the setting stay muted until their
@@ -58,8 +77,13 @@ from flooding the active queue as soon as the project resumes.
 
 Tokens allow your app to send reports securely.
 
-- **Project token**: View/copy/regenerate if compromised (invalidates old one).
-- **DSN**: Full URL with token. Copy for SDK config.
+- **Project token**: Copy with the clipboard icon. Administrators can use the
+  regenerate icon and confirm to replace it.
+- **DSN**: Copy this full URL when configuring a Sentry SDK.
+
+Regenerating immediately invalidates both the old token and its DSN. Update your
+app configuration to keep sending reports. Anyone with either value can submit
+reports to this project, but cannot read reports or access your account.
 
 Store in env vars, not code. Test after regenerate with a sample error.
 
@@ -67,7 +91,7 @@ Store in env vars, not code. Test after regenerate with a sample error.
 
 Control who sees the project.
 
-View team list and toggle checkboxes for access.
+Administrators can use the switch beside each person to grant or remove access.
 
 Admins: full control; members: view/resolve only.
 
@@ -79,13 +103,19 @@ Use for segmented teams, e.g., backend devs on backend projects.
 
 Enable alerts via preferred channels without overload.
 
-- **Channels**: Toggle Email, Push, Webhooks. Configure/test each.
+- **Channels**: Toggle Email, Push, or Webhook for this project. Select a channel
+  name to configure it. Webhook subscriptions retain their choices when the
+  Webhook channel is off; their controls become available again when it is on.
 - **Severity**: Enable **Only notify for fatal and error events** to keep
   lower-severity reports without sending alerts for them. The setting is off by
   default and applies to every notification channel in the project. Frequency
   thresholds count only fatal, error, and missing-level reports when enabled.
-- **Rules**: Set for new errors, reoccurrences, frequency thresholds.
-- **Recipients**: Toggle per user for targeted alerts, e.g., on-call.
+- **Rules**: Set notifications for new errors, reoccurrences, frequency thresholds,
+  or every unresolved occurrence. Use the edit icon beside an enabled frequency
+  rule to set the number of reports and interval in minutes, then choose **Save**.
+- **Recipients**: Toggle personal notifications per user. Each person’s account
+  notification settings still apply; project preferences remain stored when a
+  person turns off notifications in their account.
 
 Combine channels for redundancy. Test with simulated errors to avoid fatigue.
 
@@ -93,11 +123,15 @@ Combine channels for redundancy. Test with simulated errors to avoid fatigue.
 
 Irreversible actions; back up first.
 
-- **Stats**: Disk space, report count.
-- **Partial purge**: Remove details from old reports, keep stats.
-- **Purge attachments**: Clear files from notes (text remains).
-- **Full purge**: Wipe all error data (project structure stays).
-- **Delete project**: Remove entirely; double-confirm.
+- **Storage and reports**: Estimated disk usage, note attachments, report count,
+  and the time of the last report. Use the refresh icon to recalculate disk usage.
+- **Purge error details**: Remove report details, including backtraces and
+  breadcrumbs, while retaining core report data for statistics.
+- **Purge note attachments**: Clear files from notes (text remains).
+- **Purge all errors**: Wipe all error data (project structure stays).
+- **Delete project**: Remove the project, its reports, and its settings.
+
+Every destructive action has a confirmation that explains what will be removed.
 
 Use for cleanup, but export data if needed for audits (see [Instance Settings][2]).
 

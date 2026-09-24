@@ -51,7 +51,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-83c1cf6b.js";
+            window.path_to_searchindex_js = "searchindex-5541af5d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ba1cdd70.js"></script>
@@ -1722,21 +1722,35 @@ shortcut reference, custom assignments, favorites, and safety behavior.</p>
 <p>Access via three dots on card &gt; <strong>Settings</strong>, or inside project &gt; project name
 dropdown &gt; <strong>Project Settings</strong>.</p>
 <h2 id="general-settings"><a class="header" href="#general-settings">General Settings</a></h2>
+<p>Project settings use a sidebar on desktop and a section picker on smaller
+screens. The project name stays visible so you can tell which project you’re
+configuring. These settings apply to everyone with access to the project.</p>
 <ul>
-<li><strong>Name</strong>: Update for clarity, e.g., “AwesomeApp Backend”. Click <strong>Rename</strong>.</li>
-<li><strong>Timezone</strong>: Set to match team or servers (affects dates in reports).
-Search/select, <strong>Change timezone</strong>. Use UTC for global teams.</li>
-<li><strong>Platform</strong>: Choose for icon and tailored SDK guides. Save changes.</li>
+<li><strong>Project name</strong>: Select the edit icon, enter a name, then choose <strong>Save</strong>.
+<strong>Cancel</strong> discards your draft. Renaming does not change the project token.</li>
+<li><strong>Reporting timezone</strong>: Choose the timezone used for reporting days and charts.
+The selection saves automatically. Changing it rebuilds statistics in the
+background; large projects can take a while to finish.</li>
+<li><strong>Platform</strong>: Choose the project icon and SDK setup instructions. This saves
+automatically and does not change existing reports.</li>
 </ul>
-<p>These make the dashboard more intuitive without affecting data.</p>
+<h3 id="source-code-linking"><a class="header" href="#source-code-linking">Source Code Linking</a></h3>
+<p>Select the edit icon beside <strong>Repository</strong> to set a GitHub, GitLab, or Bitbucket
+repository URL and its default deployment branch. Choose <strong>Save</strong> to apply both
+fields, or <strong>Cancel</strong> to discard changes. Leave the URL blank to turn off source
+code linking.</p>
+<p>Backtrace links open the corresponding source file. Private repositories work
+when the viewer is signed in to the code host and has access; Telebugs does not
+need repository credentials.</p>
 <h3 id="hosted-source-maps"><a class="header" href="#hosted-source-maps">Hosted Source Maps</a></h3>
 <p>Instance admins can open <strong>Hosted source maps</strong> in the project settings menu to
 authorize exact public HTTPS asset origins. Telebugs makes no hosted-map
 requests until an origin is listed.</p>
-<p>Enter an origin such as <code>https://assets.example.com</code>, without a path, query,
+<p>Choose <strong>Authorize origin…</strong>, enter an origin, and choose <strong>Authorize</strong>. You can
+authorize up to ten origins. Use an origin such as <code>https://assets.example.com</code>, without a path, query,
 fragment, wildcard, IP address, or credentials. If a bundle points to a map on
 a different CDN origin, authorize that exact origin separately.</p>
-<p>Removing an origin prevents future use and purges its hosted-map cache. Existing
+<p>Use the trash icon to remove an origin after confirming. Removing it prevents future use and purges its hosted-map cache. Existing
 reports retain frames that were already remapped. See <a href="/release-01-source-maps.html#hosted-source-map-discovery">Source Maps</a> for
 setup, supported discovery methods, security behavior, limits, statuses, and
 troubleshooting.</p>
@@ -1756,7 +1770,9 @@ colored bell-slash icon appears beside the project name. Select it to open the
 palette command changes to <strong>Manage project muting</strong> and opens the same
 settings.</p>
 <p>Use project muting before URL scans, load tests, or other planned noisy work.
-The active duration and stop control appear in <strong>Project muting</strong> settings.</p>
+In <strong>General &gt; Project muting</strong>, choose <strong>Mute project…</strong>, select a duration,
+and choose <strong>Mute</strong>. The active duration and <strong>Stop muting new errors</strong> control
+appear in the same group.</p>
 <p>Selecting <strong>Stop muting new errors</strong> stops future groups from inheriting the
 project mute. Errors already muted by the setting stay muted until their
 deadline or until you explicitly unmute them. This prevents scan-created errors
@@ -1764,37 +1780,50 @@ from flooding the active queue as soon as the project resumes.</p>
 <h2 id="token-settings"><a class="header" href="#token-settings">Token Settings</a></h2>
 <p>Tokens allow your app to send reports securely.</p>
 <ul>
-<li><strong>Project token</strong>: View/copy/regenerate if compromised (invalidates old one).</li>
-<li><strong>DSN</strong>: Full URL with token. Copy for SDK config.</li>
+<li><strong>Project token</strong>: Copy with the clipboard icon. Administrators can use the
+regenerate icon and confirm to replace it.</li>
+<li><strong>DSN</strong>: Copy this full URL when configuring a Sentry SDK.</li>
 </ul>
+<p>Regenerating immediately invalidates both the old token and its DSN. Update your
+app configuration to keep sending reports. Anyone with either value can submit
+reports to this project, but cannot read reports or access your account.</p>
 <p>Store in env vars, not code. Test after regenerate with a sample error.</p>
 <h2 id="access-control"><a class="header" href="#access-control">Access Control</a></h2>
 <p>Control who sees the project.</p>
-<p>View team list and toggle checkboxes for access.</p>
+<p>Administrators can use the switch beside each person to grant or remove access.</p>
 <p>Admins: full control; members: view/resolve only.</p>
 <p>Changes save automatically. See <a href="/team-management-00.html">Team Management</a> for roles/invites.</p>
 <p>Use for segmented teams, e.g., backend devs on backend projects.</p>
 <h2 id="notifications-settings"><a class="header" href="#notifications-settings">Notifications Settings</a></h2>
 <p>Enable alerts via preferred channels without overload.</p>
 <ul>
-<li><strong>Channels</strong>: Toggle Email, Push, Webhooks. Configure/test each.</li>
+<li><strong>Channels</strong>: Toggle Email, Push, or Webhook for this project. Select a channel
+name to configure it. Webhook subscriptions retain their choices when the
+Webhook channel is off; their controls become available again when it is on.</li>
 <li><strong>Severity</strong>: Enable <strong>Only notify for fatal and error events</strong> to keep
 lower-severity reports without sending alerts for them. The setting is off by
 default and applies to every notification channel in the project. Frequency
 thresholds count only fatal, error, and missing-level reports when enabled.</li>
-<li><strong>Rules</strong>: Set for new errors, reoccurrences, frequency thresholds.</li>
-<li><strong>Recipients</strong>: Toggle per user for targeted alerts, e.g., on-call.</li>
+<li><strong>Rules</strong>: Set notifications for new errors, reoccurrences, frequency thresholds,
+or every unresolved occurrence. Use the edit icon beside an enabled frequency
+rule to set the number of reports and interval in minutes, then choose <strong>Save</strong>.</li>
+<li><strong>Recipients</strong>: Toggle personal notifications per user. Each person’s account
+notification settings still apply; project preferences remain stored when a
+person turns off notifications in their account.</li>
 </ul>
 <p>Combine channels for redundancy. Test with simulated errors to avoid fatigue.</p>
 <h2 id="danger-zone"><a class="header" href="#danger-zone">Danger Zone</a></h2>
 <p>Irreversible actions; back up first.</p>
 <ul>
-<li><strong>Stats</strong>: Disk space, report count.</li>
-<li><strong>Partial purge</strong>: Remove details from old reports, keep stats.</li>
-<li><strong>Purge attachments</strong>: Clear files from notes (text remains).</li>
-<li><strong>Full purge</strong>: Wipe all error data (project structure stays).</li>
-<li><strong>Delete project</strong>: Remove entirely; double-confirm.</li>
+<li><strong>Storage and reports</strong>: Estimated disk usage, note attachments, report count,
+and the time of the last report. Use the refresh icon to recalculate disk usage.</li>
+<li><strong>Purge error details</strong>: Remove report details, including backtraces and
+breadcrumbs, while retaining core report data for statistics.</li>
+<li><strong>Purge note attachments</strong>: Clear files from notes (text remains).</li>
+<li><strong>Purge all errors</strong>: Wipe all error data (project structure stays).</li>
+<li><strong>Delete project</strong>: Remove the project, its reports, and its settings.</li>
 </ul>
+<p>Every destructive action has a confirmation that explains what will be removed.</p>
 <p>Use for cleanup, but export data if needed for audits (see <a href="/instance-00.html">Instance Settings</a>).</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="api-webhooks"><a class="header" href="#api-webhooks">API Webhooks</a></h1>
@@ -1809,8 +1838,13 @@ in a project, such as when a group is resolved or muted.</p>
 <li>Open <strong>Project Settings</strong>.</li>
 <li>Go to the <strong>API Webhooks</strong> section.</li>
 </ol>
-<p>From here you can create, edit, enable, disable, and delete webhooks. You can
-also send test events and view delivery history.</p>
+<p>Choose <strong>Add webhook</strong> to enter an endpoint URL, an optional signing secret,
+and the events to send. Choose <strong>Add</strong> to create it or <strong>Cancel</strong> to discard the
+form. The <strong>Enabled</strong> switch controls whether the webhook receives events.</p>
+<p>Use a webhook’s edit icon to change its details, then choose <strong>Save</strong>. Existing
+event selections are preserved. Clearing all events leaves the endpoint
+configured without sending any events. Use the trash icon to delete a webhook;
+the confirmation also warns that its delivery history will be deleted.</p>
 <h2 id="events"><a class="header" href="#events">Events</a></h2>
 <p>You can subscribe to events such as:</p>
 <ul>
@@ -1821,8 +1855,9 @@ also send test events and view delivery history.</p>
 <li><code>group.unmuted</code></li>
 </ul>
 <h2 id="delivery-history"><a class="header" href="#delivery-history">Delivery History</a></h2>
-<p>Each webhook shows its recent deliveries, including success status, HTTP
-response codes, and error messages. This helps with debugging integrations.</p>
+<p>Select a webhook’s URL to view its recent delivery attempts, including success
+status, UTC timestamps, HTTP response codes, and any recorded error messages.
+Use the pagination controls to move through older attempts. This helps with debugging integrations.</p>
 <h2 id="managing-via-the-rest-api"><a class="header" href="#managing-via-the-rest-api">Managing via the REST API</a></h2>
 <p>API Webhooks can also be managed programmatically. See the
 <a href="/rest-api-08-webhooks.html">Webhooks</a> and <a href="/rest-api-09-webhook-deliveries.html">Webhook

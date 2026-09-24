@@ -15,8 +15,14 @@ To manage them:
 2. Open **Project Settings**.
 3. Go to the **API Webhooks** section.
 
-From here you can create, edit, enable, disable, and delete webhooks. You can
-also send test events and view delivery history.
+Choose **Add webhook** to enter an endpoint URL, an optional signing secret,
+and the events to send. Choose **Add** to create it or **Cancel** to discard the
+form. The **Enabled** switch controls whether the webhook receives events.
+
+Use a webhook’s edit icon to change its details, then choose **Save**. Existing
+event selections are preserved. Clearing all events leaves the endpoint
+configured without sending any events. Use the trash icon to delete a webhook;
+the confirmation also warns that its delivery history will be deleted.
 
 ## Events
 
@@ -30,8 +36,9 @@ You can subscribe to events such as:
 
 ## Delivery History
 
-Each webhook shows its recent deliveries, including success status, HTTP
-response codes, and error messages. This helps with debugging integrations.
+Select a webhook’s URL to view its recent delivery attempts, including success
+status, UTC timestamps, HTTP response codes, and any recorded error messages.
+Use the pagination controls to move through older attempts. This helps with debugging integrations.
 
 ## Managing via the REST API
 

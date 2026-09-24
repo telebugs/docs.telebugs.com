@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-83c1cf6b.js";
+            window.path_to_searchindex_js = "searchindex-5541af5d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ba1cdd70.js"></script>
@@ -204,8 +204,13 @@ in a project, such as when a group is resolved or muted.</p>
 <li>Open <strong>Project Settings</strong>.</li>
 <li>Go to the <strong>API Webhooks</strong> section.</li>
 </ol>
-<p>From here you can create, edit, enable, disable, and delete webhooks. You can
-also send test events and view delivery history.</p>
+<p>Choose <strong>Add webhook</strong> to enter an endpoint URL, an optional signing secret,
+and the events to send. Choose <strong>Add</strong> to create it or <strong>Cancel</strong> to discard the
+form. The <strong>Enabled</strong> switch controls whether the webhook receives events.</p>
+<p>Use a webhook’s edit icon to change its details, then choose <strong>Save</strong>. Existing
+event selections are preserved. Clearing all events leaves the endpoint
+configured without sending any events. Use the trash icon to delete a webhook;
+the confirmation also warns that its delivery history will be deleted.</p>
 <h2 id="events"><a class="header" href="#events">Events</a></h2>
 <p>You can subscribe to events such as:</p>
 <ul>
@@ -216,8 +221,9 @@ also send test events and view delivery history.</p>
 <li><code>group.unmuted</code></li>
 </ul>
 <h2 id="delivery-history"><a class="header" href="#delivery-history">Delivery History</a></h2>
-<p>Each webhook shows its recent deliveries, including success status, HTTP
-response codes, and error messages. This helps with debugging integrations.</p>
+<p>Select a webhook’s URL to view its recent delivery attempts, including success
+status, UTC timestamps, HTTP response codes, and any recorded error messages.
+Use the pagination controls to move through older attempts. This helps with debugging integrations.</p>
 <h2 id="managing-via-the-rest-api"><a class="header" href="#managing-via-the-rest-api">Managing via the REST API</a></h2>
 <p>API Webhooks can also be managed programmatically. See the
 <a href="/rest-api-08-webhooks.html">Webhooks</a> and <a href="/rest-api-09-webhook-deliveries.html">Webhook
