@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5541af5d.js";
+            window.path_to_searchindex_js = "searchindex-2388db2c.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ba1cdd70.js"></script>
@@ -197,8 +197,10 @@
 dropdown &gt; <strong>Project Settings</strong>.</p>
 <h2 id="general-settings"><a class="header" href="#general-settings">General Settings</a></h2>
 <p>Project settings use a sidebar on desktop and a section picker on smaller
-screens. The project name stays visible so you can tell which project you’re
-configuring. These settings apply to everyone with access to the project.</p>
+screens. Select the project name above the sidebar to return to general settings;
+on smaller screens, choose <strong>General</strong> in the section picker. The project name
+stays visible so you can tell which project you’re configuring. These settings
+apply to everyone with access to the project.</p>
 <ul>
 <li><strong>Project name</strong>: Select the edit icon, enter a name, then choose <strong>Save</strong>.
 <strong>Cancel</strong> discards your draft. Renaming does not change the project token.</li>
@@ -238,19 +240,16 @@ notification-webhook alerts.</p>
 project</strong>, and choose a duration.</p>
 <p>You can open the same duration menu from the Command Palette: press
 <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> and choose <strong>Mute project</strong>.
-This also works before the first error arrives. While muting is active, a
-colored bell-slash icon appears beside the project name. Select it to open the
-<strong>Project muting</strong> settings. The project menu shows <strong>Manage muting</strong>, and the
-palette command changes to <strong>Manage project muting</strong> and opens the same
-settings.</p>
+This also works before the first error arrives. While muting is active,
+<strong>Unmute project</strong> appears beside the project name, in the project menu, and in
+the Command Palette.</p>
 <p>Use project muting before URL scans, load tests, or other planned noisy work.
-In <strong>General &gt; Project muting</strong>, choose <strong>Mute project…</strong>, select a duration,
-and choose <strong>Mute</strong>. The active duration and <strong>Stop muting new errors</strong> control
-appear in the same group.</p>
-<p>Selecting <strong>Stop muting new errors</strong> stops future groups from inheriting the
-project mute. Errors already muted by the setting stay muted until their
-deadline or until you explicitly unmute them. This prevents scan-created errors
-from flooding the active queue as soon as the project resumes.</p>
+In project settings, under <strong>Project muting</strong>, open <strong>Mute for</strong> and choose a
+duration. Muting starts immediately. The row shows the active duration and an
+<strong>Unmute project</strong> button.</p>
+<p>Selecting <strong>Unmute project</strong> removes project-level mutes from existing errors
+and stops automatically muting new errors. Errors you muted individually keep
+their own mute settings until those expire or you explicitly unmute them.</p>
 <h2 id="token-settings"><a class="header" href="#token-settings">Token Settings</a></h2>
 <p>Tokens allow your app to send reports securely.</p>
 <ul>
@@ -281,9 +280,12 @@ thresholds count only fatal, error, and missing-level reports when enabled.</li>
 <li><strong>Rules</strong>: Set notifications for new errors, reoccurrences, frequency thresholds,
 or every unresolved occurrence. Use the edit icon beside an enabled frequency
 rule to set the number of reports and interval in minutes, then choose <strong>Save</strong>.</li>
-<li><strong>Recipients</strong>: Toggle personal notifications per user. Each person’s account
-notification settings still apply; project preferences remain stored when a
-person turns off notifications in their account.</li>
+<li><strong>Recipients</strong>: Toggle personal notifications per user. <strong>Enable all</strong> and
+<strong>Disable all</strong> update the current active members of this project together.
+These actions replace the current recipient selection; use project muting to
+temporarily silence notifications while preserving that selection. Each
+person’s account notification settings still apply. Bulk actions do not enable
+globally disabled channels or change the defaults for future project members.</li>
 </ul>
 <p>Combine channels for redundancy. Test with simulated errors to avoid fatigue.</p>
 <h2 id="danger-zone"><a class="header" href="#danger-zone">Danger Zone</a></h2>

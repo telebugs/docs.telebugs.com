@@ -6,8 +6,10 @@ dropdown > **Project Settings**.
 ## General Settings
 
 Project settings use a sidebar on desktop and a section picker on smaller
-screens. The project name stays visible so you can tell which project you’re
-configuring. These settings apply to everyone with access to the project.
+screens. Select the project name above the sidebar to return to general settings;
+on smaller screens, choose **General** in the section picker. The project name
+stays visible so you can tell which project you’re configuring. These settings
+apply to everyone with access to the project.
 
 - **Project name**: Select the edit icon, enter a name, then choose **Save**.
   **Cancel** discards your draft. Renaming does not change the project token.
@@ -57,21 +59,18 @@ project**, and choose a duration.
 
 You can open the same duration menu from the Command Palette: press
 <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>K</kbd> and choose **Mute project**.
-This also works before the first error arrives. While muting is active, a
-colored bell-slash icon appears beside the project name. Select it to open the
-**Project muting** settings. The project menu shows **Manage muting**, and the
-palette command changes to **Manage project muting** and opens the same
-settings.
+This also works before the first error arrives. While muting is active,
+**Unmute project** appears beside the project name, in the project menu, and in
+the Command Palette.
 
 Use project muting before URL scans, load tests, or other planned noisy work.
-In **General > Project muting**, choose **Mute project…**, select a duration,
-and choose **Mute**. The active duration and **Stop muting new errors** control
-appear in the same group.
+In project settings, under **Project muting**, open **Mute for** and choose a
+duration. Muting starts immediately. The row shows the active duration and an
+**Unmute project** button.
 
-Selecting **Stop muting new errors** stops future groups from inheriting the
-project mute. Errors already muted by the setting stay muted until their
-deadline or until you explicitly unmute them. This prevents scan-created errors
-from flooding the active queue as soon as the project resumes.
+Selecting **Unmute project** removes project-level mutes from existing errors
+and stops automatically muting new errors. Errors you muted individually keep
+their own mute settings until those expire or you explicitly unmute them.
 
 ## Token Settings
 
@@ -113,9 +112,12 @@ Enable alerts via preferred channels without overload.
 - **Rules**: Set notifications for new errors, reoccurrences, frequency thresholds,
   or every unresolved occurrence. Use the edit icon beside an enabled frequency
   rule to set the number of reports and interval in minutes, then choose **Save**.
-- **Recipients**: Toggle personal notifications per user. Each person’s account
-  notification settings still apply; project preferences remain stored when a
-  person turns off notifications in their account.
+- **Recipients**: Toggle personal notifications per user. **Enable all** and
+  **Disable all** update the current active members of this project together.
+  These actions replace the current recipient selection; use project muting to
+  temporarily silence notifications while preserving that selection. Each
+  person’s account notification settings still apply. Bulk actions do not enable
+  globally disabled channels or change the defaults for future project members.
 
 Combine channels for redundancy. Test with simulated errors to avoid fatigue.
 
