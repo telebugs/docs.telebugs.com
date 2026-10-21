@@ -24,10 +24,10 @@
 
         <meta name="description" content="A guide to setting up and using Telebugs, a self-hosted Sentry alternative for error tracking.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff">
+        <meta name="theme-color" content="#f6f3eb">
 
-        <link rel="icon" href="favicon-41a411dd.svg">
-        <link rel="shortcut icon" href="favicon-bf2dfa50.png">
+        <link rel="icon" href="favicon-59feb3db.svg">
+        <link rel="shortcut icon" href="favicon-1672ec89.png">
         <link rel="stylesheet" href="css/variables-8adf115d.css">
         <link rel="stylesheet" href="css/general-2459343d.css">
         <link rel="stylesheet" href="css/chrome-ae938929.css">
@@ -42,7 +42,7 @@
         <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="theme/telebugs-5ef86795.css">
+        <link rel="stylesheet" href="theme/telebugs-689db225.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -53,9 +53,18 @@
             window.path_to_searchindex_js = "searchindex-2388db2c.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-ba1cdd70.js"></script>
+        <script src="toc-52627711.js"></script>
     </head>
     <body>
+    <a class="skip-to-content" href="#mdbook-content">Skip to content</a>
+    <header class="site-masthead">
+        <a class="brand" href="index.html" aria-label="Telebugs manual home">
+            <img class="brand-logo-light" src="assets/images/logo-telebugs.svg" width="136" height="32" alt="Telebugs">
+            <img class="brand-logo-dark" src="assets/images/logo-telebugs-dark.svg" width="136" height="32" alt="Telebugs">
+        </a>
+        <span class="masthead-caption">Self-hosted error tracking without the Sentry stack</span>
+        <a class="site-link" href="https://telebugs.com">telebugs.com <span aria-hidden="true">↗</span></a>
+    </header>
     <div id="mdbook-help-container">
         <div id="mdbook-help-popup">
             <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
@@ -89,7 +98,19 @@
             const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
             let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-            if (theme === null || theme === undefined) { theme = default_theme; }
+            // Keep preferences from older mdBook palettes compatible with the
+            // two book appearances. No saved preference follows the system.
+            const previous_theme = theme;
+            if (theme === 'coal' || theme === 'ayu') { theme = 'navy'; }
+            if (theme === 'rust') { theme = 'light'; }
+            if (theme !== 'light' && theme !== 'navy') { theme = null; }
+            if (theme !== previous_theme) {
+                try {
+                    if (theme === null) { localStorage.removeItem('mdbook-theme'); }
+                    else { localStorage.setItem('mdbook-theme', theme); }
+                } catch (e) { }
+            }
+            if (theme === null) { theme = default_theme; }
             const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
@@ -117,6 +138,11 @@
         </script>
 
         <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="book-title-page">
+                <button class="contents-close" type="button" aria-label="Close contents">×</button>
+                <a class="book-title" href="index.html">Manual</a>
+                <div class="contents-heading"><span>Contents</span><span aria-hidden="true">§</span></div>
+            </div>
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
@@ -133,26 +159,24 @@
                 <div id="mdbook-menu-bar-hover-placeholder"></div>
                 <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                        <button id="mdbook-sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
                             <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
-                        </label>
+                        </button>
+                        <noscript><label class="noscript-contents" for="mdbook-sidebar-toggle-anchor">Contents</label></noscript>
                         <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
-                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M448 256c0-106-86-192-192-192V448c106 0 192-86 192-192zm64 0c0 141.4-114.6 256-256 256S0 397.4 0 256S114.6 0 256 0S512 114.6 512 256z"/></svg></span>
                         </button>
                         <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">System</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Dark</button></li>
                         </ul>
                         <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
                             <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
-                    <h1 class="menu-title">The Telebugs Manual</h1>
+                    <p class="menu-title">The Telebugs Manual</p>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -168,7 +192,7 @@
                 <div id="mdbook-search-wrapper" class="hidden">
                     <form id="mdbook-searchbar-outer" class="searchbar-outer">
                         <div class="search-wrapper">
-                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="mdbook-searchresults-header">
                             <div class="spinner-wrapper">
                                 <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
                             </div>
@@ -190,7 +214,8 @@
                     });
                 </script>
 
-                <div id="mdbook-content" class="content">
+                <div id="mdbook-content" class="content" tabindex="-1">
+                    <div class="chapter-kicker"><span class="chapter-label">The Telebugs Manual</span><span class="chapter-ornament" aria-hidden="true">✳</span></div>
                     <main>
                         <h1 id="projects"><a class="header" href="#projects">Projects</a></h1>
 <p>Projects organize error tracking for specific apps or services. Each has its own
@@ -202,14 +227,15 @@ reports, settings, and access controls.</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="notifications-03-webhooks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                                <span class="nav-direction">← Previous</span>
+                                <span class="nav-chapter-title">Webhooks</span>
                             </a>
 
                             <a rel="next prefetch" href="projects-01-project-overview.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                                <span class="nav-direction">Next →</span>
+                                <span class="nav-chapter-title">Project Overview</span>
                             </a>
 
-                        <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
@@ -248,6 +274,7 @@ reports, settings, and access controls.</p>
         <script src="book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
+        <script src="theme/telebugs-7d3a0dd5.js"></script>
 
 
 

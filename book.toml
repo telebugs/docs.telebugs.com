@@ -10,3 +10,8 @@ build-dir = "public"
 [output.html]
 git-repository-url = "https://github.com/telebugs/docs.telebugs.com"
 additional-css = ["theme/telebugs.css"]
+additional-js = ["theme/telebugs.js"]
+
+[output.html.fold]
+enable = true
+level = 0

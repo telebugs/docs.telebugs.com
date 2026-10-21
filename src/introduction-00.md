@@ -1,7 +1,5 @@
 # Introduction
 
-![The Telebugs Manual cover](assets/images/introduction-00/01.svg)
-
 **Telebugs** is a lightweight, self-hosted error tracking system and a seamless
 drop-in alternative to Sentry. It collects, groups, and notifies you about
 errors in your applications. This helps you fix bugs faster while keeping your

@@ -1,0 +1,599 @@
+/*
+ * An open field guide: a contents leaf, a quiet reading leaf, and blue ink.
+ * mdBook still owns content, search, chapter links, and public URLs.
+ */
+:root {
+    --book-width: 1240px;
+    --book-margin: clamp(20px, 4.8vw, 88px);
+    --sidebar-target-width: 340px;
+    --sidebar-width: min(var(--sidebar-target-width), 84vw);
+    --sidebar-resize-indicator-width: 0px;
+    --content-max-width: 72rem;
+    --menu-bar-height: 66px;
+    --page-padding: clamp(30px, 5vw, 78px);
+    --searchbar-margin-block-start: 24px;
+    --mono-font: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --code-font-size: 0.78em;
+    --book-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    --book-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --desk: #e9e6df;
+    --paper: #fbf9f2;
+    --paper-left: #f5f2e9;
+    --ink: #292b29;
+    --muted: #76766c;
+    --rule: #d8d5c9;
+    --blue: #245bba;
+    --blue-hover: #17428e;
+    --wash: #eeece3;
+    --mark: #ece2b8;
+    --fold: rgb(69 58 33 / 9%);
+    --book-shadow: rgb(54 47 31 / 12%);
+    --book-color-scheme: light;
+    --book-scrollbar: #b7b4a7;
+}
+
+.light, .rust, .coal, .navy, .ayu, html:not(.js) {
+    --bg: var(--paper);
+    --fg: var(--ink);
+    --sidebar-bg: var(--paper-left);
+    --sidebar-fg: var(--ink);
+    --sidebar-non-existant: var(--muted);
+    --sidebar-active: var(--blue);
+    --sidebar-spacer: var(--rule);
+    --scrollbar: var(--book-scrollbar);
+    --icons: var(--muted);
+    --icons-hover: var(--blue);
+    --links: var(--blue);
+    --inline-code-color: var(--ink);
+    --theme-popup-bg: var(--paper);
+    --theme-popup-border: var(--rule);
+    --theme-hover: var(--wash);
+    --quote-bg: var(--paper-left);
+    --quote-border: var(--rule);
+    --warning-border: #b58b3c;
+    --table-border-color: var(--rule);
+    --table-header-bg: var(--wash);
+    --table-alternate-bg: transparent;
+    --searchbar-border-color: var(--rule);
+    --searchbar-bg: var(--paper);
+    --searchbar-fg: var(--ink);
+    --searchbar-shadow-color: transparent;
+    --searchresults-header-fg: var(--muted);
+    --searchresults-border-color: var(--rule);
+    --searchresults-li-bg: var(--wash);
+    --search-mark-bg: var(--mark);
+    --overlay-bg: rgb(20 20 18 / 45%);
+    --sidebar-header-border-color: var(--rule);
+    --color-scheme: var(--book-color-scheme);
+}
+
+html {
+    color: var(--ink);
+    background: var(--desk);
+    font-family: var(--book-serif);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    background: var(--desk);
+    color: var(--ink);
+    font-size: 1.8rem;
+    line-height: 1.7;
+}
+
+::selection { color: var(--ink); background: var(--mark); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+
+/* The quiet publisher's line above the book. */
+.site-masthead {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: var(--book-width);
+    height: 100px;
+    margin-inline: auto;
+    width: calc(100% - var(--book-margin) * 2);
+}
+.brand, .brand img { display: block; }
+.brand .brand-logo-dark { display: none; }
+.brand { flex-shrink: 0; }
+.masthead-caption { color: var(--muted); font-size: 1.4rem; }
+.site-link, .site-link:visited {
+    color: var(--ink);
+    font: 1.2rem var(--book-ui);
+    text-decoration: none;
+}
+.site-link span { margin-left: 10px; color: var(--blue); }
+.site-link:hover { color: var(--blue); }
+.skip-to-content {
+    position: fixed;
+    z-index: 1000;
+    top: 12px;
+    left: 20px;
+    padding: 8px 16px;
+    background: var(--paper);
+    color: var(--blue);
+    transform: translateY(-160%);
+}
+.skip-to-content:focus { transform: none; }
+
+/* The two leaves share a cover, with a soft shadow at the binding. */
+#mdbook-body-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0 minmax(0, 1fr);
+    grid-template-areas: "contents reading";
+    width: calc(100% - var(--book-margin) * 2);
+    max-width: var(--book-width);
+    min-height: calc(100vh - 150px);
+    margin: 0 auto 50px;
+    border: 1px solid var(--rule);
+    border-radius: 3px 7px 7px 3px;
+    background: var(--paper-left);
+    box-shadow: 0 2px 0 var(--paper), 0 3px 0 var(--rule),
+        0 5px 0 var(--paper), 0 6px 0 var(--rule),
+        0 16px 38px -12px var(--book-shadow);
+}
+#mdbook-body-container:has(#mdbook-sidebar-toggle-anchor:checked) {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+.sidebar {
+    grid-area: contents;
+    position: sticky;
+    align-self: start;
+    inset: 20px auto auto 0;
+    height: calc(100vh - var(--contents-top, 20px));
+    height: calc(100dvh - var(--contents-top, 20px));
+    border: 0;
+    background: transparent;
+    font-size: 1.5rem;
+}
+.book-title-page { padding: 38px 34px 0; }
+.contents-heading, .chapter-kicker, .nav-direction {
+    font-family: var(--mono-font);
+    font-weight: 400;
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.book-title, .book-title:visited {
+    display: inline-block;
+    color: var(--blue);
+    font-size: 3.7rem;
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+    text-decoration: none;
+}
+.contents-heading {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--muted);
+}
+.contents-heading > :last-child { color: var(--blue); font: italic 1.8rem var(--book-serif); }
+.sidebar .sidebar-scrollbox {
+    inset: 156px 0 0;
+    padding: 6px 26px 6px 30px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
+}
+.sidebar .sidebar-scrollbox::-webkit-scrollbar { width: 4px; }
+.sidebar .sidebar-scrollbox::-webkit-scrollbar-thumb { background: var(--rule); }
+.sidebar-iframe-outer { top: 156px; bottom: 0; width: 100%; height: calc(100% - 156px); }
+.noscript-contents { color: var(--muted); cursor: pointer; font: 1.1rem var(--book-ui); }
+.sidebar .sidebar-resize-handle { display: none; }
+.contents-close { display: none; }
+.chapter { margin: 0; line-height: 1.4; }
+.chapter li.chapter-item { margin-top: 2px; }
+.chapter-link-wrapper { align-items: baseline; }
+.chapter li a {
+    position: relative;
+    display: block;
+    flex: 1;
+    padding: 7px 4px;
+    color: var(--ink);
+    font-size: 1.55rem;
+    line-height: 1.4;
+    text-decoration: none;
+}
+.chapter li a strong {
+    display: inline-block;
+    min-width: 28px;
+    color: var(--muted);
+    font: 1.05rem var(--mono-font);
+    font-weight: 400;
+}
+.chapter li a:hover { color: var(--blue); }
+.chapter li a.active { color: var(--blue); font-weight: 600; }
+.chapter li a.active::before {
+    position: absolute;
+    left: -13px;
+    top: 14px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue);
+    content: "";
+}
+.chapter li a.active strong { color: var(--blue); }
+.chapter li ol { margin: 0 0 9px 20px; padding-left: 12px; border-left: 1px solid var(--rule); }
+.chapter li ol a { padding-block: 5px; font-size: 1.3rem; color: var(--muted); }
+.chapter li ol a strong { min-width: 29px; font-size: 0.95rem; }
+.chapter li ol li ol { margin-left: 4px; }
+.chapter-fold-toggle { flex: 0 0 24px !important; padding: 7px 0 !important; text-align: center; opacity: 1; }
+.chapter-fold-toggle div { font-size: 0; transition: none; }
+.chapter-fold-toggle div::after { content: "+"; font: 1.3rem var(--mono-font); color: var(--muted); }
+.chapter li.expanded > span > .chapter-fold-toggle div { transform: none; }
+.chapter li.expanded > span > .chapter-fold-toggle div::after { content: "−"; }
+.on-this-page { margin-left: 32px; padding-left: 8px; border-left: 1px solid var(--rule); }
+.chapter .spacer { height: 1px; margin-block: 14px; background: var(--rule); }
+
+.page-wrapper {
+    grid-area: reading;
+    position: relative;
+    min-width: 0;
+    min-height: calc(100vh - 150px);
+    border-radius: 0 6px 6px 0;
+    background: var(--paper);
+    box-shadow: inset 16px 0 22px -22px rgb(56 48 30 / 30%);
+}
+#mdbook-sidebar-toggle-anchor:checked ~ .page-wrapper { transform: none; margin-inline-start: 0; }
+.js:not(.sidebar-resizing) .page-wrapper { transition: none; }
+.page { margin: 0; padding-inline: var(--page-padding); }
+#mdbook-menu-bar-hover-placeholder { display: none; }
+#mdbook-menu-bar,
+#mdbook-menu-bar.sticky,
+#mdbook-menu-bar:hover,
+html.sidebar-visible #mdbook-menu-bar {
+    position: sticky;
+    top: 0 !important;
+    height: var(--menu-bar-height);
+    box-sizing: border-box;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin: 0;
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    box-shadow: none;
+}
+.left-buttons { position: relative; gap: 18px; margin: 0; }
+.right-buttons { display: flex; align-items: center; gap: 18px; margin: 0; }
+.right-buttons a { display: inline-flex; align-items: center; min-height: 44px; }
+#mdbook-menu-bar .icon-button, .right-buttons a {
+    padding: 0;
+    color: var(--muted);
+    font: 1.1rem var(--book-ui);
+    text-decoration: none;
+    white-space: nowrap;
+}
+#mdbook-menu-bar .icon-button { line-height: var(--menu-bar-height); }
+#mdbook-menu-bar .icon-button:hover, .right-buttons a:hover { color: var(--blue); text-decoration: none; }
+#mdbook-menu-bar .fa-svg { display: none; }
+#mdbook-menu-bar #mdbook-theme-toggle { min-width: 20px; }
+#mdbook-menu-bar #mdbook-theme-toggle .fa-svg {
+    display: inline-block;
+    padding: 0;
+    font-size: 1.6rem;
+    line-height: 1;
+    vertical-align: middle;
+}
+#mdbook-theme-list {
+    top: 100%;
+    left: 48px;
+    min-width: 140px;
+    padding: 6px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: 0 8px 24px var(--book-shadow);
+    font: 1.3rem var(--book-ui);
+}
+#mdbook-theme-list .theme { min-height: 40px; padding: 6px 22px; }
+#mdbook-sidebar-toggle::after { content: "Contents"; }
+#mdbook-search-toggle::after { content: "Search /"; }
+.right-buttons a[title="Print this book"]::after { content: "Print"; }
+.right-buttons a[title="Git repository"]::after { content: "GitHub ↗"; }
+.menu-title {
+    min-width: 0;
+    color: var(--muted);
+    font: 1.25rem var(--book-serif);
+    letter-spacing: 0;
+}
+
+/* Chapter typography: a generous opening and a comfortable measure. */
+.content { padding: 42px 0 0; overflow: visible; }
+.content:focus { outline: none; }
+.chapter-kicker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--content-max-width);
+    margin: 0 auto 19px;
+    color: var(--blue);
+}
+.chapter-ornament { font: 2.5rem var(--book-serif); }
+.content main { max-width: var(--content-max-width); margin-inline: auto; }
+.content main > :first-child { margin-top: 0; }
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+    color: var(--ink);
+    font-family: var(--book-serif);
+    font-weight: 400;
+    text-wrap: balance;
+}
+.content h1 { margin: 0 0 30px; font-size: clamp(3.8rem, 4.3vw, 6rem); line-height: 1.08; letter-spacing: -0.055em; }
+.content h2 { margin: 44px 0 16px; font-size: 3rem; line-height: 1.2; letter-spacing: -0.025em; }
+.content h3 { margin: 32px 0 12px; font-size: 2.3rem; line-height: 1.3; }
+.content h4, .content h5, .content h6 { margin: 28px 0 12px; font-size: 1.9rem; font-weight: 600; }
+.content .header:link, .content .header:visited { color: var(--ink); text-decoration: none; }
+.content .header:hover { color: var(--blue); }
+.content p, .content ol, .content ul { line-height: 1.75; }
+.content p, .content ol, .content ul, .content dl { margin: 0 0 20px; }
+.content ul, .content ol { padding-left: 24px; }
+.content li { padding-left: 4px; margin: 8px 0; }
+.content li::marker { color: var(--ink); font-size: 0.85em; }
+.content strong { font-weight: 700; }
+.content a:link:not(.header), .content a:visited:not(.header) {
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--blue), transparent 60%);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+.content a:hover:not(.header) { color: var(--blue-hover); text-decoration-color: currentColor; }
+#introduction + p::first-letter {
+    float: left;
+    margin: 4px 7px 0 0;
+    color: var(--blue);
+    font-size: 6.2rem;
+    font-weight: 400;
+    line-height: 0.85;
+}
+.content hr { margin: 32px 0 24px; border: 0; border-top: 1px solid var(--rule); }
+.content img, .content video { height: auto; border: 1px solid var(--rule); border-radius: 2px; }
+
+/* Technical material stays crisp on the paper. */
+:not(pre) > code, :not(pre) > .hljs {
+    padding: 2px 4px;
+    border-radius: 2px;
+    color: var(--ink);
+    background: var(--wash);
+}
+pre { margin: 24px 0; border: 1px solid var(--rule); border-radius: 3px; background: var(--wash); }
+pre > code { padding: 18px 20px; line-height: 1.65; overflow-x: auto; }
+pre > .hljs { background: var(--wash); }
+pre > .buttons { top: 4px; right: 4px; }
+pre:focus-within > .buttons { visibility: visible; opacity: 1; }
+pre > .buttons button { color: var(--blue); border: 1px solid var(--rule); border-radius: 2px; background: var(--paper); }
+.table-wrapper { margin: 24px 0; }
+table { width: 100%; margin: 0; font: 1.35rem/1.6 var(--book-ui); }
+table th, table td, table thead th, table thead td { padding: 11px 13px; border: 1px solid var(--rule); text-align: left; }
+table th, table thead td { background: var(--wash); font-weight: 600; }
+table tbody tr:nth-child(2n) { background: transparent; }
+blockquote { margin: 26px 0; padding: 18px 24px; border: 0; border-left: 2px solid var(--blue); background: var(--paper-left); }
+blockquote > :first-child { margin-top: 0; }
+blockquote > :last-child { margin-bottom: 0; }
+.warning { margin: 24px 0; padding: 18px 24px; border-left: 2px solid var(--warning-border); background: var(--wash); }
+.warning::before { display: none; }
+mark { color: var(--ink); background: var(--mark); }
+kbd { padding: 2px 5px; border: 1px solid var(--rule); border-radius: 2px; background: var(--paper-left); font: 0.78em var(--mono-font); }
+details { margin: 24px 0; padding: 16px 20px; border: 1px solid var(--rule); }
+summary { cursor: pointer; font-weight: 600; }
+
+/* Search and the lower page furniture. */
+#mdbook-search-wrapper { margin-inline: auto; max-width: var(--content-max-width); font-family: var(--book-ui); }
+#mdbook-searchbar { box-sizing: border-box; border-radius: 2px; font: 1.5rem var(--book-ui); }
+#mdbook-searchbar:focus { outline: 2px solid var(--blue); outline-offset: 2px; box-shadow: none; }
+#mdbook-searchresults { padding-left: 0; }
+#mdbook-searchresults li { padding: 12px 0; margin: 0; border-bottom: 1px solid var(--rule); }
+#mdbook-searchresults .teaser { margin-left: 0; }
+.nav-wide-wrapper { display: none; }
+.nav-wrapper {
+    display: flex !important;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: var(--content-max-width);
+    margin: 48px auto 0;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+}
+.content .nav-wrapper .mobile-nav-chapters,
+.content .nav-wrapper .mobile-nav-chapters:link,
+.content .nav-wrapper .mobile-nav-chapters:visited {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width: auto;
+    max-width: 47%;
+    float: none;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    text-decoration: none;
+    line-height: 1.4;
+}
+.mobile-nav-chapters.next { margin-left: auto; text-align: right; }
+.nav-direction { color: var(--muted); font-size: 0.95rem; }
+.nav-chapter-title { font-size: 1.65rem; }
+.mobile-nav-chapters:hover .nav-chapter-title { text-decoration: underline; text-underline-offset: 3px; }
+#mdbook-help-popup { border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); background: var(--paper); font-family: var(--book-ui); }
+
+@media screen and (min-width: 1080px) {
+    /* The binding belongs to the full book, not the sticky contents panel. */
+    #mdbook-body-container:has(#mdbook-sidebar-toggle-anchor:checked)::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: calc(var(--sidebar-width) - 20px);
+        width: 20px;
+        background: linear-gradient(90deg, transparent, var(--fold));
+        content: "";
+        pointer-events: none;
+    }
+    /* A ribbon tucked into the top of the contents leaf. */
+    .book-title-page::after {
+        position: absolute;
+        top: 0;
+        right: 28px;
+        width: 19px;
+        height: 42px;
+        background: var(--blue);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+        content: "";
+    }
+}
+
+@media (max-width: 1079px) {
+    :root { --page-padding: clamp(24px, 6vw, 64px); }
+    #mdbook-body-container:has(#mdbook-sidebar-toggle-anchor:checked) { grid-template-columns: 0 minmax(0, 1fr); }
+    .sidebar {
+        position: fixed;
+        z-index: 200;
+        top: 18px;
+        bottom: 18px;
+        left: var(--book-margin);
+        height: calc(100dvh - 36px);
+        max-height: none;
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--paper-left);
+        box-shadow: 0 12px 60px rgb(0 0 0 / 25%);
+    }
+    .sidebar::after {
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 20px;
+        background: linear-gradient(90deg, transparent, var(--fold));
+        content: "";
+        pointer-events: none;
+    }
+    #mdbook-sidebar-toggle-anchor:not(:checked) ~ .sidebar { transform: translateX(calc(-100% - var(--book-margin) - 20px)); }
+    .contents-close {
+        display: block;
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font: 2.4rem var(--book-ui);
+        cursor: pointer;
+    }
+    .page-wrapper { box-shadow: none; }
+    .masthead-caption { font-size: 1.25rem; }
+}
+
+@media (max-width: 620px) {
+    :root { --book-margin: 16px; --page-padding: 24px; --menu-bar-height: 58px; }
+    body { font-size: 1.7rem; }
+    .site-masthead { height: 78px; gap: 16px; }
+    .brand img { width: 119px; height: 28px; }
+    .masthead-caption, .menu-title { display: none; }
+    .site-link { font-size: 1.1rem; }
+    #mdbook-body-container { margin-bottom: 28px; }
+    #mdbook-menu-bar { justify-content: space-between; gap: 10px; }
+    .left-buttons, .right-buttons { gap: 10px; }
+    #mdbook-menu-bar .icon-button, .right-buttons a { font-size: 1.05rem; }
+    .content { padding-top: 30px; }
+    .chapter-kicker { margin-bottom: 15px; font-size: 0.95rem; }
+    .content h1 { font-size: clamp(3.2rem, 9vw, 4.1rem); margin-bottom: 25px; }
+    .content h2 { font-size: 2.7rem; }
+    .content p, .content ol, .content ul { line-height: 1.7; }
+    pre > code { padding: 14px; }
+    .nav-wrapper { gap: 16px; }
+    .nav-chapter-title { font-size: 1.45rem; }
+}
+
+@media (max-height: 600px) {
+    .book-title-page { padding: 20px 30px 0; }
+    .book-title-page::after { display: none; }
+    .book-title { font-size: 2.6rem; }
+    .contents-heading { margin-top: 16px; }
+    .sidebar .sidebar-scrollbox { top: 110px; }
+    .sidebar-iframe-outer { top: 110px; height: calc(100% - 110px); }
+}
+
+/* mdBook applies the selected theme class and follows system changes in Auto. */
+html:is(.navy, .coal, .ayu) {
+    --desk: #1c1e20;
+    --paper: #272927;
+    --paper-left: #232523;
+    --ink: #e1dfd4;
+    --muted: #a5a69a;
+    --rule: #43463e;
+    --blue: #8fb5f5;
+    --blue-hover: #b7d0ff;
+    --wash: #30332f;
+    --mark: #585036;
+    --fold: rgb(0 0 0 / 18%);
+    --book-shadow: rgb(0 0 0 / 40%);
+    --book-color-scheme: dark;
+    --book-scrollbar: #55594e;
+}
+html:is(.navy, .coal, .ayu) .brand-logo-light { display: none; }
+html:is(.navy, .coal, .ayu) .brand-logo-dark { display: block; }
+html:is(.navy, .coal, .ayu) .hljs { color: #dddccf; background: var(--wash); }
+html:is(.navy, .coal, .ayu) :is(.hljs-comment, .hljs-quote) { color: #a5a69a; }
+html:is(.navy, .coal, .ayu) :is(.hljs-keyword, .hljs-selector-tag) { color: #c4afe4; }
+html:is(.navy, .coal, .ayu) :is(.hljs-string, .hljs-symbol, .hljs-bullet) { color: #b5c695; }
+html:is(.navy, .coal, .ayu) :is(.hljs-title, .hljs-section, .hljs-attribute, .hljs-attr) { color: #91bde0; }
+html:is(.navy, .coal, .ayu) :is(.hljs-number, .hljs-literal, .hljs-type, .hljs-built_in) { color: #e5b68c; }
+
+/* Without JavaScript there is no switch, so follow the device's appearance. */
+@media (prefers-color-scheme: dark) {
+    html:not(.js) {
+        --desk: #1c1e20;
+        --paper: #272927;
+        --paper-left: #232523;
+        --ink: #e1dfd4;
+        --muted: #a5a69a;
+        --rule: #43463e;
+        --blue: #8fb5f5;
+        --blue-hover: #b7d0ff;
+        --wash: #30332f;
+        --mark: #585036;
+        --fold: rgb(0 0 0 / 18%);
+        --book-shadow: rgb(0 0 0 / 40%);
+        --book-color-scheme: dark;
+        --book-scrollbar: #55594e;
+    }
+    html:not(.js) .brand-logo-light { display: none; }
+    html:not(.js) .brand-logo-dark { display: block; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Keep a transition event so mdBook can finish hiding its sidebar. */
+    html:not(.sidebar-resizing) .sidebar { transition-duration: 0.01ms; }
+}
+
+@media print {
+    html:is(.light, .rust, .navy, .coal, .ayu), html:not(.js) {
+        --paper: #fff; --paper-left: #fff; --ink: #000; --muted: #555;
+        --rule: #ccc; --blue: #245bba; --wash: #f3f3f3; --mark: #eee;
+        --book-color-scheme: light;
+    }
+    html, body { color: #000; background: #fff; }
+    .site-masthead, .sidebar, .chapter-kicker, .skip-to-content, .nav-wrapper { display: none !important; }
+    #mdbook-body-container, #mdbook-body-container:has(#mdbook-sidebar-toggle-anchor:checked) {
+        display: block; width: 100%; max-width: none; margin: 0; border: 0; border-radius: 0; box-shadow: none;
+    }
+    .page-wrapper { min-height: 0; border-radius: 0; box-shadow: none; }
+    .page { padding: 0; }
+    .content { padding: 0; }
+    .content main { max-width: none; }
+    .content h1 { font-size: 3.6rem; }
+    pre, blockquote, table { break-inside: avoid; }
+    .content pre code, .content pre code * { color: #000 !important; background: transparent !important; }
+    .content h1, .content h2, .content h3 { break-after: avoid; }
+    #introduction + p::first-letter { float: none; margin: 0; font-size: inherit; color: inherit; }
+}

@@ -21,6 +21,20 @@ Prerequisites:
 * Build static site: `mdbook build` (outputs to `./public`)
 * Edit files in `src/` and send [PRs][4]
 
+## Book theme
+
+The open-book layout lives in `theme/telebugs.css`, with page furniture in
+`theme/index.hbs` (based on mdBook 0.5.2) and keyboard/navigation enhancements in
+`theme/telebugs.js`. It uses local system fonts. The appearance menu offers
+System, Light, and Dark; explicit choices persist between pages, while System
+follows the device's appearance. The contents leaf becomes a drawer below 1080px.
+
+The logos in `src/assets/images/` and favicons in `theme/` match the assets in
+the Telebugs marketing website. The fingerprinted favicon, search index, and
+contents files at the root of `src/` preserve previously published asset URLs;
+mdBook copies them through on each build. Current pages use newly generated
+assets. Keep these compatibility files while they remain in the URL baseline.
+
 ## URL stability
 
 The public URL contract is recorded in `url-stability-baseline.json`. After
