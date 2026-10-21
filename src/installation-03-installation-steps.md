@@ -9,6 +9,10 @@ The whole process takes less than 5 minutes. Here is how to get started.
 2. **Point your domain.** Update your DNS records so your domain points directly
    to your server IP. Do not use proxying. Telebugs handles TLS itself.
 
+   If a reverse proxy or Cloudflare Tunnel handles HTTPS, use
+   [local HTTP mode][8] instead: leave the domain prompt blank during setup.
+   The direct DNS requirement above does not apply to that mode.
+
    ![Cloudflare DNS configuration example][1]
 
 3. **Connect to your server.** Use SSH or your provider console.
@@ -19,16 +23,21 @@ The whole process takes less than 5 minutes. Here is how to get started.
    Your personal command will look similar to this:
 
    ```bash
-   bash -c "$(curl -fsSL https://auth.telebugs.com/install/a12b-c34d-e56f-g78h)"
+   bash -c "$(curl --disable -fsSL https://license.telebugs.com/install/a12b-c34d-e56f-g78h)"
    ```
 
    **Important:** Keep your install command private. Do not share it or post it
    online. It is tied to your account and license. The purchase token is included
    in your email.
 
+Already purchased Telebugs? Keep using the exact command and key in your email.
+Earlier Auth commands and Licensing's `install.sh` command remain supported;
+there is no need to exchange your key or reinstall an existing server.
+
 When you run this command, it will automatically install Docker on your server
 (assuming you’re using Linux, which is standard for most cloud environments). It
-will then download the latest version of the Telebugs app as a Docker container.
+will then download the newest Telebugs version covered by your purchase as a
+Docker container.
 During setup, you’ll be prompted to enter your domain name so we can generate a
 TLS certificate for you.
 
@@ -37,10 +46,13 @@ TLS certificate for you.
 That is it. Visit `https://YOUR-DOMAIN` in your browser to create the first
 user. After that, you can invite your team.
 
-Telebugs updates itself automatically every night at 1 AM (server local time).
+On Linux, Telebugs updates itself automatically every night at 1 AM (server local time).
 You can disable updates or run other admin tasks (backups, password resets,
 etc.) with the [telebugs command][5]. Connect to your server and run `telebugs`
-to see all options.
+to see all options. New purchases include one year of updates and support,
+renewing at $99/year unless cancelled. Covered versions keep working and remain
+available for download after coverage ends; later releases require renewed
+coverage. Existing Auth customers retain their original license terms.
 
 After first launch, run `telebugs status` on the server. Before sending
 production errors, create an off-server [backup and restore plan][6] and decide
@@ -48,13 +60,28 @@ whether your external monitoring should check [`/ready`][7].
 
 > 💡 Want multiple Telebugs installations? You need a separate license for each domain.
 
+## Installing on a Mac
+
+Start your existing Docker environment, such as Colima or Docker Desktop, before
+running the installation command. Run it from your usual Mac account. The
+installer asks for administrator permission only to install the CLI; setup and
+later `telebugs` commands use your account's Docker context.
+
+For a new Licensing installation, use the `/install/YOUR-LICENSE-KEY` command
+shown above with your existing key, including an older `TLB-SH-` key. Leave the
+domain blank when using [Cloudflare Tunnel or another reverse proxy][8].
+
+New Mac installations store data in `~/.local/share/telebugs`. Run management,
+backup and restore commands from the same Mac account. To update, run
+`telebugs update`; automatic scheduling is not enabled on macOS.
+
 ## Replacing or Recovering an Existing Server
 
 Do not follow the normal installation steps or run `telebugs setup` on a
 replacement server. Install only the recovery CLI:
 
 ```bash
-bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 ```
 
 Then copy your backup, run `telebugs data verify`, and follow the
@@ -70,3 +97,4 @@ ports 80/443, TLS, and rollback.
 [5]: /appendix-02-telebugs-command-reference.md
 [6]: /operations-01-backup-and-restore.md
 [7]: /operations-02-health-and-status.md
+[8]: /installation-04-custom-tls.md

@@ -10,7 +10,7 @@ provider’s web-based terminal.
 Install only the CLI on a fresh replacement server:
 
 ```bash
-bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 ```
 
 The public bootstrap verifies a platform-specific SHA-256 checksum and installs

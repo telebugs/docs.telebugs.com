@@ -3,6 +3,21 @@
 Telebugs automatically creates and installs a Let's Encrypt TLS certificate for
 you. If you already have your own certificate, you can use it instead.
 
+## Cloudflare Tunnel
+
+During setup, leave the domain prompt blank and press Enter. Do not type
+`localhost` or your public hostname. This selects local HTTP on port 5555 and
+skips the direct public IP check.
+
+Keep your public hostname in the Tunnel configuration. If `cloudflared` runs
+directly on the same host as Telebugs, set its service URL to
+`http://127.0.0.1:5555`. Cloudflare handles public HTTPS.
+
+If `cloudflared` runs inside a container, use an address reachable from that
+container instead: `127.0.0.1` refers to the connector's own container. On a Mac,
+start Colima or Docker Desktop first and run the Telebugs installer from your
+usual account.
+
 ## TLS Termination with Nginx
 
 [Nginx][1] is the recommended way to use a custom certificate. It works as a reverse

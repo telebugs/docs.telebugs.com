@@ -50,7 +50,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-2388db2c.js";
+            window.path_to_searchindex_js = "searchindex-29d00cef.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-52627711.js"></script>
@@ -223,7 +223,7 @@
 provider’s web-based terminal.</p>
 <h2 id="fresh-server-recovery-bootstrap"><a class="header" href="#fresh-server-recovery-bootstrap">Fresh-server recovery bootstrap</a></h2>
 <p>Install only the CLI on a fresh replacement server:</p>
-<pre><code class="language-bash">bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+<pre><code class="language-bash">bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 </code></pre>
 <p>The public bootstrap verifies a platform-specific SHA-256 checksum and installs
 <code>/usr/local/bin/telebugs</code>. It does not run setup, create configuration, install

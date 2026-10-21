@@ -5,6 +5,11 @@ Telebugs data and recovery configuration. The archive contains sensitive
 recovery secrets, so treat it like production credentials as well as production
 data.
 
+On macOS, run backup and restore from the same ordinary Mac account used for
+installation, with its Docker environment running. The recovery installer uses
+that account too. New Mac storage defaults to `~/.local/share/telebugs`; an
+existing installation keeps its configured storage path.
+
 ## Create a Backup
 
 Connect to the Telebugs server and run:
@@ -104,10 +109,11 @@ Verification detects corruption and incomplete archives; it is not an external
 digital signature. Keep archives in access-controlled, tamper-resistant storage
 as well as encrypting them.
 
-Current backups use format 2 and contain a version-2 license receipt bound to the
-exact installation token and licensed domain. The CLI verifies that receipt
+Current backups use format 2 and contain a signed license receipt bound to the
+exact installation token and licensed domain. Auth licenses use version-2 Auth
+receipts; Licensing purchases use perpetual Licensing receipts. The CLI verifies that receipt
 locally, so archive verification and restore authorization work without
-`auth.telebugs.com`. Retrieving the captured container image can still require
+the license service. Retrieving the captured container image can still require
 registry access.
 
 Format-1 manifest backups use the retired receipt format. The current CLI
@@ -134,7 +140,7 @@ with the captured application image so database migrations are not guessed.
 On a fresh replacement server, install the current recovery CLI:
 
 ```bash
-bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"
+bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"
 ```
 
 This public bootstrap detects Linux or macOS on x86_64 or arm64, downloads the
@@ -401,7 +407,7 @@ network isolation or outbound firewall rules provide the boundary before you
 can sign in and replace destinations with drill-safe configuration.
 
 1. Start with a fresh host containing neither the CLI nor Docker.
-2. Install the CLI with `bash -c "$(curl -fsSL https://auth.telebugs.com/restore)"`.
+2. Install the CLI with `bash -c "$(curl --disable -fsSL https://license.telebugs.com/restore)"`.
    Confirm that it created no Telebugs configuration or container.
 3. Copy the newest off-server archive to the drill host.
 4. Run `telebugs data verify`.
@@ -419,6 +425,17 @@ can sign in and replace destinations with drill-safe configuration.
    notification channels you depend on.
 12. Record the archive date, restore duration, Telebugs version, and result, then
    destroy the drill host securely.
+
+The CLI keeps the license service and signed receipt in the backup. It selects
+the correct service automatically for older Auth licenses, existing Licensing
+keys, and new short Licensing keys. No extra service flag is needed. Older
+`auth.telebugs.com/restore` commands remain supported.
+
+For Licensing purchases, covered image bundles remain downloadable after
+coverage expires. A locally retained image and valid receipt allow offline
+recovery; fetching a missing image still requires a network connection. Setup
+and restore reports are retried privately if delivery fails, without changing
+the outcome of the operation.
 
 The license permits temporary same-domain overlap solely for an isolated restore
 drill, migration, and rollback. The temporary copy must not become an additional
